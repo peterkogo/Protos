@@ -10,19 +10,19 @@
 
 /* eslint-disable global-require, no-confusing-arrow, max-len */
 
-const path = require('path');
-const webpack = require('webpack');
-const AssetsPlugin = require('assets-webpack-plugin');
-const pkg = require('../package.json');
+const path = require('path')
+const webpack = require('webpack')
+const AssetsPlugin = require('assets-webpack-plugin')
+const pkg = require('../package.json')
 
-const isDebug = global.DEBUG === false ? false : !process.argv.includes('--release');
-const isVerbose = process.argv.includes('--verbose') || process.argv.includes('-v');
-const useHMR = !!global.HMR; // Hot Module Replacement (HMR)
+const isDebug = global.DEBUG === false ? false : !process.argv.includes('--release')
+const isVerbose = process.argv.includes('--verbose') || process.argv.includes('-v')
+const useHMR = !!global.HMR // Hot Module Replacement (HMR)
 const babelConfig = Object.assign({}, pkg.babel, {
   babelrc: false,
   cacheDirectory: useHMR,
   presets: pkg.babel.presets.map(x => x === 'latest' ? ['latest', { es2015: { modules: false } }] : x),
-});
+})
 
 // Webpack configuration (main.js => public/dist/main.{hash}.js)
 // http://webpack.github.io/docs/configuration.html
@@ -95,8 +95,6 @@ const config = {
           path.resolve(__dirname, '../components'),
           path.resolve(__dirname, '../actions'),
           path.resolve(__dirname, '../containers'),
-          path.resolve(__dirname, '../reducers'),
-          path.resolve(__dirname, '../core'),
           path.resolve(__dirname, '../public'),
         ],
         loader: 'babel-loader',
@@ -167,7 +165,7 @@ const config = {
       },
     ],
   },
-};
+}
 
 // Optimize the bundle in release (production) mode
 if (!isDebug) {
@@ -176,16 +174,16 @@ if (!isDebug) {
     compress: {
       warnings: isVerbose,
     },
-  }));
-  config.plugins.push(new webpack.optimize.AggressiveMergingPlugin());
+  }))
+  config.plugins.push(new webpack.optimize.AggressiveMergingPlugin())
 }
 
 // Hot Module Replacement (HMR) + React Hot Reload
 if (isDebug && useHMR) {
-  babelConfig.plugins.unshift('react-hot-loader/babel');
-  config.entry.unshift('react-hot-loader/patch', 'webpack-hot-middleware/client');
-  config.plugins.push(new webpack.HotModuleReplacementPlugin());
-  config.plugins.push(new webpack.NoEmitOnErrorsPlugin());
+  babelConfig.plugins.unshift('react-hot-loader/babel')
+  config.entry.unshift('react-hot-loader/patch', 'webpack-hot-middleware/client')
+  config.plugins.push(new webpack.HotModuleReplacementPlugin())
+  config.plugins.push(new webpack.NoEmitOnErrorsPlugin())
 }
 
-module.exports = config;
+module.exports = config

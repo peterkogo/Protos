@@ -5,7 +5,7 @@ import {
   FAIL_AQUARIA, FAIL_PDB,
   REQUEST_UNIPROT, RECEIVE_UNIPROT,
   FAIL_UNIPROT
-} from '../actions/sequenceData'
+} from './sequenceData'
 
 function sequenceData(state = {
   didInvalidate: false,

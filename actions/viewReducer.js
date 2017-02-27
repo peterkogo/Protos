@@ -1,4 +1,4 @@
-import { SHOW_DATA, HIDE_DATA, WINDOW_RESIZE } from '../actions/view'
+import { SHOW_DATA, HIDE_DATA, WINDOW_RESIZE } from './view'
 
 export function dataVisibility(state = false, action) {
   switch (action.type) {

@@ -8,7 +8,6 @@ import Vis from '../components/Vis'
 import Ui from '../components/Ui'
 
 import style from './AsyncApp.css'
-import mainStyle from '../core/style.css'
 
 /**
  * Topmost React Component
@@ -30,7 +29,7 @@ class AsyncApp extends React.Component {
   render() {
     const { selectedSequence, dataVisibility, ui, currentSequenceData, dispatch } = this.props
     return (
-      <div className={mainStyle.maxHeight}>
+      <div className={style.maxHeight}>
       {typeof currentSequenceData.aquaria !== 'undefined' &&
         <div className={style.visWrapper}>
           <Vis
