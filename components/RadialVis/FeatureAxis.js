@@ -67,15 +67,15 @@ class FeatureAxis extends React.Component {
     .data(labels)
     // UPDATE
     .attr('dy', fontOffset) // TODO Change depending on FontSize
-    .attr('x', (x) =>
-                (geneScale(x) - x.toString().length * 25)) // TODO Realistic Value
+    .attr('x', x =>
+                (geneScale(x) - (x.toString().length * 25))) // TODO Realistic Value
     .attr('fill', fontColor)
     // ENTER
     .enter()
     .append('text')
     .attr('dy', fontOffset)
-    .attr('x', (x) =>
-                (geneScale(x) - x.toString().length * 25))
+    .attr('x', x =>
+                (geneScale(x) - (x.toString().length * 25)))
     .attr('fill', fontColor)
     .append('textPath')
     .attr('xlink:href', `#curve${id}`)
@@ -122,7 +122,7 @@ class FeatureAxis extends React.Component {
     const svgMargin = SVGMARGIN
     return (
       <svg ref="svg" width={d + svgMargin} height={d + svgMargin} className={style.centered} >
-        <g ref="group"></g>
+        <g ref="group" />
         {this.props.uniprot &&
           positions.map((x, i) => (
             <Feature

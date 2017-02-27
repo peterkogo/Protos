@@ -1,5 +1,5 @@
 {
-  "name": "PV",
+  "name": "ProteinViewer",
   "version": "0.0.0",
   "private": true,
   "main": "./ProteinViewer.js"

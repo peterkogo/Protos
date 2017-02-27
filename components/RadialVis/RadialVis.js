@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react'
 import MainAxis from './MainAxis'
 import FeatureAxis from './FeatureAxis'
 import style from './RadialVis.css'
-import ProteinViewer from '../PV'
+import ProteinViewer from '../ProteinViewer'
 
 /**
  * Main Component for the D3 Visualization

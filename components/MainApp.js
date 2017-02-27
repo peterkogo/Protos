@@ -66,7 +66,7 @@ MainApp.propTypes = {
     isFetchingAquaria: PropTypes.bool.isRequired,
     isFetchingPDB: PropTypes.bool.isRequired,
     isFetchingUniprot: PropTypes.bool.isRequired,
-  }),
+  }).isRequired,
 }
 
 function mapStateToProps(state) {

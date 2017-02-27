@@ -9,6 +9,8 @@
   },
   "rules": {
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+    "react/forbid-prop-types": [1, { "forbid": ['any'] }],
+    "import/no-extraneous-dependencies": [0, {"devDependencies": false, "optionalDependencies": false, "peerDependencies": false}],
     "valid-jsdoc": ["error", {
       "requireReturn": false,
       "requireReturnType": false,
