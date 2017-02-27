@@ -8,12 +8,12 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import { expect } from 'chai';
+import { expect } from 'chai'
 
 describe('test suite', () => {
 
   it('test', () => {
-    expect(true).to.be.true;
-  });
+    expect(true).to.be.true
+  })
 
-});
+})
