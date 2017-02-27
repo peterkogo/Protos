@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react'
 import * as d3 from 'd3'
 import { FEATURESIZE, FEATURESTROKE,
         FEATUREFILLCOLOR, FEATURESTROKECOLOR,
-      FEATUREWIDTH, SVGMARGIN } from '../Defaults'
+      FEATUREWIDTH, SVGMARGIN } from '../../Defaults'
 
 /**
  * Matching Structure Component

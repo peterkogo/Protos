@@ -37,8 +37,8 @@ class RadialVis extends React.Component {
 
   // TODO don't render Components if no Data is available (Best Practice?)
   render() {
-    const { ui, selectedSequence, pdb, isFetchingPDB,
-      aquaria, uniprot, isFetchingUniprot } = this.props
+    const { ui, selectedSequence, currentSequenceData } = this.props
+    const { pdb, isFetchingPDB, aquaria, uniprot, isFetchingUniprot } = currentSequenceData
     const margin = 50
     const size = ((ui.windowWidth > ui.windowHeight) ? ui.windowHeight : ui.windowWidth) - margin
     return (
@@ -77,14 +77,16 @@ class RadialVis extends React.Component {
 }
 
 RadialVis.propTypes = {
-  ui: PropTypes.object.isRequired,
-  aquaria: PropTypes.object.isRequired,
-  isFetchingAquaria: PropTypes.bool.isRequired,
+  currentSequenceData: PropTypes.shape({
+    aquaria: PropTypes.object.isRequired,
+    isFetchingAquaria: PropTypes.bool.isRequired,
+    isFetchingPDB: PropTypes.bool.isRequired,
+    isFetchingUniprot: PropTypes.bool.isRequired,
+    pdb: PropTypes.string.isRequired,
+    uniprot: PropTypes.string.isRequired,
+  }),
   selectedSequence: PropTypes.string,
-  pdb: PropTypes.string.isRequired,
-  isFetchingPDB: PropTypes.bool.isRequired,
-  uniprot: PropTypes.string.isRequired,
-  isFetchingUniprot: PropTypes.bool.isRequired,
+  ui: PropTypes.object.isRequired,
 }
 
 export default RadialVis

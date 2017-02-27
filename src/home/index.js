@@ -8,11 +8,13 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import React, { PropTypes } from 'react';
+import React, { PropTypes } from 'react'
 // import Layout from '../../components/Layout';
 // import s from './styles.css';
-import { title } from './index.md';
-import AsyncApp from '../../containers/AsyncApp';
+import { title } from './index.md'
+import MainApp from '../../components/MainApp'
+
+
 class HomePage extends React.Component {
 
   static propTypes = {
@@ -24,15 +26,15 @@ class HomePage extends React.Component {
   };
 
   componentDidMount() {
-    document.title = title;
+    document.title = title
   }
 
   render() {
     return (
-      <AsyncApp />
-    );
+      <MainApp />
+    )
   }
 
 }
 
-export default HomePage;
+export default HomePage

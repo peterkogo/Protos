@@ -1,12 +1,12 @@
 import React, { PropTypes } from 'react'
 import * as d3 from 'd3'
 import { STRUCTURESIZE, STRUCTURESTROKE,
-        STRUCTUREFILLCOLOR, STRUCTURESTROKECOLOR, SVGMARGIN } from '../Defaults'
+        STRUCTUREFILLCOLOR, STRUCTURESTROKECOLOR, SVGMARGIN } from '../../Defaults'
 
 /**
- * Matching Structure Component
+ * Matching AlignmentFeature Component
  */
-class Structure extends React.Component {
+class AlignmentFeature extends React.Component {
   constructor(props) {
     super(props)
     this.getAngle = this.getAngle.bind(this)
@@ -89,12 +89,12 @@ class Structure extends React.Component {
   }
 }
 
-Structure.defaultProps = {
+AlignmentFeature.defaultProps = {
   fillColor: STRUCTUREFILLCOLOR,
   strokeColor: STRUCTURESTROKECOLOR,
 }
 
-Structure.propTypes = {
+AlignmentFeature.propTypes = {
   alignment: PropTypes.string.isRequired,
   d: PropTypes.number.isRequired,
   axisGap: PropTypes.number.isRequired,
@@ -104,4 +104,4 @@ Structure.propTypes = {
   strokeColor: PropTypes.string,
 }
 
-export default Structure
+export default AlignmentFeature

@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux'
-import { dataBySequence, selectedSequence } from './sequenceData'
+import { dataBySequence, selectedSequence } from './sequenceDataReducer'
 import { dataVisibility, ui } from './viewReducer'
 
 const rootReducer = combineReducers({

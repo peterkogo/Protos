@@ -4,16 +4,15 @@ import { connect } from 'react-redux'
 import { fetchSequenceIfNeeded } from '../actions/sequenceData'
 
 import DataViewer from '../components/DataViewer'
-import Vis from '../components/Vis'
+import RadialVis from '../components/RadialVis'
 import Ui from '../components/Ui'
 
-import style from './AsyncApp.css'
-import mainStyle from '../core/style.css'
+import style from './MainApp.css'
 
 /**
  * Topmost React Component
  */
-class AsyncApp extends React.Component {
+class MainApp extends React.Component {
 
   componentDidMount() {
     const { dispatch, selectedSequence } = this.props
@@ -30,13 +29,13 @@ class AsyncApp extends React.Component {
   render() {
     const { selectedSequence, dataVisibility, ui, currentSequenceData, dispatch } = this.props
     return (
-      <div className={mainStyle.maxHeight}>
-      {typeof currentSequenceData.aquaria !== 'undefined' &&
+      <div className={style.maxHeight}>
+        {typeof currentSequenceData.aquaria !== 'undefined' &&
         <div className={style.visWrapper}>
-          <Vis
-            currentSequenceData={currentSequenceData}
-            selectedSequence={selectedSequence}
+          <RadialVis
             ui={ui}
+            selectedSequence={selectedSequence}
+            currentSequenceData={currentSequenceData}
           />
         </div>
         }
@@ -55,7 +54,7 @@ class AsyncApp extends React.Component {
   }
 }
 
-AsyncApp.propTypes = {
+MainApp.propTypes = {
   selectedSequence: PropTypes.string.isRequired,
   dispatch: PropTypes.func.isRequired,
   ui: PropTypes.object.isRequired,
@@ -88,4 +87,4 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps)(AsyncApp)
+export default connect(mapStateToProps)(MainApp)
