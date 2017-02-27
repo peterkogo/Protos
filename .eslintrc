@@ -19,7 +19,7 @@
         "require": {
             "FunctionDeclaration": false,
             "MethodDefinition": false,
-            "ClassDeclaration": true
+            "ClassDeclaration": false
         }
     }],
     "semi" : ["error", "never"]

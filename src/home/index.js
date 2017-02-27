@@ -12,7 +12,7 @@ import React, { PropTypes } from 'react'
 // import Layout from '../../components/Layout';
 // import s from './styles.css';
 import { title } from './index.md'
-import AsyncApp from '../../containers/AsyncApp'
+import MainApp from '../../components/MainApp'
 
 
 class HomePage extends React.Component {
@@ -31,7 +31,7 @@ class HomePage extends React.Component {
 
   render() {
     return (
-      <AsyncApp />
+      <MainApp />
     )
   }
 

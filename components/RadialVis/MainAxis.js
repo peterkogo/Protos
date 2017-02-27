@@ -5,23 +5,19 @@ import { AXISGAP, AXISCOLOR, AXISSIZE,
         FONTCOLOR, FONTSIZE, FONTOFFSET,
         SVGMARGIN } from '../Defaults'
 
-import Feature from './Feature'
+import AlignmentFeature from './features/AlignmentFeature'
 
 /**
  * Axis Element containing the numbers of the nucleotides
  */
-class FeatureAxis extends React.Component {
-
-  constructor(props) {
-    super(props)
-    this.getUniprotData = this.getUniprotData.bind(this)
-  }
+class MainAxis extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const { d, geneLength, id, numLabels, axisColor,
-            fontColor, axisSize, axisGap, uniprot } = nextProps
+            fontColor, axisSize, axisGap } = nextProps
 
     const fontOffset = FONTOFFSET
+    const svgMargin = SVGMARGIN
 
     const r = Math.floor(d / 2)
 
@@ -38,8 +34,7 @@ class FeatureAxis extends React.Component {
 
     // Center Origin
     const group = d3.select(this.refs.group)
-                    .attr('transform',
-                      `translate( ${r + (SVGMARGIN / 2)} ,  ${r + (SVGMARGIN / 2)} )`)
+                    .attr('transform', `translate( ${r + (svgMargin / 2)} ,  ${r + (svgMargin / 2)} )`)
 
     group.selectAll('path')
         .attr('d', arc)
@@ -56,30 +51,28 @@ class FeatureAxis extends React.Component {
         .exit()
         .remove()
 
-    const { name } = this.getUniprotData(uniprot)
-
     // Get Array(numLabels) with Labels
-    const labels = Array(numLabels - 1)
+    const labels = Array(numLabels)
                     .fill(undefined)
-                    .map((x, i) => ((i + 1) * Math.floor(geneLength / numLabels)))
+                    .map((x, i) => (i * Math.floor(geneLength / numLabels)))
 
     group.selectAll('text')
     .data(labels)
     // UPDATE
     .attr('dy', fontOffset) // TODO Change depending on FontSize
     .attr('x', (x) =>
-                (geneScale(x) - x.toString().length * 25)) // TODO Realistic Value
+                (geneScale(x) - x.toString().length * 4))
     .attr('fill', fontColor)
     // ENTER
     .enter()
     .append('text')
     .attr('dy', fontOffset)
     .attr('x', (x) =>
-                (geneScale(x) - x.toString().length * 25))
+                (geneScale(x) - x.toString().length * 4))
     .attr('fill', fontColor)
     .append('textPath')
     .attr('xlink:href', `#curve${id}`)
-    .text(() => name)
+    .text((x) => `'${x}`)
     // EXIT
     .exit()
     .remove()
@@ -92,70 +85,41 @@ class FeatureAxis extends React.Component {
   //   return false
   // }
 
-  getUniprotData(uniprot) {
-    // if (window.DOMParser) {
-    //   const parser = new DOMParser()
-    //   const xmlDoc = parser.parseFromString(uniprot, 'text/xml')
-    //   const features = xmlDoc.getElementsByTagName('feature')
-    //   if (features.length > 0) {
-    //     console.log(features.item(0))
-    //     // const parser = parser.parseFromString
-    //     // for (let i = 0; i < x.length; i++) {
-    //     //   if (x[i].getAttribute('type') === 'metal ion-binding site') {
-    //     //     console.log(x[i].childNodes[0].childNodes[0].getAttribute('position'))
-    //     //     return true
-    //     //   }
-    //     // }
-    //   }
-    //
-    // }
-    return {
-      name: 'Metal-Ion Binding Site',
-      positions: [176, 179, 238, 242],
-    }
-  }
-
   render() {
     const { d, axisGap, geneLength } = this.props
-    const { positions } = this.getUniprotData(this.props.uniprot)
     const svgSize = Math.floor((d + 2) / 2)
     const svgMargin = SVGMARGIN
     return (
       <svg ref="svg" width={d + svgMargin} height={d + svgMargin} className={style.centered} >
         <g ref="group"></g>
-        {this.props.uniprot &&
-          positions.map((x, i) => (
-            <Feature
-              key={i}
-              d={d}
-              position={x}
-              axisGap={axisGap}
-              svgSize={svgSize}
-              geneLength={geneLength}
-              id={i}
-            />
-          ))
-
+        {this.props.alignment &&
+          <AlignmentFeature
+            d={d}
+            alignment={this.props.alignment}
+            axisGap={axisGap}
+            svgSize={svgSize}
+            geneLength={geneLength}
+          />
         }
       </svg>
     )
   }
 }
 
-FeatureAxis.defaultProps = {
+MainAxis.defaultProps = {
   axisGap: AXISGAP,
-  numLabels: 4,
+  numLabels: 8,
   axisColor: AXISCOLOR,
   axisSize: AXISSIZE,
   fontColor: FONTCOLOR,
   fontSize: FONTSIZE,
 }
 
-FeatureAxis.propTypes = {
+MainAxis.propTypes = {
   d: PropTypes.number.isRequired,
   geneLength: PropTypes.number.isRequired,
   id: PropTypes.number.isRequired,
-  uniprot: PropTypes.string,
+  alignment: PropTypes.string,
   axisGap: PropTypes.number,
   numLabels: PropTypes.number,
   axisColor: PropTypes.string,
@@ -164,4 +128,4 @@ FeatureAxis.propTypes = {
   fontSize: PropTypes.number,
 }
 
-export default FeatureAxis
+export default MainAxis

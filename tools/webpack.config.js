@@ -94,7 +94,6 @@ const config = {
           path.resolve(__dirname, '../src'),
           path.resolve(__dirname, '../components'),
           path.resolve(__dirname, '../actions'),
-          path.resolve(__dirname, '../containers'),
           path.resolve(__dirname, '../public'),
         ],
         loader: 'babel-loader',
