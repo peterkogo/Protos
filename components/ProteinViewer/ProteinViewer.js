@@ -38,8 +38,8 @@ class ProteinViewer extends React.PureComponent {
     if (nextProps.d !== this.props.d) {
       ReactDOM.findDOMNode(this.refs.pv).innerHTML = ''
       const viewer = new pv.Viewer(this.refs.pv, {
-        width: this.props.d || 'auto',
-        height: this.props.d || 'auto',
+        width: nextProps.d || 'auto',
+        height: nextProps.d || 'auto',
         antialias: true,
         quality: 'high',
       })
