@@ -1,0 +1,17 @@
+.pv {
+  position: absolute;
+  margin-top: 50%;
+  margin-left: 50%;
+  left: -150px;
+  top: -150px;
+}
+
+.d3 {
+  position: absolute;
+}
+
+.outer {
+  position: relative;
+  text-align: center;
+  height: 800px;
+}

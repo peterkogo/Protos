@@ -8,7 +8,9 @@
   },
   "dependencies": {
     "babel-polyfill": "^6.22.0",
+    "bio-pv": "^1.8.1",
     "classnames": "^2.2.5",
+    "d3": "^4.6.0",
     "fastclick": "^1.0.6",
     "history": "^4.5.1",
     "react": "^15.4.2",
@@ -16,6 +18,8 @@
     "react-mdl": "^1.9.0",
     "react-redux": "^5.0.2",
     "redux": "^3.6.0",
+    "redux-thunk": "^2.1.0",
+    "redux-logger": "^2.7.4",
     "whatwg-fetch": "^2.0.2"
   },
   "devDependencies": {

@@ -1,0 +1,6 @@
+{
+  "name": "D3",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./RadialVis.js"
+}

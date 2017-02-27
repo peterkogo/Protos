@@ -8,24 +8,44 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import 'babel-polyfill';
-import 'whatwg-fetch';
+import 'babel-polyfill'
+import 'whatwg-fetch'
 
-import React from 'react';
-import ReactDOM from 'react-dom';
-import FastClick from 'fastclick';
-import { Provider } from 'react-redux';
+import React from 'react'
+import ReactDOM from 'react-dom'
+import FastClick from 'fastclick'
+import { Provider } from 'react-redux'
 
-import store from './store';
-import router from './router';
-import history from './history';
+// import store from './store';
+import configureStore from './configureStore'
+import router from './router'
+import history from './history'
 
-let routes = require('./routes.json').default; // Loaded with utils/routes-loader.js
+import style from './main.css'
+import { resizeWindow } from '../actions/view'
 
-const container = document.getElementById('container');
+require('./main.css')
+
+let routes = require('./routes.json').default // Loaded with utils/routes-loader.js
+
+const container = document.getElementById('container')
+container.className += style.maxSize
+
+const store = configureStore()
+
+let delayed = false
+window.addEventListener('resize', () => {
+  if (!delayed) {
+    delayed = true
+    setTimeout(() => {
+      store.dispatch(resizeWindow(window.innerWidth, window.innerHeight))
+      delayed = false
+    }, 300)
+  }
+})
 
 function renderComponent(component) {
-  ReactDOM.render(<Provider store={store}>{component}</Provider>, container);
+  ReactDOM.render(<Provider store={store}>{component}</Provider>, container)
 }
 
 // Find and render a web page matching the current URL path,
@@ -33,23 +53,23 @@ function renderComponent(component) {
 function render(location) {
   router.resolve(routes, location)
     .then(renderComponent)
-    .catch(error => router.resolve(routes, { ...location, error }).then(renderComponent));
+    .catch(error => router.resolve(routes, { ...location, error }).then(renderComponent))
 }
 
 // Handle client-side navigation by using HTML5 History API
 // For more information visit https://github.com/ReactJSTraining/history/tree/master/docs#readme
-history.listen(render);
-render(history.location);
+history.listen(render)
+render(history.location)
 
 // Eliminates the 300ms delay between a physical tap
 // and the firing of a click event on mobile browsers
 // https://github.com/ftlabs/fastclick
-FastClick.attach(document.body);
+FastClick.attach(document.body)
 
 // Enable Hot Module Replacement (HMR)
 if (module.hot) {
   module.hot.accept('./routes.json', () => {
-    routes = require('./routes.json').default; // eslint-disable-line global-require
-    render(history.location);
-  });
+    routes = require('./routes.json').default // eslint-disable-line global-require
+    render(history.location)
+  })
 }

@@ -9,10 +9,10 @@
  */
 
 import React, { PropTypes } from 'react';
-import Layout from '../../components/Layout';
-import s from './styles.css';
-import { title, html } from './index.md';
-
+// import Layout from '../../components/Layout';
+// import s from './styles.css';
+import { title } from './index.md';
+import AsyncApp from '../../containers/AsyncApp';
 class HomePage extends React.Component {
 
   static propTypes = {
@@ -29,23 +29,7 @@ class HomePage extends React.Component {
 
   render() {
     return (
-      <Layout className={s.content}>
-        <div
-          // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: html }}
-        />
-        <h4>Articles</h4>
-        <ul>
-          {this.props.articles.map(article =>
-            <li key={article.url}>
-              <a href={article.url}>{article.title}</a>
-            by {article.author}</li>,
-          )}
-        </ul>
-        <p>
-          <br /><br />
-        </p>
-      </Layout>
+      <AsyncApp />
     );
   }
 

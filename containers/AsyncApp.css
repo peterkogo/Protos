@@ -1,0 +1,11 @@
+.visWrapper {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  pointer-events: none;
+}
+
+body {
+  font-family: Roboto;
+}
