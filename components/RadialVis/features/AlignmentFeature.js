@@ -17,6 +17,8 @@ class AlignmentFeature extends React.Component {
     .append('div')
     .attr('id', 'tooltip') // TODO Unique ID
     .style('position', 'absolute')
+    .style('top', '0')
+    .style('left', '0')
     .style('z-index', '10')
     .style('visibility', 'hidden')
     .text('')
