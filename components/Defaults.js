@@ -1,10 +1,11 @@
 export const FONTCOLOR = 'black'
-export const FONTSIZE = 2
-export const FONTOFFSET = 25
+export const FONTSIZE = 1
+export const FONTOFFSET = 22
 
 export const AXISCOLOR = '#888888'
 export const AXISSIZE = 2
-export const AXISGAP = 2
+export const AXISGAP = 0
+export const MAXNUMAXIS = 5
 
 export const SVGMARGIN = 20
 

@@ -4,14 +4,18 @@ import {
   REQUEST_PDB, RECEIVE_PDB,
   FAIL_AQUARIA, FAIL_PDB,
   REQUEST_UNIPROT, RECEIVE_UNIPROT,
-  FAIL_UNIPROT
+  FAIL_UNIPROT,
 } from './sequenceData'
+import parseUniprot from './parseUniprot'
 
 function sequenceData(state = {
   didInvalidate: false,
+  isFetchingAquaria: true,
+  isFetchingPDB: true,
+  isFetchingUniprot: true,
   aquaria: {},
   pdb: '',
-  uniprot: '',
+  uniprot: {},
 }, action) {
   switch (action.type) {
     case INVALIDATE_SEQUENCE_DATA:
@@ -70,7 +74,7 @@ function sequenceData(state = {
         isFetchingUniprot: false,
         isFailedUniprot: false,
         didInvalidate: false,
-        uniprot: `${action.uniprot}`,
+        uniprot: parseUniprot(action.uniprot),
         lastUpdatedUniprot: action.receivedAt,
       })
     case FAIL_UNIPROT:

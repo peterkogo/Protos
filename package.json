@@ -13,6 +13,7 @@
     "d3": "^4.6.0",
     "fastclick": "^1.0.6",
     "history": "^4.5.1",
+    "jquery": "^3.1.1",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "react-mdl": "^1.9.0",
@@ -20,7 +21,8 @@
     "redux": "^3.6.0",
     "redux-thunk": "^2.1.0",
     "redux-logger": "^2.7.4",
-    "whatwg-fetch": "^2.0.2"
+    "whatwg-fetch": "^2.0.2",
+    "lodash.uniqueid": "4.0.1"
   },
   "devDependencies": {
     "assets-webpack-plugin": "^3.5.0",

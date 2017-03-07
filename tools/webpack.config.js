@@ -83,6 +83,11 @@ const config = {
       debug: isDebug,
       minimize: !isDebug,
     }),
+    // new webpack.ProvidePlugin({
+    //   jQuery: 'jquery',
+    //   $: 'jquery',
+    //   jquery: 'jquery',
+    // }),
   ],
 
   // Options affecting the normal modules

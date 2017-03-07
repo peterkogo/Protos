@@ -55,30 +55,36 @@ class MainApp extends React.Component {
 }
 
 MainApp.propTypes = {
-  selectedSequence: PropTypes.string.isRequired,
-  dispatch: PropTypes.func.isRequired,
-  ui: PropTypes.object.isRequired,
-  dataVisibility: PropTypes.bool.isRequired,
   currentSequenceData: PropTypes.shape({
     aquaria: PropTypes.object.isRequired,
-    pdb: PropTypes.string.isRequired,
-    uniprot: PropTypes.string.isRequired,
+    didInvalidate: PropTypes.bool.isRequired,
     isFetchingAquaria: PropTypes.bool.isRequired,
     isFetchingPDB: PropTypes.bool.isRequired,
     isFetchingUniprot: PropTypes.bool.isRequired,
-  }).isRequired,
+    pdb: PropTypes.string.isRequired,
+    uniprot: PropTypes.object.isRequired,
+  }),
+  dataVisibility: PropTypes.bool.isRequired,
+  dispatch: PropTypes.func.isRequired,
+  selectedSequence: PropTypes.string.isRequired,
+  ui: PropTypes.object.isRequired,
+}
+
+MainApp.defaultProps = {
+  currentSequenceData: {
+    aquaria: {},
+    pdb: '',
+    uniprot: {},
+    isFetchingAquaria: true,
+    isFetchingPDB: true,
+    isFetchingUniprot: true,
+    didInvalidate: false,
+  },
 }
 
 function mapStateToProps(state) {
   const { selectedSequence, dataBySequence, dataVisibility, ui } = state
-  const currentSequenceData = dataBySequence[selectedSequence] || {
-    isFetchingAquaria: true,
-    isFetchingPDB: true,
-    isFetchingUniprot: true,
-    aquaria: {},
-    pdb: '',
-    uniprot: '',
-  }
+  const currentSequenceData = dataBySequence[selectedSequence]
   return {
     selectedSequence,
     currentSequenceData,

@@ -2,7 +2,6 @@ import React, { PropTypes } from 'react'
 import { selectSequence } from '../../actions/sequenceData'
 import { showData, hideData } from '../../actions/view'
 
-
 /**
  * Temporary selector for testing different sequences
  */
@@ -41,13 +40,11 @@ class Selector extends React.Component {
             </option>)
           }
         </select>
-        <label>
-          <input
-            type="checkbox"
-            onClick={this.handleShowData}
-          />
+        <input
+          type="checkbox"
+          onClick={this.handleShowData}
+        />
           Show Data
-        </label>
       </span>
     )
   }
@@ -55,7 +52,7 @@ class Selector extends React.Component {
 
 Selector.propTypes = {
   options: PropTypes.arrayOf(
-    PropTypes.string.isRequired
+    PropTypes.string.isRequired,
   ).isRequired,
   value: PropTypes.string.isRequired,
   dispatch: PropTypes.func.isRequired,

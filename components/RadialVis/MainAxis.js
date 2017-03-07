@@ -1,9 +1,7 @@
 import React, { PropTypes } from 'react'
 import * as d3 from 'd3'
-import style from './RadialVis.css'
 import { AXISGAP, AXISCOLOR, AXISSIZE,
-        FONTCOLOR, FONTSIZE, FONTOFFSET,
-        SVGMARGIN } from '../Defaults'
+        FONTCOLOR, FONTSIZE, FONTOFFSET } from '../Defaults'
 
 import AlignmentFeature from './features/AlignmentFeature'
 
@@ -14,10 +12,9 @@ class MainAxis extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const { d, geneLength, id, numLabels, axisColor,
-            fontColor, axisSize, axisGap } = nextProps
+            fontColor, fontSize, axisSize, axisGap } = nextProps
 
     const fontOffset = FONTOFFSET
-    const svgMargin = SVGMARGIN
 
     const r = Math.floor(d / 2)
 
@@ -32,9 +29,7 @@ class MainAxis extends React.Component {
                   .startAngle((0 + axisGap) * (Math.PI / 180))
                   .endAngle((360 - axisGap) * (Math.PI / 180))
 
-    // Center Origin
-    const group = d3.select(this.refs.group)
-                    .attr('transform', `translate( ${r + (svgMargin / 2)} ,  ${r + (svgMargin / 2)} )`)
+    const group = d3.select(this.group)
 
     group.selectAll('path')
         .attr('d', arc)
@@ -70,6 +65,7 @@ class MainAxis extends React.Component {
     .attr('x', x =>
                 (geneScale(x) - (x.toString().length * 4)))
     .attr('fill', fontColor)
+    .style('font-size', `${fontSize}em`)
     .append('textPath')
     .attr('xlink:href', `#curve${id}`)
     .text(x => `'${x}`)
@@ -84,24 +80,26 @@ class MainAxis extends React.Component {
   //   }
   //   return false
   // }
-
+//   <svg
+//     width={d + svgMargin}
+//     height={d + svgMargin}
+//     className={style.centered}
+//   >
+// </svg>
   render() {
     const { d, axisGap, geneLength } = this.props
-    const svgSize = Math.floor((d + 2) / 2)
-    const svgMargin = SVGMARGIN
     return (
-      <svg ref="svg" width={d + svgMargin} height={d + svgMargin} className={style.centered} >
-        <g ref="group" />
+      <g>
+        <g ref={(c) => { this.group = c }} />
         {this.props.alignment &&
           <AlignmentFeature
             d={d}
             alignment={this.props.alignment}
             axisGap={axisGap}
-            svgSize={svgSize}
             geneLength={geneLength}
           />
         }
-      </svg>
+      </g>
     )
   }
 }
@@ -116,16 +114,16 @@ MainAxis.defaultProps = {
 }
 
 MainAxis.propTypes = {
-  d: PropTypes.number.isRequired,
-  geneLength: PropTypes.number.isRequired,
-  id: PropTypes.number.isRequired,
-  alignment: PropTypes.string,
-  axisGap: PropTypes.number,
-  numLabels: PropTypes.number,
+  alignment: PropTypes.string.isRequired,
   axisColor: PropTypes.string,
+  axisGap: PropTypes.number,
   axisSize: PropTypes.number,
+  d: PropTypes.number.isRequired,
   fontColor: PropTypes.string,
   fontSize: PropTypes.number,
+  geneLength: PropTypes.number.isRequired,
+  id: PropTypes.string.isRequired,
+  numLabels: PropTypes.number,
 }
 
 export default MainAxis
