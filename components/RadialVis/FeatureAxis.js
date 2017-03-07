@@ -1,9 +1,7 @@
 import React, { PropTypes } from 'react'
 import * as d3 from 'd3'
-import style from './RadialVis.css'
 import { AXISGAP, AXISCOLOR, AXISSIZE,
-        FONTCOLOR, FONTSIZE, FONTOFFSET,
-        SVGMARGIN } from '../Defaults'
+        FONTCOLOR, FONTSIZE, FONTOFFSET } from '../Defaults'
 
 import Feature from './features/Feature'
 
@@ -12,14 +10,9 @@ import Feature from './features/Feature'
  */
 class FeatureAxis extends React.Component {
 
-  constructor(props) {
-    super(props)
-    this.getUniprotData = this.getUniprotData.bind(this)
-  }
-
   componentWillReceiveProps(nextProps) {
     const { d, geneLength, id, numLabels, axisColor,
-            fontColor, axisSize, axisGap, uniprot } = nextProps
+            fontColor, axisSize, axisGap, name, fontSize } = nextProps
 
     const fontOffset = FONTOFFSET
 
@@ -37,48 +30,51 @@ class FeatureAxis extends React.Component {
                   .endAngle((360 - axisGap) * (Math.PI / 180))
 
     // Center Origin
-    const group = d3.select(this.refs.group)
-                    .attr('transform',
-                      `translate( ${r + (SVGMARGIN / 2)} ,  ${r + (SVGMARGIN / 2)} )`)
+    const group = d3.select(this.group)
 
+    // Create axis path
+    // Create path for handling labels inside arc gap
     group.selectAll('path')
+        .data(Array(2))
         .attr('d', arc)
-        .attr('stroke-width', `${axisSize}px`)
-        .attr('id', `curve${id}`)
         .attr('stroke', axisColor)
-        .data(Array(1)) // TODO ??? Other way?
+        .attr('stroke-width', (x, i) => ((i === 0) ? `${axisSize}px` : 0))
+        .attr('id', (x, i) => (`${id}curve${i}`))
+        .attr('transform', (x, i) => ((i === 1) ? 'rotate(90)' : 'rotate(0)'))
         .enter()
         .append('path')
           .attr('d', arc)
-          .attr('stroke-width', `${axisSize}px`)
-          .attr('id', `curve${id}`)
           .attr('stroke', axisColor)
+          .attr('stroke-width', (x, i) => ((i === 0) ? `${axisSize}px` : 0))
+          .attr('id', (x, i) => (`${id}curve${i}`))
+          .attr('transform', (x, i) => ((i === 1) ? 'rotate(90)' : 'rotate(0)'))
         .exit()
         .remove()
 
-    const { name } = this.getUniprotData(uniprot)
-
-    // Get Array(numLabels) with Labels
-    const labels = Array(numLabels - 1)
+    // Get Array(numLabels) with labelpositions
+    const labels = Array(numLabels)
                     .fill(undefined)
-                    .map((x, i) => ((i + 1) * Math.floor(geneLength / numLabels)))
+                    .map((x, i) => ((i < numLabels - 1)
+                      ? (i + 1) * Math.floor(geneLength / numLabels)
+                      : i * Math.floor(geneLength / numLabels)))
 
     group.selectAll('text')
     .data(labels)
     // UPDATE
     .attr('dy', fontOffset) // TODO Change depending on FontSize
-    .attr('x', x =>
-                (geneScale(x) - (x.toString().length * 25))) // TODO Realistic Value
+    .attr('x', x => (geneScale(x)))
     .attr('fill', fontColor)
+    .attr('text-anchor', 'middle')
     // ENTER
     .enter()
     .append('text')
     .attr('dy', fontOffset)
-    .attr('x', x =>
-                (geneScale(x) - (x.toString().length * 25)))
+    .attr('x', x => (geneScale(x)))
     .attr('fill', fontColor)
+    .attr('text-anchor', 'middle')
+    .style('font-size', `${fontSize}em`)
     .append('textPath')
-    .attr('xlink:href', `#curve${id}`)
+    .attr('xlink:href', (x, i, arr) => ((i < arr.length - 1) ? `#${id}curve0` : `#${id}curve1`))
     .text(() => name)
     // EXIT
     .exit()
@@ -92,52 +88,23 @@ class FeatureAxis extends React.Component {
   //   return false
   // }
 
-  getUniprotData(uniprot) {
-    // if (window.DOMParser) {
-    //   const parser = new DOMParser()
-    //   const xmlDoc = parser.parseFromString(uniprot, 'text/xml')
-    //   const features = xmlDoc.getElementsByTagName('feature')
-    //   if (features.length > 0) {
-    //     console.log(features.item(0))
-    //     // const parser = parser.parseFromString
-    //     // for (let i = 0; i < x.length; i++) {
-    //     //   if (x[i].getAttribute('type') === 'metal ion-binding site') {
-    //     //     console.log(x[i].childNodes[0].childNodes[0].getAttribute('position'))
-    //     //     return true
-    //     //   }
-    //     // }
-    //   }
-    //
-    // }
-    return {
-      name: 'Metal-Ion Binding Site',
-      positions: [176, 179, 238, 242],
-    }
-  }
-
   render() {
-    const { d, axisGap, geneLength } = this.props
-    const { positions } = this.getUniprotData(this.props.uniprot)
-    const svgSize = Math.floor((d + 2) / 2)
-    const svgMargin = SVGMARGIN
+    const { d, axisGap, geneLength, features } = this.props
     return (
-      <svg ref="svg" width={d + svgMargin} height={d + svgMargin} className={style.centered} >
-        <g ref="group" />
-        {this.props.uniprot &&
-          positions.map((x, i) => (
-            <Feature
-              key={i}
-              d={d}
-              position={x}
-              axisGap={axisGap}
-              svgSize={svgSize}
-              geneLength={geneLength}
-              id={i}
-            />
+      <g>
+        <g ref={(c) => { this.group = c }} />
+        {features.map((x, i) => (
+          <Feature
+            key={i}
+            d={d}
+            start={x[0]}
+            stop={x[1]}
+            axisGap={axisGap}
+            geneLength={geneLength}
+          />
           ))
-
         }
-      </svg>
+      </g>
     )
   }
 }
@@ -154,8 +121,9 @@ FeatureAxis.defaultProps = {
 FeatureAxis.propTypes = {
   d: PropTypes.number.isRequired,
   geneLength: PropTypes.number.isRequired,
-  id: PropTypes.number.isRequired,
-  uniprot: PropTypes.string,
+  id: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  features: PropTypes.array.isRequired,
   axisGap: PropTypes.number,
   numLabels: PropTypes.number,
   axisColor: PropTypes.string,

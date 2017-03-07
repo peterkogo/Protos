@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react'
 import ReactDOM from 'react-dom'
 import style from './ProteinViewer.css'
+
 const pv = require('bio-pv')
 
 /**

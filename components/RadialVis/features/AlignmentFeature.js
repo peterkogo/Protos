@@ -1,40 +1,56 @@
 import React, { PropTypes } from 'react'
 import * as d3 from 'd3'
+import uID from 'lodash.uniqueid'
 import { STRUCTURESIZE, STRUCTURESTROKE,
-        STRUCTUREFILLCOLOR, STRUCTURESTROKECOLOR, SVGMARGIN } from '../../Defaults'
+        STRUCTUREFILLCOLOR, STRUCTURESTROKECOLOR } from '../../Defaults'
 
 /**
  * Matching AlignmentFeature Component
  */
 class AlignmentFeature extends React.Component {
-  constructor(props) {
-    super(props)
-    this.getAngle = this.getAngle.bind(this)
+
+  // TODO Make generally applicable
+  static getAngle(alignment) {
+    const first = new RegExp('(.*);.*;')
+    const second = new RegExp('.*:.*:(.*):.*:(.*):.*,.*')
+    const firstText = alignment.match(first)[1]
+    const startStop = firstText.match(second)
+    return {
+      start: startStop[1],
+      end: startStop[2],
+    }
   }
 
-  componentDidMount() {
+  componentWillMount() {
+    const ID = uID('tooltip')
+    this.setState({
+      ID,
+    })
+
+    // TODO extract css
     d3.select('body')
     .append('div')
-    .attr('id', 'tooltip') // TODO Unique ID
+    .attr('id', ID)
     .style('position', 'absolute')
     .style('top', '0')
     .style('left', '0')
     .style('z-index', '10')
     .style('visibility', 'hidden')
+    .style('background-color', 'white')
+    .style('padding', '1px 3px 1px 3px')
+    .style('border-style', 'solid')
     .text('')
   }
 
   componentWillReceiveProps(nextProps) {
-    const { svgSize, axisGap, d, alignment,
+    const { axisGap, d, alignment,
             geneLength, fillColor, strokeColor } = nextProps
 
-    const group = d3.select(this.refs.structure)
-              .attr('transform',
-                `translate( ${svgSize + (SVGMARGIN / 2)} ,  ${svgSize + (SVGMARGIN / 2)} )`)
+    const group = d3.select(this.group)
 
     const r = Math.floor(d / 2)
 
-    const { start, end } = this.getAngle(alignment)
+    const { start, end } = AlignmentFeature.getAngle(alignment)
 
     // Scale that maps nucleotides on arc
     const scale = d3.scaleLinear()
@@ -52,6 +68,7 @@ class AlignmentFeature extends React.Component {
         .attr('stroke-width', `${STRUCTURESTROKE}px`)
         .attr('fill', fillColor)
         .attr('stroke', strokeColor)
+        .attr('id', '')
         .data(Array(1))
         .enter()
         .append('path')
@@ -59,10 +76,11 @@ class AlignmentFeature extends React.Component {
             .attr('stroke-width', `${STRUCTURESTROKE}px`)
             .attr('fill', fillColor)
             .attr('stroke', strokeColor)
+            .attr('id', '')
         .exit()
         .remove()
 
-    const tooltip = d3.select('#tooltip')
+    const tooltip = d3.select(`#${this.state.ID}`)
     .text(`'${start} - '${end} `)
 
     group.selectAll('path')
@@ -72,21 +90,9 @@ class AlignmentFeature extends React.Component {
     .on('mouseout', () => tooltip.style('visibility', 'hidden'))
   }
 
-  // TODO Make generally applicable
-  getAngle(alignment) {
-    const first = new RegExp('(.*);.*;')
-    const second = new RegExp('.*:.*:(.*):.*:(.*):.*,.*')
-    const firstText = alignment.match(first)[1]
-    const startStop = firstText.match(second)
-    return {
-      start: startStop[1],
-      end: startStop[2],
-    }
-  }
-
   render() {
     return (
-      <g ref="structure"></g>
+      <g ref={(c) => { this.group = c }} />
     )
   }
 }
@@ -100,7 +106,6 @@ AlignmentFeature.propTypes = {
   alignment: PropTypes.string.isRequired,
   d: PropTypes.number.isRequired,
   axisGap: PropTypes.number.isRequired,
-  svgSize: PropTypes.number.isRequired,
   geneLength: PropTypes.number.isRequired,
   fillColor: PropTypes.string,
   strokeColor: PropTypes.string,
