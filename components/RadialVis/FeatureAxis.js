@@ -29,8 +29,25 @@ class FeatureAxis extends React.Component {
                   .startAngle((0 + axisGap) * (Math.PI / 180))
                   .endAngle((360 - axisGap) * (Math.PI / 180))
 
-    // Center Origin
+    const clickArea = d3.select(this.clickArea)
+
+    clickArea.selectAll(`#clickArea${id}`)
+          .data(Array(1))
+          .attr('d', arc)
+          .attr('stroke', 'white')
+          .attr('stroke-width', '45px') // TODO Calculate Width
+          .attr('id', `#clickArea${id}`)
+          .enter()
+          .append('path')
+          .attr('d', arc)
+          .attr('stroke', 'white')
+          .attr('stroke-width', '45px')
+          .attr('id', `#clickArea${id}`)
+          .exit()
+          .remove()
+
     const group = d3.select(this.group)
+
 
     // Create axis path
     // Create path for handling labels inside arc gap
@@ -50,6 +67,7 @@ class FeatureAxis extends React.Component {
           .attr('transform', (x, i) => ((i === 1) ? 'rotate(90)' : 'rotate(0)'))
         .exit()
         .remove()
+
 
     // Get Array(numLabels) with labelpositions
     const labels = Array(numLabels)
@@ -79,8 +97,20 @@ class FeatureAxis extends React.Component {
     // EXIT
     .exit()
     .remove()
-  }
 
+    // if (d !== this.props.d) {
+    //   const arc2 = d3.arc()
+    //                 .innerRadius(r + 10)
+    //                 .outerRadius(r + 10)
+    //                 .startAngle((0 + axisGap) * (Math.PI / 180))
+    //                 .endAngle((360 - axisGap) * (Math.PI / 180))
+    //
+    //   group.selectAll('path')
+    //   .transition()
+    //   .duration(2000)
+    //   .attr('d', arc2)
+    // }
+  }
   // shouldComponentUpdate(nextProps) {
   //   if (this.props.d !== nextProps.d) {
   //     return true
@@ -92,6 +122,7 @@ class FeatureAxis extends React.Component {
     const { d, axisGap, geneLength, features } = this.props
     return (
       <g>
+        <g ref={(c) => { this.clickArea = c }} />
         <g ref={(c) => { this.group = c }} />
         {features.map((x, i) => (
           <Feature

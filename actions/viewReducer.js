@@ -1,15 +1,4 @@
-import { SHOW_DATA, HIDE_DATA, WINDOW_RESIZE } from './view'
-
-export function dataVisibility(state = false, action) {
-  switch (action.type) {
-    case SHOW_DATA:
-      return true
-    case HIDE_DATA:
-      return false
-    default:
-      return state
-  }
-}
+import { WINDOW_RESIZE } from './view'
 
 const initialUiState = {
   windowWidth: typeof window === 'object' ? window.innerWidth : null,

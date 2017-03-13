@@ -1,4 +1,5 @@
 import $ from 'jquery'
+import uID from 'lodash.uniqueid'
 
 const djb2Code = function (str, bins) {
   let hash = 5381
@@ -85,8 +86,26 @@ export default function (xml) {
   const parsed = deepParse(xml)
   const members = Object.getOwnPropertyNames(parsed)
   const chainLength = parseInt(parsed.Chain.Features[0].Residues[1], 10)
-  const data = [].concat(members.map(member => (
-    {
+  const selected = ''
+//   const data = [].concat(members.map(member => (
+//     {
+//       name: member,
+//       id: uID('featureData'),
+//       features: parsed[member].Features.map((feature) => {
+//         if (typeof feature.Residue !== 'undefined') {
+//           return [parseInt(feature.Residue[0], 10), parseInt(feature.Residue[0], 10)]
+//         }
+//         if (typeof feature.Residues !== 'undefined') {
+//           return [parseInt(feature.Residues[0], 10), parseInt(feature.Residues[1], 10)]
+//         }
+//         return ['error']
+//       }),
+//     }
+// )))
+  const data = {}
+  members.forEach((member) => {
+    const id = uID('featureData')
+    data[id] = {
       name: member,
       features: parsed[member].Features.map((feature) => {
         if (typeof feature.Residue !== 'undefined') {
@@ -98,6 +117,7 @@ export default function (xml) {
         return ['error']
       }),
     }
-)))
-  return { chainLength, data }
+  })
+
+  return { chainLength, data, selected }
 }

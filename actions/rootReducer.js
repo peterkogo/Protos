@@ -1,12 +1,13 @@
 import { combineReducers } from 'redux'
 import { dataBySequence, selectedSequence } from './sequenceDataReducer'
-import { dataVisibility, ui } from './viewReducer'
+import { ui } from './viewReducer'
+import { visState } from './radialVisReducer'
 
 const rootReducer = combineReducers({
   dataBySequence,
   selectedSequence,
-  dataVisibility,
   ui,
+  visState,
 })
 
 export default rootReducer

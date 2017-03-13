@@ -7,6 +7,7 @@ import style from './RadialVis.css'
 import ProteinViewer from '../ProteinViewer'
 
 import { SVGMARGIN, MAXNUMAXIS } from '../Defaults'
+import { selectAxis, deselectAxis } from '../../actions/radialVis'
 
 /**
  * Main Component for the D3 Visualization
@@ -15,35 +16,54 @@ import { SVGMARGIN, MAXNUMAXIS } from '../Defaults'
  */
 class RadialVis extends React.PureComponent {
 
+  static getOpacity(feature, visState) {
+    if (visState.selected.length < 1) {
+      return 1
+    }
+    if (feature === visState.selected) {
+      return 1
+    }
+    return 0.3
+  }
+
   constructor(props) {
     super(props)
     this.calculateRadius = this.calculateRadius.bind(this)
+    this.handleClick = this.handleClick.bind(this)
   }
 
   componentWillMount() {
+    // TODO probably useless
     this.setState({
       mainAxisKey: uID('mainAxis'),
-      featureAxisKeys: [],
     })
   }
 
-  componentWillReceiveProps(nextProps) {
-    // Calculate new IDs for Features
-    if (typeof nextProps.currentSequenceData.uniprot.data !== 'undefined') {
-      const currentLength = this.state.featureAxisKeys.length
-      const nextLength = nextProps.currentSequenceData.uniprot.data.length
+  // componentWillReceiveProps(nextProps) {
+  //   // Calculate new IDs for Features
+  //   if (typeof nextProps.currentSequenceData.uniprot.data !== 'undefined') {
+  //     const currentLength = this.state.featureAxisKeys.length
+  //     const nextLength = nextProps.currentSequenceData.uniprot.data.length
+  //
+  //     if (nextLength > currentLength) {
+  //       let featureAxisKeys = this.state.featureAxisKeys
+  //
+  //       for (let i = currentLength - 1; i < nextLength; i++) {
+  //         featureAxisKeys = featureAxisKeys.concat(uID('featureAxis'))
+  //       }
+  //       this.setState(Object.assign({}, this.state,
+  //         {
+  //           featureAxisKeys,
+  //         }))
+  //     }
+  //   }
+  // }
 
-      if (nextLength > currentLength) {
-        let featureAxisKeys = this.state.featureAxisKeys
-
-        for (let i = currentLength - 1; i < nextLength; i++) {
-          featureAxisKeys = featureAxisKeys.concat(uID('featureAxis'))
-        }
-        this.setState(Object.assign({}, this.state,
-          {
-            featureAxisKeys,
-          }))
-      }
+  handleClick(e, feature) {
+    if (feature === this.props.visState.selected) {
+      this.props.dispatch(deselectAxis(feature))
+    } else {
+      this.props.dispatch(selectAxis(feature))
     }
   }
 
@@ -61,7 +81,7 @@ class RadialVis extends React.PureComponent {
   }
 
   render() {
-    const { ui, selectedSequence, currentSequenceData } = this.props
+    const { ui, selectedSequence, currentSequenceData, visState } = this.props
     const { pdb, isFetchingPDB, aquaria, uniprot } = currentSequenceData
 
     const margin = 50
@@ -69,6 +89,11 @@ class RadialVis extends React.PureComponent {
 
     const centerOrigin = `translate( ${this.calculateRadius(0) + (SVGMARGIN / 2)},
                                       ${this.calculateRadius(0) + (SVGMARGIN / 2)} )`
+
+    let keys = []
+    if (uniprot.data) {
+      keys = Object.keys(uniprot.data)
+    }
 
     return (
       <div className={style.parent}>
@@ -78,21 +103,33 @@ class RadialVis extends React.PureComponent {
           className={style.centered}
         >
           <g transform={centerOrigin} >
-            {uniprot.data && uniprot.data.slice(0, MAXNUMAXIS - 1).map((feature, i) => {
+            {uniprot.data && keys.length > 0 && keys.slice(0, MAXNUMAXIS - 1).map((feature, i) => {
               const diameter = this.calculateRadius(i)
               return (
-                <FeatureAxis
-                  d={diameter}
-                  features={feature.features}
-                  geneLength={uniprot.chainLength}
-                  id={this.state.featureAxisKeys[i]}
-                  key={this.state.featureAxisKeys[i]}
-                  name={feature.name}
-                />)
+                <g
+                  className={style.hovered}
+                  key={feature}
+                  style={{
+                    opacity: RadialVis.getOpacity(feature, visState),
+                  }}
+                  onClick={e => this.handleClick(e, feature)}
+                >
+                  <FeatureAxis
+                    ref={(c) => { this[feature.id] = c }}
+                    d={diameter}
+                    features={uniprot.data[feature].features}
+                    geneLength={uniprot.chainLength}
+                    id={feature}
+                    name={uniprot.data[feature].name}
+                  />
+                </g>
+              )
             })
             }
             {uniprot.data && aquaria.alignment &&
               <MainAxis
+                ref={(c) => { this.mainAxis = c }}
+                onClick={e => this.handleClick(e)}
                 alignment={aquaria.alignment}
                 d={this.calculateRadius(MAXNUMAXIS - 1)}
                 geneLength={uniprot.chainLength}
@@ -121,8 +158,10 @@ RadialVis.propTypes = {
     pdb: PropTypes.string.isRequired,
     uniprot: PropTypes.object.isRequired,
   }).isRequired,
+  dispatch: PropTypes.func.isRequired,
   selectedSequence: PropTypes.string.isRequired,
   ui: PropTypes.object.isRequired,
+  visState: PropTypes.object.isRequired,
 }
 
 export default RadialVis

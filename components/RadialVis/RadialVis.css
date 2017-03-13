@@ -12,3 +12,14 @@
   position: absolute;
   pointer-events: auto;
 }
+
+.hovered {
+  transition: 300ms;
+  transition-timing-function: ease;
+}
+
+.hovered:hover {
+  opacity: 0.7 !important;
+  transition: 300ms;
+  transition-timing-function: ease;
+}

@@ -86,7 +86,7 @@ class ProteinViewer extends React.PureComponent {
     //   <canvas ref="canvas" height={d} width={d} className={`${style.overlay} ${style.z1}`} />
     // </div>
     return (
-      <div id="pv" ref="pv" className={`${style.center} ${style.z0}`} style={size}></div>
+      <div ref="pv" className={`${style.center} ${style.z0}`} style={size}></div>
     )
   }
 }
