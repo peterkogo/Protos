@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 
 import { fetchSequenceIfNeeded } from '../actions/sequenceData'
 
-import DataViewer from '../components/DataViewer'
+import DataViewer from '../components/Ui/DataViewer'
 import RadialVis from '../components/RadialVis'
 import Ui from '../components/Ui'
 
@@ -27,7 +27,8 @@ class MainApp extends React.Component {
   }
 
   render() {
-    const { selectedSequence, dataVisibility, ui, currentSequenceData, dispatch } = this.props
+    const { selectedSequence, ui,
+            currentSequenceData, dispatch, visState } = this.props
     return (
       <div className={style.maxHeight}>
         {typeof currentSequenceData.aquaria !== 'undefined' &&
@@ -36,6 +37,8 @@ class MainApp extends React.Component {
             ui={ui}
             selectedSequence={selectedSequence}
             currentSequenceData={currentSequenceData}
+            dispatch={dispatch}
+            visState={visState}
           />
         </div>
         }
@@ -45,9 +48,10 @@ class MainApp extends React.Component {
           dispatch={dispatch}
         />
         <DataViewer
-          dataVisibility={dataVisibility}
+          uniprot={currentSequenceData.uniprot}
           aquaria={currentSequenceData.aquaria}
           pdb={currentSequenceData.pdb}
+          visState={visState}
         />
       </div>
     )
@@ -64,10 +68,10 @@ MainApp.propTypes = {
     pdb: PropTypes.string.isRequired,
     uniprot: PropTypes.object.isRequired,
   }),
-  dataVisibility: PropTypes.bool.isRequired,
   dispatch: PropTypes.func.isRequired,
   selectedSequence: PropTypes.string.isRequired,
   ui: PropTypes.object.isRequired,
+  visState: PropTypes.object.isRequired,
 }
 
 MainApp.defaultProps = {
@@ -83,13 +87,14 @@ MainApp.defaultProps = {
 }
 
 function mapStateToProps(state) {
-  const { selectedSequence, dataBySequence, dataVisibility, ui } = state
+  const { selectedSequence, dataBySequence, dataVisibility, ui, visState } = state
   const currentSequenceData = dataBySequence[selectedSequence]
   return {
     selectedSequence,
     currentSequenceData,
     dataVisibility,
     ui,
+    visState,
   }
 }
 

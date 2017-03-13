@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react'
 import { selectSequence } from '../../actions/sequenceData'
-import { showData, hideData } from '../../actions/view'
 
 /**
  * Temporary selector for testing different sequences
@@ -10,19 +9,10 @@ class Selector extends React.Component {
   constructor(props) {
     super(props)
     this.handleChange = this.handleChange.bind(this)
-    this.handleShowData = this.handleShowData.bind(this)
   }
 
   handleChange(nextSequence) {
     this.props.dispatch(selectSequence(nextSequence))
-  }
-
-  handleShowData(e) {
-    if (e.target.checked) {
-      this.props.dispatch(showData())
-    } else {
-      this.props.dispatch(hideData())
-    }
   }
 
   render() {
@@ -40,11 +30,6 @@ class Selector extends React.Component {
             </option>)
           }
         </select>
-        <input
-          type="checkbox"
-          onClick={this.handleShowData}
-        />
-          Show Data
       </span>
     )
   }
