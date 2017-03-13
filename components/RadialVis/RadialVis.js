@@ -6,7 +6,7 @@ import FeatureAxis from './FeatureAxis'
 import style from './RadialVis.css'
 import ProteinViewer from '../ProteinViewer'
 
-import { SVGMARGIN, MAXNUMAXIS } from '../Defaults'
+import { SVGMARGIN, MAXNUMAXIS, FEATUREFILLCOLORS } from '../Defaults'
 import { selectAxis, deselectAxis } from '../../actions/radialVis'
 
 /**
@@ -100,7 +100,7 @@ class RadialVis extends React.PureComponent {
         <svg
           width={this.calculateRadius(MAXNUMAXIS - 1) + SVGMARGIN}
           height={this.calculateRadius(MAXNUMAXIS - 1) + SVGMARGIN}
-          className={style.centered}
+          className={style.svg}
         >
           <g transform={centerOrigin} >
             {uniprot.data && keys.length > 0 && keys.slice(0, MAXNUMAXIS - 1).map((feature, i) => {
@@ -121,6 +121,7 @@ class RadialVis extends React.PureComponent {
                     geneLength={uniprot.chainLength}
                     id={feature}
                     name={uniprot.data[feature].name}
+                    fillColor={FEATUREFILLCOLORS[i % FEATUREFILLCOLORS.length]}
                   />
                 </g>
               )
