@@ -98,6 +98,7 @@ class FeatureAxis extends React.Component {
     .exit()
     .remove()
 
+    // Early Transition Code
     // if (d !== this.props.d) {
     //   const arc2 = d3.arc()
     //                 .innerRadius(r + 10)
@@ -163,7 +164,7 @@ FeatureAxis.propTypes = {
   axisSize: PropTypes.number,
   fontColor: PropTypes.string,
   fontSize: PropTypes.number,
-  fillColor: PropTypes.featureColor,
+  fillColor: PropTypes.string,
 }
 
 export default FeatureAxis

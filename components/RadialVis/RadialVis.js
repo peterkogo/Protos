@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react'
+import ReactDOM from 'react-dom'
 import uID from 'lodash.uniqueid'
 
 import MainAxis from './MainAxis'
@@ -6,7 +7,7 @@ import FeatureAxis from './FeatureAxis'
 import style from './RadialVis.css'
 import ProteinViewer from '../ProteinViewer'
 
-import { SVGMARGIN, MAXNUMAXIS, FEATUREFILLCOLORS } from '../Defaults'
+import { SVGMARGIN, MAXNUMAXIS, FEATUREFILLCOLORS, OPACITYNOTSELECTED } from '../Defaults'
 import { selectAxis, deselectAxis } from '../../actions/radialVis'
 
 /**
@@ -23,41 +24,26 @@ class RadialVis extends React.PureComponent {
     if (feature === visState.selected) {
       return 1
     }
-    return 0.3
+    return OPACITYNOTSELECTED
   }
 
   constructor(props) {
     super(props)
     this.calculateRadius = this.calculateRadius.bind(this)
     this.handleClick = this.handleClick.bind(this)
+    this.handleDrag = this.handleDrag.bind(this)
+    this.handleDragClick = this.handleDragClick.bind(this)
+
+    this.handle = [0, 0]
+    this.oldAngle = 0
+    this.drag = false
   }
 
   componentWillMount() {
-    // TODO probably useless
     this.setState({
       mainAxisKey: uID('mainAxis'),
     })
   }
-
-  // componentWillReceiveProps(nextProps) {
-  //   // Calculate new IDs for Features
-  //   if (typeof nextProps.currentSequenceData.uniprot.data !== 'undefined') {
-  //     const currentLength = this.state.featureAxisKeys.length
-  //     const nextLength = nextProps.currentSequenceData.uniprot.data.length
-  //
-  //     if (nextLength > currentLength) {
-  //       let featureAxisKeys = this.state.featureAxisKeys
-  //
-  //       for (let i = currentLength - 1; i < nextLength; i++) {
-  //         featureAxisKeys = featureAxisKeys.concat(uID('featureAxis'))
-  //       }
-  //       this.setState(Object.assign({}, this.state,
-  //         {
-  //           featureAxisKeys,
-  //         }))
-  //     }
-  //   }
-  // }
 
   handleClick(e, feature) {
     if (feature === this.props.visState.selected) {
@@ -65,6 +51,28 @@ class RadialVis extends React.PureComponent {
     } else {
       this.props.dispatch(selectAxis(feature))
     }
+  }
+
+  handleDrag(e) {
+    if (this.drag) {
+      const center = Math.floor(this.calculateRadius(MAXNUMAXIS - 1) / 2)
+      const v1 = [e.nativeEvent.offsetX - center, e.nativeEvent.offsetY - center]
+      const v2 = [this.handle[0] - center, this.handle[1] - center]
+
+      let newAngle = Math.atan2(v1[1], v1[0])
+      newAngle -= Math.atan2(v2[1], v2[0])
+      newAngle += this.oldAngle
+
+      const degree = (newAngle * (360 / (2 * Math.PI)))
+      ReactDOM.findDOMNode(this.svg).style.transform = `rotate(${degree}deg)`
+
+      this.oldAngle = newAngle
+    }
+  }
+
+  handleDragClick(e, mouseDown) {
+    this.handle = [e.nativeEvent.offsetX, e.nativeEvent.offsetY]
+    this.drag = mouseDown
   }
 
   calculateRadius(i) {
@@ -96,11 +104,17 @@ class RadialVis extends React.PureComponent {
     }
 
     return (
-      <div className={style.parent}>
+      <div
+        className={style.parent}
+        ref={(c) => { this.svg = c }}
+      >
         <svg
           width={this.calculateRadius(MAXNUMAXIS - 1) + SVGMARGIN}
           height={this.calculateRadius(MAXNUMAXIS - 1) + SVGMARGIN}
           className={style.svg}
+          onMouseMove={e => this.handleDrag(e)}
+          onMouseDown={e => this.handleDragClick(e, true)}
+          onMouseUp={e => this.handleDragClick(e, false)}
         >
           <g transform={centerOrigin} >
             {uniprot.data && keys.length > 0 && keys.slice(0, MAXNUMAXIS - 1).map((feature, i) => {

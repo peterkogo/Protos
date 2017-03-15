@@ -7,6 +7,8 @@ export const AXISSIZE = 2
 export const AXISGAP = 0
 export const MAXNUMAXIS = 6
 
+export const OPACITYNOTSELECTED = 0.3
+
 export const SVGMARGIN = 20
 
 export const STRUCTURESIZE = 18
