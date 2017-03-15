@@ -5,12 +5,14 @@
   pointer-events: none;
 }
 
-.centered {
+.svg {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   position: absolute;
   pointer-events: auto;
+  user-select: none;
+  cursor: default;
 }
 
 .hovered {
@@ -19,7 +21,7 @@
 }
 
 .hovered:hover {
-  opacity: 0.7 !important;
+  opacity: 0.6 !important;
   transition: 300ms;
   transition-timing-function: ease;
 }

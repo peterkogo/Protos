@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react'
 import * as d3 from 'd3'
 import { AXISGAP, AXISCOLOR, AXISSIZE,
-        FONTCOLOR, FONTSIZE, FONTOFFSET } from '../Defaults'
+        FONTCOLOR, FONTSIZE, FONTOFFSET, FEATUREFILLCOLOR } from '../Defaults'
 
 import Feature from './features/Feature'
 
@@ -98,6 +98,7 @@ class FeatureAxis extends React.Component {
     .exit()
     .remove()
 
+    // Early Transition Code
     // if (d !== this.props.d) {
     //   const arc2 = d3.arc()
     //                 .innerRadius(r + 10)
@@ -119,7 +120,7 @@ class FeatureAxis extends React.Component {
   // }
 
   render() {
-    const { d, axisGap, geneLength, features } = this.props
+    const { d, axisGap, geneLength, features, fillColor } = this.props
     return (
       <g>
         <g ref={(c) => { this.clickArea = c }} />
@@ -132,6 +133,7 @@ class FeatureAxis extends React.Component {
             stop={x[1]}
             axisGap={axisGap}
             geneLength={geneLength}
+            fillColor={fillColor}
           />
           ))
         }
@@ -147,6 +149,7 @@ FeatureAxis.defaultProps = {
   axisSize: AXISSIZE,
   fontColor: FONTCOLOR,
   fontSize: FONTSIZE,
+  fillColor: FEATUREFILLCOLOR,
 }
 
 FeatureAxis.propTypes = {
@@ -161,6 +164,7 @@ FeatureAxis.propTypes = {
   axisSize: PropTypes.number,
   fontColor: PropTypes.string,
   fontSize: PropTypes.number,
+  fillColor: PropTypes.string,
 }
 
 export default FeatureAxis
