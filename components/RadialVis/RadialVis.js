@@ -7,7 +7,8 @@ import FeatureAxis from './FeatureAxis'
 import style from './RadialVis.css'
 import ProteinViewer from '../ProteinViewer'
 
-import { SVGMARGIN, MAXNUMAXIS, FEATUREFILLCOLORS, OPACITYNOTSELECTED } from '../Defaults'
+import { SVGMARGIN, MAXNUMAXIS, FEATUREFILLCOLORS,
+        OPACITYNOTSELECTED, FEATURESIZE } from '../Defaults'
 import { selectAxis, deselectAxis } from '../../actions/radialVis'
 
 /**
@@ -33,10 +34,12 @@ class RadialVis extends React.PureComponent {
     this.handleClick = this.handleClick.bind(this)
     this.handleDrag = this.handleDrag.bind(this)
     this.handleDragClick = this.handleDragClick.bind(this)
+    this.handleScroll = this.handleScroll.bind(this)
 
     this.handle = [0, 0]
     this.oldAngle = 0
     this.drag = false
+    this.proteinViewerZoom = -1
   }
 
   componentWillMount() {
@@ -64,15 +67,27 @@ class RadialVis extends React.PureComponent {
       newAngle += this.oldAngle
 
       const degree = (newAngle * (360 / (2 * Math.PI)))
-      ReactDOM.findDOMNode(this.svg).style.transform = `rotate(${degree}deg)`
+      ReactDOM.findDOMNode(this.svg).style.transform = `translate(-50%, -50%) rotate(${degree}deg)`
 
       this.oldAngle = newAngle
     }
   }
 
   handleDragClick(e, mouseDown) {
+    e.preventDefault()
     this.handle = [e.nativeEvent.offsetX, e.nativeEvent.offsetY]
     this.drag = mouseDown
+  }
+
+  handleScroll(e) {
+    if (e.nativeEvent.deltaY < 0 && this.proteinViewerZoom !== -1) {
+      this.proteinViewerZoom -= 1
+      this.forceUpdate()
+    }
+    if (e.nativeEvent.deltaY > 0 && this.proteinViewerZoom !== MAXNUMAXIS - 1) {
+      this.proteinViewerZoom += 1
+      this.forceUpdate()
+    }
   }
 
   calculateRadius(i) {
@@ -92,8 +107,7 @@ class RadialVis extends React.PureComponent {
     const { ui, selectedSequence, currentSequenceData, visState } = this.props
     const { pdb, isFetchingPDB, aquaria, uniprot } = currentSequenceData
 
-    const margin = 50
-    const size = ((ui.windowWidth > ui.windowHeight) ? ui.windowHeight : ui.windowWidth) - margin
+    const size = this.calculateRadius(MAXNUMAXIS - 1) + SVGMARGIN
 
     const centerOrigin = `translate( ${this.calculateRadius(0) + (SVGMARGIN / 2)},
                                       ${this.calculateRadius(0) + (SVGMARGIN / 2)} )`
@@ -106,17 +120,31 @@ class RadialVis extends React.PureComponent {
     return (
       <div
         className={style.parent}
-        ref={(c) => { this.svg = c }}
+
       >
+        <ProteinViewer
+          d={Math.floor(this.calculateRadius(this.proteinViewerZoom))}
+          isFetchingPDB={isFetchingPDB}
+          selectedSequence={selectedSequence}
+          ui={ui} pdb={pdb}
+        />
         <svg
-          width={this.calculateRadius(MAXNUMAXIS - 1) + SVGMARGIN}
-          height={this.calculateRadius(MAXNUMAXIS - 1) + SVGMARGIN}
+          width={size}
+          height={size}
           className={style.svg}
           onMouseMove={e => this.handleDrag(e)}
           onMouseDown={e => this.handleDragClick(e, true)}
           onMouseUp={e => this.handleDragClick(e, false)}
+          onWheel={e => this.handleScroll(e)}
+          ref={(c) => { this.svg = c }}
         >
-          <g transform={centerOrigin} >
+          <defs>
+            <mask id="radialVisMask" x="0" y="0" width={`${size}px`} height={`${size}px`}>
+              <rect x={`-${Math.floor(size / 2)}px`} y={`-${Math.floor(size / 2)}px`} width={`${size}px`} height={`${size}px`} fill="#ffffff" />
+              <circle cx="0" cy="0" r={`${Math.floor(this.calculateRadius(this.proteinViewerZoom) / 2) + Math.ceil((FEATURESIZE + 1) / 2)}`} className={this.mask} />
+            </mask>
+          </defs>
+          <g transform={centerOrigin} mask="url(#radialVisMask)">
             {uniprot.data && keys.length > 0 && keys.slice(0, MAXNUMAXIS - 1).map((feature, i) => {
               const diameter = this.calculateRadius(i)
               return (
@@ -153,12 +181,6 @@ class RadialVis extends React.PureComponent {
             }
           </g>
         </svg>
-        <ProteinViewer
-          d={Math.floor(this.calculateRadius(0) - (size / 5))}
-          isFetchingPDB={isFetchingPDB}
-          selectedSequence={selectedSequence}
-          ui={ui} pdb={pdb}
-        />
       </div>
     )
   }

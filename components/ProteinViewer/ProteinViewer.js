@@ -7,96 +7,114 @@ const pv = require('bio-pv')
 /**
  * Loads bio-pv protein viewer and initializes it with the currently selected
  * protein in the state.
- * TODO autoresize, circular overlay
  */
 class ProteinViewer extends React.PureComponent {
 
   constructor(props) {
     super(props)
-    this.initRenderer = this.initRenderer.bind(this)
-    this.initMask = this.initMask.bind(this)
+    this.initStructure = this.initStructure.bind(this)
+    this.initViewer = this.initViewer.bind(this)
   }
 
   componentDidMount() {
-    const viewer = new pv.Viewer(this.refs.pv, {
-      width: this.props.d || 'auto',
-      height: this.props.d || 'auto',
-      antialias: true,
-      quality: 'high',
-    })
-    this.setState({ viewer }) // eslint-disable-line
+    const size = (this.props.ui.windowWidth > this.props.ui.windowHeight)
+                    ? this.props.ui.windowHeight : this.props.ui.windowWidth
+    this.initViewer(size)
   }
-
-  // componentDidUpdate(props, state) {
-  //   // this.initMask()
-  // }
 
   componentWillReceiveProps(nextProps) {
     // Delete old object from viewer
     if (nextProps.selectedSequence !== this.props.selectedSequence) {
       this.state.viewer.rm(this.props.selectedSequence)
     }
-    if (nextProps.d !== this.props.d) {
-      ReactDOM.findDOMNode(this.refs.pv).innerHTML = ''
-      const viewer = new pv.Viewer(this.refs.pv, {
-        width: nextProps.d || 'auto',
-        height: nextProps.d || 'auto',
-        antialias: true,
-        quality: 'high',
-      })
-      this.setState({ viewer })
+
+    // Resize Viewer if needed
+    const oldSize = (this.props.ui.windowWidth > this.props.ui.windowHeight)
+                    ? this.props.ui.windowHeight : this.props.ui.windowWidth
+
+    const newSize = (nextProps.ui.windowWidth > nextProps.ui.windowHeight)
+                    ? nextProps.ui.windowHeight : nextProps.ui.windowWidth
+
+    if (oldSize !== newSize) {
+      ReactDOM.findDOMNode(this.pv).innerHTML = ''
+      this.initViewer(newSize)
+    }
+
+    // Change Structure if needed
+    if (nextProps.pdb && nextProps.pdb.length > 0 && nextProps.pdb !== this.props.pdb) {
+      this.initStructure(nextProps.selectedSequence, nextProps.pdb)
     }
   }
 
-  initRenderer() {
-    const structure = pv.io.pdb(this.props.pdb)
-    this.state.viewer.cartoon(this.props.selectedSequence,
+  initViewer(size) {
+    const viewer = new pv.Viewer(this.pv, {
+      width: size || 'auto',
+      height: size || 'auto',
+      antialias: true,
+      quality: 'high',
+    })
+    this.setState({ viewer })
+    if (this.props.pdb && this.props.pdb.length > 0) {
+      this.initStructure(this.props.selectedSequence, this.props.pdb, viewer)
+    }
+  }
+
+  initStructure(selectedSequence, pdb, optionalViewer) {
+    let viewer = optionalViewer
+    if (typeof optionalViewer === 'undefined') {
+      viewer = this.state.viewer
+    }
+    const structure = pv.io.pdb(pdb)
+    viewer.cartoon(selectedSequence,
                               structure,
                               { color: pv.color.ssSuccession() }
                             )
-    const ligands = structure.select({ rnames: ['SAH', 'RVP'] })
-    this.state.viewer.ballsAndSticks('ligands', ligands)
-    this.state.viewer.centerOn(structure)
-    this.state.viewer.autoZoom()
-  }
 
-  initMask() {
-    const ctx = this.refs.canvas.getContext('2d')
-    ctx.beginPath()
-    ctx.arc(this.props.d / 2, this.props.d / 2, this.props.d / 2, 0, 2 * Math.PI)
-    ctx.rect(this.props.d, 0, -this.props.d, this.props.d)
-    // ctx.fillStyle = 'white'
-    ctx.fill()
+
+    // const atom = structure.select({ chain: 'A' })._chains[0]._residues[100]
+    //
+    // const options = {
+    //  fontSize : 16, fontColor: '#f22', backgroundAlpha : 0.4
+    // }
+    // const test = this.state.viewer.label('label', 'text', atom._atoms[5].pos(), options)
+    // console.log(viewer._cam)
+
+    const ligands = structure.select({ rnames: ['SAH', 'RVP'] })
+    viewer.ballsAndSticks('ligands', ligands)
+    viewer.centerOn(structure)
+    viewer.autoZoom()
   }
 
   render() {
-    if (this.props.pdb && this.props.pdb.length > 0 && this.state.viewer) {
-      this.initRenderer()
-      // this.initMask()
-    }
+    const { d, ui } = this.props
+    const size = (ui.windowWidth > ui.windowHeight)
+                  ? ui.windowHeight : ui.windowWidth
 
-    const d = this.props.d
-    const size = {
-      width: d,
-      height: d,
-    }
-
-    // <div className={style.center}>
-    //   <div id="pv" ref="pv" className={`${style.center} ${style.z0}`} style={size}></div>
-    //   <canvas ref="canvas" height={d} width={d} className={`${style.overlay} ${style.z1}`} />
-    // </div>
     return (
-      <div ref="pv" className={`${style.center} ${style.z0}`} style={size}></div>
+      <div>
+        <div ref={(c) => { this.pv = c }} className={`${style.center}`} />
+        <div className={`${style.center} ${style.noPointerEvents}`}>
+          <svg width={`${size}px`} height={`${size}px`} className={style.noPointerEvents}>
+            <defs>
+              <mask id="mask" x="0" y="0" width={`${size}px`} height={`${size}px`}>
+                <rect x="0" y="0" width={`${size}px`} height={`${size}px`} fill="#ffffff" />
+                <circle cx={`${Math.floor(size / 2)}`} cy={`${Math.floor(size / 2)}`} r={`${Math.floor(d / 2)}`} />
+              </mask>
+            </defs>
+            <rect x="0" y="0" width={`${size}px`} height={`${size}px`} mask="url(#mask)" fill="#ffffff"/>
+          </svg>
+        </div>
+      </div>
     )
   }
 }
 
 ProteinViewer.propTypes = {
+  d: PropTypes.number.isRequired,
+  // focusedFeature: PropTypes.object,
   pdb: PropTypes.string.isRequired,
   selectedSequence: PropTypes.string.isRequired,
-  focusedFeature: PropTypes.object,
   ui: PropTypes.object.isRequired,
-  d: PropTypes.number,
 }
 
 export default ProteinViewer

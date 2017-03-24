@@ -79,7 +79,7 @@ class Feature extends React.Component {
 
   render() {
     return (
-      <g ref={(c) => { this.group = c }} title="Testing" />
+      <g ref={(c) => { this.group = c }} />
     )
   }
 }

@@ -4,6 +4,7 @@ import { AXISGAP, AXISCOLOR, AXISSIZE,
         FONTCOLOR, FONTSIZE, FONTOFFSET, FEATUREFILLCOLOR } from '../Defaults'
 
 import Feature from './features/Feature'
+import style from './RadialVis.css'
 
 /**
  * Axis Element containing the numbers of the nucleotides
@@ -31,7 +32,7 @@ class FeatureAxis extends React.Component {
 
     const clickArea = d3.select(this.clickArea)
 
-    clickArea.selectAll(`#clickArea${id}`)
+    clickArea.selectAll('path')
           .data(Array(1))
           .attr('d', arc)
           .attr('stroke', 'white')
@@ -39,10 +40,10 @@ class FeatureAxis extends React.Component {
           .attr('id', `#clickArea${id}`)
           .enter()
           .append('path')
-          .attr('d', arc)
-          .attr('stroke', 'white')
-          .attr('stroke-width', '45px')
-          .attr('id', `#clickArea${id}`)
+            .attr('d', arc)
+            .attr('stroke', 'white')
+            .attr('stroke-width', '45px')
+            .attr('id', `#clickArea${id}`)
           .exit()
           .remove()
 
@@ -122,7 +123,7 @@ class FeatureAxis extends React.Component {
   render() {
     const { d, axisGap, geneLength, features, fillColor } = this.props
     return (
-      <g>
+      <g className={style.groups}>
         <g ref={(c) => { this.clickArea = c }} />
         <g ref={(c) => { this.group = c }} />
         {features.map((x, i) => (
