@@ -71,7 +71,8 @@ class ProteinViewer extends React.PureComponent {
                             )
 
 
-    // const atom = structure.select({ chain: 'A' })._chains[0]._residues[100]
+    const atom = structure //.select({ chain: 'A' })
+    console.log(atom)
     //
     // const options = {
     //  fontSize : 16, fontColor: '#f22', backgroundAlpha : 0.4
