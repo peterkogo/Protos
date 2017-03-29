@@ -122,12 +122,18 @@ class RadialVis extends React.PureComponent {
         className={style.parent}
 
       >
+        {uniprot.data &&
         <ProteinViewer
           d={Math.floor(this.calculateRadius(this.proteinViewerZoom))}
           isFetchingPDB={isFetchingPDB}
           selectedSequence={selectedSequence}
-          ui={ui} pdb={pdb}
+          ui={ui}
+          pdb={pdb}
+          data={uniprot.data}
+          selected={visState.selected}
+          geneLength={uniprot.chainLength}
         />
+      }
         <svg
           width={size}
           height={size}

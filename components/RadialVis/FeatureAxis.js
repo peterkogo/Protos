@@ -13,7 +13,7 @@ class FeatureAxis extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const { d, geneLength, id, numLabels, axisColor,
-            fontColor, axisSize, axisGap, name, fontSize } = nextProps
+            fontColor, axisSize, name, fontSize } = nextProps
 
     const fontOffset = FONTOFFSET
 
@@ -22,13 +22,13 @@ class FeatureAxis extends React.Component {
     // Scale that maps the nucleotides to the position on the arc
     const geneScale = d3.scaleLinear()
       .domain([0, geneLength])
-      .range([0, ((2 * Math.PI * r) * ((360 - (axisGap * 2)) / 360))])
+      .range([0, ((2 * Math.PI * r) * ((360 - (AXISGAP * 2)) / 360))])
 
     const arc = d3.arc()
                   .innerRadius(r)
                   .outerRadius(r)
-                  .startAngle((0 + axisGap) * (Math.PI / 180))
-                  .endAngle((360 - axisGap) * (Math.PI / 180))
+                  .startAngle((0 + AXISGAP) * (Math.PI / 180))
+                  .endAngle((360 - AXISGAP) * (Math.PI / 180))
 
     const clickArea = d3.select(this.clickArea)
 
@@ -121,7 +121,7 @@ class FeatureAxis extends React.Component {
   // }
 
   render() {
-    const { d, axisGap, geneLength, features, fillColor } = this.props
+    const { d, geneLength, features, fillColor } = this.props
     return (
       <g className={style.groups}>
         <g ref={(c) => { this.clickArea = c }} />
@@ -132,7 +132,7 @@ class FeatureAxis extends React.Component {
             d={d}
             start={x[0]}
             stop={x[1]}
-            axisGap={axisGap}
+            axisGap={AXISGAP}
             geneLength={geneLength}
             fillColor={fillColor}
           />
@@ -144,7 +144,6 @@ class FeatureAxis extends React.Component {
 }
 
 FeatureAxis.defaultProps = {
-  axisGap: AXISGAP,
   numLabels: 4,
   axisColor: AXISCOLOR,
   axisSize: AXISSIZE,
@@ -159,7 +158,6 @@ FeatureAxis.propTypes = {
   id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   features: PropTypes.array.isRequired,
-  axisGap: PropTypes.number,
   numLabels: PropTypes.number,
   axisColor: PropTypes.string,
   axisSize: PropTypes.number,
