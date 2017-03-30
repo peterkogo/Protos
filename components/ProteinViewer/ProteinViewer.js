@@ -18,14 +18,17 @@ class ProteinViewer extends React.PureComponent {
     this.initStructure = this.initStructure.bind(this)
     this.initViewer = this.initViewer.bind(this)
     this.refresh = this.refresh.bind(this)
+    this.updatePositions = this.updatePositions.bind(this)
+
     this.oldAtomPos = [0, 0, 0]
     this.oldView = new Float32Array(4).fill(1)
+    this.xy = [[0, 0]]
+    this.lastxy = [[0, 0]].toString()
   }
 
   componentDidMount() {
     const size = (this.props.ui.windowWidth > this.props.ui.windowHeight)
                     ? this.props.ui.windowHeight : this.props.ui.windowWidth
-    this.canvas = ReactDOM.findDOMNode(this.canvas)
     this.initViewer(size)
   }
 
@@ -44,16 +47,25 @@ class ProteinViewer extends React.PureComponent {
 
     if (oldSize !== newSize) {
       ReactDOM.findDOMNode(this.pv).innerHTML = ''
-      this.initViewer(newSize, nextProps.d, nextProps.geneLength)
+      this.initViewer(newSize)
     }
 
     // Change Structure if needed
-    if (nextProps.pdb && nextProps.pdb.length > 0 && nextProps.pdb !== this.props.pdb) {
-      this.initStructure(nextProps.selectedSequence, nextProps.pdb)
+    if (nextProps.pdb && nextProps.pdb.length > 0 && nextProps.pdb !== this.props.pdb
+        && this.props.data && this.props.geneLength) {
+      this.initStructure(nextProps.selectedSequence, nextProps.pdb, this.viewer)
+    }
+
+    if (this.props.data && this.props.geneLength) {
+      this.updateScale(this.props.d, this.props.geneLength, this.props.data)
+    }
+
+    if (this.props.selected !== nextProps.selected) {
+      this.updatePositions(nextProps.selected, nextProps.data)
     }
   }
 
-  initViewer(size, d, geneLength) {
+  initViewer(size) {
     const viewer = new pv.Viewer(this.pv, {
       width: size || 'auto',
       height: size || 'auto',
@@ -62,19 +74,33 @@ class ProteinViewer extends React.PureComponent {
     })
     this.viewer = viewer
 
+    if (this.props.pdb && this.props.pdb.length > 0) {
+      this.initStructure(this.props.selectedSequence, this.props.pdb, viewer)
+    }
+  }
+
+  updatePositions(selected, data) {
+//    data[selected].features.forEach((feature) => {
+//      
+//    })
+  }
+
+  updateScale(d, geneLength, data) {
     const r = Math.floor(d / 2)
 
     this.scale = d3.scaleLinear()
       .domain([0, geneLength])
       .range([0, ((2 * Math.PI) * ((360 - (AXISGAP * 2)) / 360))])
 
-    console.log(this.scale(0), this.scale(390))
-    console.log(d)
-    console.log(geneLength)
+    const x = Math.floor(this.canvas.width / 2) + (Math.cos(this.scale(0)) * r)
+    const y = Math.floor(this.canvas.height / 2) + (Math.sin(this.scale(0)) * r)
 
-    if (this.props.pdb && this.props.pdb.length > 0) {
-      this.initStructure(this.props.selectedSequence, this.props.pdb, viewer)
-    }
+    const x2 = Math.floor(this.canvas.width / 2) + (Math.cos(this.scale(60)) * r)
+    const y2 = Math.floor(this.canvas.height / 2) + (Math.sin(this.scale(60)) * r)
+
+    this.xy = [[x, y], [x2, y2]]
+
+    console.log(this.scale(0), this.scale(392))
   }
 
   refresh() {
@@ -83,13 +109,8 @@ class ProteinViewer extends React.PureComponent {
     const oldView = this.oldView
     const newView = this.viewer._cam._camModelView
 
-    if (newView.toString() !== oldView) {
+    if (newView.toString() !== oldView || this.xy.toString() !== this.lastxy) {
       const ctx = this.canvas.getContext('2d')
-
-      // ctx.save()
-      // ctx.setTransform(1, 0, 0, 1, 0, 0)
-      // ctx.clearRect(0, 0, ctx.width, ctx.height)
-      // ctx.restore()
 
       const atom = this.structure.select({ chain: 'A' })._chains[0]._residues[5]._atoms[3]._atom.pos()
       const newAtomPos = new Float32Array(4)
@@ -110,20 +131,25 @@ class ProteinViewer extends React.PureComponent {
       let window = new Float32Array(3)
       window[0] =  (this.viewer._cam._width / 2) + (out[0] * 0.5 * this.viewer._cam._width)
       window[1] =  (this.viewer._cam._height / 2) + (out[1] * 0.5 * this.viewer._cam._height)
-
       ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
-      ctx.beginPath()
-      ctx.moveTo(0, 0)
-      ctx.lineTo(window[0], this.viewer._cam._height - window[1])
-      ctx.stroke()
-      ctx.closePath()
+      this.xy.forEach((pos) => {
+
+        ctx.beginPath()
+        ctx.moveTo(pos[0], pos[1])
+        ctx.lineTo(window[0], this.viewer._cam._height - window[1])
+        ctx.stroke()
+        ctx.closePath()
+      })
+
+
       // ctx.fillRect(window[0], this.viewer._cam._height - window[1], 1, 1)
 
       this.oldView = newView.toString()
+      this.lastxy = this.xy.toString()
     }
   }
 
-  initStructure(selectedSequence, pdb, optionalViewer) {
+  initStructure(selectedSequence, pdb, optionalViewer, data, geneLength) {
     let viewer = optionalViewer
     if (typeof optionalViewer === 'undefined') {
       viewer = this.viewer
@@ -181,7 +207,7 @@ ProteinViewer.propTypes = {
   data: PropTypes.object.isRequired,
   geneLength: PropTypes.number.isRequired,
   pdb: PropTypes.string.isRequired,
-  selected: PropTypes.string.isRequired,
+  selected: PropTypes.string.isRequired, //rename to selectedFeature
   selectedSequence: PropTypes.string.isRequired,
   ui: PropTypes.object.isRequired,
 }
