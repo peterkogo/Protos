@@ -11,14 +11,20 @@
   height: 100%;
 }
 
-.z0 {
+.overlay {
+  z-index: 5;
+}
+
+.underlay {
+  z-index: 3;
+}
+
+.middlelay {
   z-index: 0;
 }
 
-.overlay {
-  margin-top: 5px;
-  pointer-events: none;
-  z-index: 2;
+.top {
+  z-index: 10;
 }
 
 .svg {
@@ -28,4 +34,9 @@
 
 .noPointerEvents {
   pointer-events: none;
+}
+
+.paco {
+  transition: 150ms;
+  transition-timing-function: ease;
 }

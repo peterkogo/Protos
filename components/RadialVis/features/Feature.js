@@ -37,7 +37,7 @@ class Feature extends React.Component {
 
     const group = d3.select(this.group)
 
-    const r = Math.floor(d / 2)
+    const r = Math.floor(d * 0.5)
 
     // Scale that maps nucleotides on arc
     const scale = d3.scaleLinear()
@@ -45,10 +45,10 @@ class Feature extends React.Component {
                       .range([0 + axisGap, 360 - axisGap])
 
     const arc = d3.arc()
-                  .innerRadius(r - (FEATURESIZE / 2))
-                  .outerRadius(r + (FEATURESIZE / 2))
-                  .startAngle(scale(start - (FEATUREWIDTH / 2)) * (Math.PI / 180))
-                  .endAngle(scale(stop + (FEATUREWIDTH / 2)) * (Math.PI / 180))
+                  .innerRadius(r - (FEATURESIZE * 0.5))
+                  .outerRadius(r + (FEATURESIZE * 0.5))
+                  .startAngle(scale(start - (FEATUREWIDTH * 0.5)) * (Math.PI / 180))
+                  .endAngle(scale(stop + (FEATUREWIDTH * 0.5)) * (Math.PI / 180))
 
     group.selectAll('path')
         .attr('d', arc)

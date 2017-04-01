@@ -18,7 +18,7 @@ class MainAxis extends React.Component {
 
     const fontOffset = FONTOFFSET
 
-    const r = Math.floor(d / 2)
+    const r = Math.floor(d * 0.5)
 
     // Scale that maps the nucleotides to the position on the arc
     const geneScale = d3.scaleLinear()
@@ -90,18 +90,6 @@ class MainAxis extends React.Component {
     .remove()
   }
 
-  // shouldComponentUpdate(nextProps) {
-  //   if (this.props.d !== nextProps.d) {
-  //     return true
-  //   }
-  //   return false
-  // }
-//   <svg
-//     width={d + svgMargin}
-//     height={d + svgMargin}
-//     className={style.centered}
-//   >
-// </svg>
   render() {
     const { d, axisGap, geneLength } = this.props
     return (

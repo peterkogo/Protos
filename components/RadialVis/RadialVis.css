@@ -33,3 +33,7 @@
 .groups {
   pointer-events: visiblePainted;
 }
+
+.zindex {
+  z-index: 10;
+}

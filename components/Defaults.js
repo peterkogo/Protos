@@ -17,6 +17,7 @@ export const STRUCTUREFILLCOLOR = '#ECF0F1'
 export const STRUCTURESTROKECOLOR = '#2C3E50'
 
 export const FEATUREWIDTH = 2
+export const CLICKAREAWIDTH = 45
 export const FEATURESIZE = 18
 export const FEATURESTROKE = 0
 export const FEATUREFILLCOLOR = '#E74C3C'

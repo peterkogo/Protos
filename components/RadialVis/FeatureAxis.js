@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react'
 import * as d3 from 'd3'
 import { AXISGAP, AXISCOLOR, AXISSIZE,
-        FONTCOLOR, FONTSIZE, FONTOFFSET, FEATUREFILLCOLOR } from '../Defaults'
+        FONTCOLOR, FONTSIZE, FONTOFFSET,
+        FEATUREFILLCOLOR, CLICKAREAWIDTH } from '../Defaults'
 
 import Feature from './features/Feature'
 import style from './RadialVis.css'
@@ -17,7 +18,7 @@ class FeatureAxis extends React.Component {
 
     const fontOffset = FONTOFFSET
 
-    const r = Math.floor(d / 2)
+    const r = Math.floor(d * 0.5)
 
     // Scale that maps the nucleotides to the position on the arc
     const geneScale = d3.scaleLinear()
@@ -36,13 +37,13 @@ class FeatureAxis extends React.Component {
           .data(Array(1))
           .attr('d', arc)
           .attr('stroke', 'white')
-          .attr('stroke-width', '45px') // TODO Calculate Width
+          .attr('stroke-width', `${CLICKAREAWIDTH}px`)
           .attr('id', `#clickArea${id}`)
           .enter()
           .append('path')
             .attr('d', arc)
             .attr('stroke', 'white')
-            .attr('stroke-width', '45px')
+            .attr('stroke-width', `${CLICKAREAWIDTH}px`)
             .attr('id', `#clickArea${id}`)
           .exit()
           .remove()
@@ -113,12 +114,6 @@ class FeatureAxis extends React.Component {
     //   .attr('d', arc2)
     // }
   }
-  // shouldComponentUpdate(nextProps) {
-  //   if (this.props.d !== nextProps.d) {
-  //     return true
-  //   }
-  //   return false
-  // }
 
   render() {
     const { d, geneLength, features, fillColor } = this.props

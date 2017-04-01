@@ -48,7 +48,7 @@ class AlignmentFeature extends React.Component {
 
     const group = d3.select(this.group)
 
-    const r = Math.floor(d / 2)
+    const r = Math.floor(d * 0.5)
 
     const { start, end } = AlignmentFeature.getAngle(alignment)
 
@@ -58,8 +58,8 @@ class AlignmentFeature extends React.Component {
                       .range([0 + axisGap, 360 - axisGap])
 
     const arc = d3.arc()
-                  .innerRadius(r - (STRUCTURESIZE / 2))
-                  .outerRadius(r + (STRUCTURESIZE / 2))
+                  .innerRadius(r - (STRUCTURESIZE * 0.5))
+                  .outerRadius(r + (STRUCTURESIZE * 0.5))
                   .startAngle(scale(start) * (Math.PI / 180))
                   .endAngle(scale(end) * (Math.PI / 180))
 
