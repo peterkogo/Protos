@@ -17,14 +17,6 @@ import MainApp from '../../components/MainApp'
 
 class HomePage extends React.Component {
 
-  static propTypes = {
-    articles: PropTypes.arrayOf(PropTypes.shape({
-      url: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired,
-      author: PropTypes.string.isRequired,
-    }).isRequired).isRequired,
-  };
-
   componentDidMount() {
     document.title = title
   }

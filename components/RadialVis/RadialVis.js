@@ -6,9 +6,11 @@ import MainAxis from './MainAxis'
 import FeatureAxis from './FeatureAxis'
 import style from './RadialVis.css'
 import ProteinViewer from '../ProteinViewer'
+import ParallelCoordinates from '../ParallelCoordinates'
 
-import { SVGMARGIN, MAXNUMAXIS, FEATUREFILLCOLORS, OPACITYNOTSELECTED } from '../Defaults'
-import { selectAxis, deselectAxis } from '../../actions/radialVis'
+import { SVGMARGIN, MAXNUMAXIS, FEATUREFILLCOLORS,
+        OPACITYNOTSELECTED, STRUCTURESIZE, FEATURESIZE } from '../Defaults'
+import { selectAxis, deselectAxisFeature, deselectFeature } from '../../actions/radialVis'
 
 /**
  * Main Component for the D3 Visualization
@@ -18,10 +20,10 @@ import { selectAxis, deselectAxis } from '../../actions/radialVis'
 class RadialVis extends React.PureComponent {
 
   static getOpacity(feature, visState) {
-    if (visState.selected.length < 1) {
+    if (visState.selectedAxis.length < 1) {
       return 1
     }
-    if (feature === visState.selected) {
+    if (feature === visState.selectedAxis) {
       return 1
     }
     return OPACITYNOTSELECTED
@@ -33,10 +35,16 @@ class RadialVis extends React.PureComponent {
     this.handleClick = this.handleClick.bind(this)
     this.handleDrag = this.handleDrag.bind(this)
     this.handleDragClick = this.handleDragClick.bind(this)
+    this.handleScroll = this.handleScroll.bind(this)
 
     this.handle = [0, 0]
     this.oldAngle = 0
     this.drag = false
+    this.beingDragged = false
+    this.proteinViewerZoom = -1
+    this.rotating = 0
+    this.wasDragged = false
+    this.scrollAllowed = true
   }
 
   componentWillMount() {
@@ -45,34 +53,74 @@ class RadialVis extends React.PureComponent {
     })
   }
 
-  handleClick(e, feature) {
-    if (feature === this.props.visState.selected) {
-      this.props.dispatch(deselectAxis(feature))
-    } else {
-      this.props.dispatch(selectAxis(feature))
+  handleClick(e, featureAxis) {
+    if (!this.wasDragged && e.nativeEvent.target.className.baseVal !== 'feature') {
+      if (featureAxis === this.props.visState.selectedAxis) {
+        if (this.props.visState.selectedFeature === '') {
+          this.props.dispatch(deselectAxisFeature())
+        } else {
+          this.props.dispatch(deselectFeature())
+        }
+      } else {
+        this.props.dispatch(deselectAxisFeature())
+        this.props.dispatch(selectAxis(featureAxis))
+      }
     }
+    this.wasDragged = false
   }
 
   handleDrag(e) {
+    e.preventDefault()
     if (this.drag) {
-      const center = Math.floor(this.calculateRadius(MAXNUMAXIS - 1) / 2)
+      const center = Math.floor(this.calculateRadius(MAXNUMAXIS - 1) * 0.5)
       const v1 = [e.nativeEvent.offsetX - center, e.nativeEvent.offsetY - center]
       const v2 = [this.handle[0] - center, this.handle[1] - center]
 
       let newAngle = Math.atan2(v1[1], v1[0])
       newAngle -= Math.atan2(v2[1], v2[0])
+
+      if (!this.beingDragged && newAngle !== 0) {
+        this.beingDragged = true
+        this.wasDragged = true
+        this.forceUpdate()
+      }
+
       newAngle += this.oldAngle
 
       const degree = (newAngle * (360 / (2 * Math.PI)))
-      ReactDOM.findDOMNode(this.svg).style.transform = `rotate(${degree}deg)`
-
+      ReactDOM.findDOMNode(this.svg).style.transform = `translate(-50%, -50%) rotate(${degree}deg)`
       this.oldAngle = newAngle
     }
   }
 
   handleDragClick(e, mouseDown) {
+    e.preventDefault()
     this.handle = [e.nativeEvent.offsetX, e.nativeEvent.offsetY]
     this.drag = mouseDown
+    if (!mouseDown) {
+      this.beingDragged = false
+    }
+    this.forceUpdate()
+  }
+
+  handleScroll(e) {
+    if (e.nativeEvent.deltaY < 0 && this.proteinViewerZoom !== -1 && this.scrollAllowed) {
+      this.scrollAllowed = false
+      setTimeout(() => {
+        this.scrollAllowed = true
+      }, 200)
+      this.proteinViewerZoom -= 1
+      this.forceUpdate()
+    }
+    if (e.nativeEvent.deltaY > 0 &&
+          this.proteinViewerZoom !== MAXNUMAXIS - 1 && this.scrollAllowed) {
+      this.scrollAllowed = false
+      setTimeout(() => {
+        this.scrollAllowed = true
+      }, 200)
+      this.proteinViewerZoom += 1
+      this.forceUpdate()
+    }
   }
 
   calculateRadius(i) {
@@ -82,21 +130,22 @@ class RadialVis extends React.PureComponent {
     const size = ((ui.windowWidth > ui.windowHeight) ? ui.windowHeight : ui.windowWidth) - margin
     const a = 0
     const b = MAXNUMAXIS - 1
-    const x = size / 2
+    const x = size * 0.5
     const y = size
     // const min = 300
     return Math.floor((((i - a) / (b - a)) * (y - x)) + x)
   }
 
   render() {
-    const { ui, selectedSequence, currentSequenceData, visState } = this.props
-    const { pdb, isFetchingPDB, aquaria, uniprot } = currentSequenceData
+    const { ui, selectedSequence, currentSequenceData, visState, dispatch } = this.props
+    const { pdb, aquaria, uniprot } = currentSequenceData
 
-    const margin = 50
-    const size = ((ui.windowWidth > ui.windowHeight) ? ui.windowHeight : ui.windowWidth) - margin
+    const size = this.calculateRadius(MAXNUMAXIS - 1) + SVGMARGIN
+    const pvDiameter = Math.floor(this.calculateRadius(this.proteinViewerZoom))
 
-    const centerOrigin = `translate( ${this.calculateRadius(0) + (SVGMARGIN / 2)},
-                                      ${this.calculateRadius(0) + (SVGMARGIN / 2)} )`
+    const centerOrigin = `translate( ${this.calculateRadius(0) + (SVGMARGIN * 0.5)},
+                                      ${this.calculateRadius(0) + (SVGMARGIN * 0.5)} )`
+    const center = Math.floor(size * 0.5)
 
     let keys = []
     if (uniprot.data) {
@@ -104,19 +153,44 @@ class RadialVis extends React.PureComponent {
     }
 
     return (
-      <div
-        className={style.parent}
-        ref={(c) => { this.svg = c }}
-      >
+      <div className={style.parent} >
+        {uniprot.data &&
+        <ProteinViewer
+          d={pvDiameter}
+          selectedSequence={selectedSequence}
+          ui={ui}
+          pdb={pdb}
+          dispatch={dispatch}
+        />
+        }
         <svg
-          width={this.calculateRadius(MAXNUMAXIS - 1) + SVGMARGIN}
-          height={this.calculateRadius(MAXNUMAXIS - 1) + SVGMARGIN}
-          className={style.svg}
+          width={size}
+          height={size}
+          className={`${style.svg} ${style.zindex}`}
           onMouseMove={e => this.handleDrag(e)}
           onMouseDown={e => this.handleDragClick(e, true)}
           onMouseUp={e => this.handleDragClick(e, false)}
+          onWheel={e => this.handleScroll(e)}
+          ref={(c) => { this.svg = c }}
         >
-          <g transform={centerOrigin} >
+          <defs>
+            <mask id="radialVisMask" x="0" y="0" width={`${size}px`} height={`${size}px`}>
+              <rect
+                x={`-${center}px`}
+                y={`-${center}px`}
+                width={`${size}px`}
+                height={`${size}px`}
+                fill="#ffffff"
+              />
+              <circle
+                cx="0"
+                cy="0"
+                r={`${Math.floor(this.calculateRadius(this.proteinViewerZoom) * 0.5) + Math.ceil((FEATURESIZE + 1) * 0.5)}`}
+                className={this.mask}
+              />
+            </mask>
+          </defs>
+          <g transform={centerOrigin} mask="url(#radialVisMask)">
             {uniprot.data && keys.length > 0 && keys.slice(0, MAXNUMAXIS - 1).map((feature, i) => {
               const diameter = this.calculateRadius(i)
               return (
@@ -136,6 +210,8 @@ class RadialVis extends React.PureComponent {
                     id={feature}
                     name={uniprot.data[feature].name}
                     fillColor={FEATUREFILLCOLORS[i % FEATUREFILLCOLORS.length]}
+                    dispatch={dispatch}
+                    visState={visState}
                   />
                 </g>
               )
@@ -153,12 +229,22 @@ class RadialVis extends React.PureComponent {
             }
           </g>
         </svg>
-        <ProteinViewer
-          d={Math.floor(this.calculateRadius(0) - (size / 5))}
-          isFetchingPDB={isFetchingPDB}
-          selectedSequence={selectedSequence}
-          ui={ui} pdb={pdb}
-        />
+        {
+          uniprot.data && aquaria.alignment &&
+          <ParallelCoordinates
+            d={pvDiameter}
+            maxD={this.calculateRadius(MAXNUMAXIS - 1) - STRUCTURESIZE}
+            data={uniprot.data}
+            geneLength={uniprot.chainLength}
+            selectedAxis={visState.selectedAxis}
+            selectedFeature={visState.selectedFeature}
+            ui={ui}
+            visState={visState}
+            rotation={this.oldAngle}
+            rotating={this.beingDragged}
+            alignment={aquaria.alignment}
+          />
+        }
       </div>
     )
   }

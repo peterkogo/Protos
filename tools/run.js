@@ -55,6 +55,7 @@ module.exports = task('run', () => new Promise((resolve) => {
             require('connect-history-api-fallback')(),
           ],
         },
+        browser: 'chromium-browser',
       }, resolve)
     }
   })

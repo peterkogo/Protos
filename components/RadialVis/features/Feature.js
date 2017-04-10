@@ -4,11 +4,17 @@ import uID from 'lodash.uniqueid'
 import { FEATURESIZE, FEATURESTROKE,
         FEATUREFILLCOLOR, FEATURESTROKECOLOR,
       FEATUREWIDTH } from '../../Defaults'
+import { selectAxisFeature, deselectAxisFeature } from '../../../actions/radialVis'
 
 /**
  * Matching Structure Component
  */
 class Feature extends React.Component {
+
+  constructor() {
+    super()
+    this.handleClick = this.handleClick.bind(this)
+  }
 
   componentWillMount() {
     const ID = uID('feature')
@@ -37,7 +43,7 @@ class Feature extends React.Component {
 
     const group = d3.select(this.group)
 
-    const r = Math.floor(d / 2)
+    const r = Math.floor(d * 0.5)
 
     // Scale that maps nucleotides on arc
     const scale = d3.scaleLinear()
@@ -45,10 +51,10 @@ class Feature extends React.Component {
                       .range([0 + axisGap, 360 - axisGap])
 
     const arc = d3.arc()
-                  .innerRadius(r - (FEATURESIZE / 2))
-                  .outerRadius(r + (FEATURESIZE / 2))
-                  .startAngle(scale(start - (FEATUREWIDTH / 2)) * (Math.PI / 180))
-                  .endAngle(scale(stop + (FEATUREWIDTH / 2)) * (Math.PI / 180))
+                  .innerRadius(r - (FEATURESIZE * 0.5))
+                  .outerRadius(r + (FEATURESIZE * 0.5))
+                  .startAngle(scale(start - (FEATUREWIDTH * 0.5)) * (Math.PI / 180))
+                  .endAngle(scale(stop + (FEATUREWIDTH * 0.5)) * (Math.PI / 180))
 
     group.selectAll('path')
         .attr('d', arc)
@@ -56,6 +62,7 @@ class Feature extends React.Component {
         .attr('fill', fillColor)
         .attr('stroke', strokeColor)
         .attr('id', '')
+        .attr('class', 'feature')
         .data(Array(1))
         .enter()
         .append('path')
@@ -64,6 +71,7 @@ class Feature extends React.Component {
             .attr('fill', fillColor)
             .attr('stroke', strokeColor)
             .attr('id', '')
+            .attr('class', 'feature')
         .exit()
         .remove()
 
@@ -77,9 +85,23 @@ class Feature extends React.Component {
     .on('mouseout', () => tooltip.style('visibility', 'hidden'))
   }
 
+  handleClick(e, id) {
+    if (this.props.visState.selectedAxis === this.props.axisID
+        && this.props.visState.selectedFeature === id) {
+      this.props.dispatch(deselectAxisFeature())
+    } else {
+      this.props.dispatch(selectAxisFeature(this.props.axisID, id))
+    }
+  }
+
   render() {
+    const { id } = this.props
     return (
-      <g ref={(c) => { this.group = c }} title="Testing" />
+      <g
+        ref={(c) => { this.group = c }}
+        className="feature"
+        onClick={e => this.handleClick(e, id)}
+      />
     )
   }
 }
@@ -95,6 +117,12 @@ Feature.propTypes = {
   geneLength: PropTypes.number.isRequired,
   fillColor: PropTypes.string,
   strokeColor: PropTypes.string,
+  start: PropTypes.number.isRequired,
+  stop: PropTypes.number.isRequired,
+  id: PropTypes.string.isRequired,
+  axisID: PropTypes.string.isRequired,
+  dispatch: PropTypes.func.isRequired,
+  visState: PropTypes.object.isRequired,
 }
 
 export default Feature

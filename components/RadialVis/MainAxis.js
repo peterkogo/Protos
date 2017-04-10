@@ -5,6 +5,8 @@ import { AXISGAP, AXISCOLOR, AXISSIZE,
 
 import AlignmentFeature from './features/AlignmentFeature'
 
+import style from './RadialVis.css'
+
 /**
  * Axis Element containing the numbers of the nucleotides
  */
@@ -16,7 +18,7 @@ class MainAxis extends React.Component {
 
     const fontOffset = FONTOFFSET
 
-    const r = Math.floor(d / 2)
+    const r = Math.floor(d * 0.5)
 
     // Scale that maps the nucleotides to the position on the arc
     const geneScale = d3.scaleLinear()
@@ -47,7 +49,7 @@ class MainAxis extends React.Component {
         .remove()
 
     // Get Array(numLabels) with Labels
-    const labels = Array(numLabels)
+    const labels = Array(numLabels + 1)
                     .fill(undefined)
                     .map((x, i) => (i * Math.floor(geneLength / numLabels)))
 
@@ -55,15 +57,29 @@ class MainAxis extends React.Component {
     .data(labels)
     // UPDATE
     .attr('dy', fontOffset) // TODO Change depending on FontSize
-    .attr('x', x =>
-                (geneScale(x) - (x.toString().length * 4)))
+    .attr('x', (x, i) => {
+      if (i === 0) {
+        return (geneScale(x) - (x.toString().length * 4)) + 10
+      }
+      if (i === numLabels) {
+        return (geneScale(x) - (x.toString().length * 4)) - 10
+      }
+      return geneScale(x) - (x.toString().length * 4)
+    })
     .attr('fill', fontColor)
     // ENTER
     .enter()
     .append('text')
     .attr('dy', fontOffset)
-    .attr('x', x =>
-                (geneScale(x) - (x.toString().length * 4)))
+    .attr('x', (x, i) => {
+      if (i === 0) {
+        return (geneScale(x) - (x.toString().length * 4)) + 10
+      }
+      if (i === numLabels) {
+        return (geneScale(x) - (x.toString().length * 4)) - 10
+      }
+      return geneScale(x) - (x.toString().length * 4)
+    })
     .attr('fill', fontColor)
     .style('font-size', `${fontSize}em`)
     .append('textPath')
@@ -74,22 +90,10 @@ class MainAxis extends React.Component {
     .remove()
   }
 
-  // shouldComponentUpdate(nextProps) {
-  //   if (this.props.d !== nextProps.d) {
-  //     return true
-  //   }
-  //   return false
-  // }
-//   <svg
-//     width={d + svgMargin}
-//     height={d + svgMargin}
-//     className={style.centered}
-//   >
-// </svg>
   render() {
     const { d, axisGap, geneLength } = this.props
     return (
-      <g>
+      <g className={style.groups}>
         <g ref={(c) => { this.group = c }} />
         {this.props.alignment &&
           <AlignmentFeature

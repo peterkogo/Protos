@@ -10,9 +10,13 @@
   left: 50%;
   transform: translate(-50%, -50%);
   position: absolute;
-  pointer-events: auto;
+  pointer-events: none;
   user-select: none;
   cursor: default;
+}
+
+.mask {
+  pointer-events: none;
 }
 
 .hovered {
@@ -24,4 +28,12 @@
   opacity: 0.6 !important;
   transition: 300ms;
   transition-timing-function: ease;
+}
+
+.groups {
+  pointer-events: visiblePainted;
+}
+
+.zindex {
+  z-index: 10;
 }
