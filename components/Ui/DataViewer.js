@@ -6,9 +6,9 @@ class DataViewer extends React.Component {
     return (
       <div className={style.dataViewerWrapper}>
         <p className={style.header}>Currently Selected:</p>
-        {this.props.visState.selected && this.props.uniprot.data &&
+        {this.props.visState.selectedAxis && this.props.uniprot.data &&
           <p>
-            {this.props.uniprot.data[this.props.visState.selected].name}
+            {this.props.uniprot.data[this.props.visState.selectedAxis].name}
           </p>
         }
       </div>

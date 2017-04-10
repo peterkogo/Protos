@@ -48,14 +48,15 @@ class ParallelCoordinates extends React.PureComponent {
         this.refresh()
       }
 
-      if (data && geneLength && visState.selected) {
-        this.updateFeaturePositions(d, maxD, data, visState.selected,
+      if (data && geneLength && visState.selectedAxis) {
+        this.updateFeaturePositions(d, maxD, data, visState.selectedAxis, visState.selectedFeature,
                                     rotation, geneLength, ParallelCoordinates.getAngle(alignment))
       }
     }
   }
 
-  updateFeaturePositions(d, maxD, data, selected, rotation, geneLength, alignment) {
+  updateFeaturePositions(d, maxD, data, selectedAxis, selectedFeature,
+    rotation, geneLength, alignment) {
     // Update scale if diameter changes
     if (geneLength !== this.currentGeneLength || !this.scale) {
       // TODO for some reason calculation is shifted 90deg
@@ -68,7 +69,7 @@ class ParallelCoordinates extends React.PureComponent {
     // Update Positions if scale is initialized and no positions initialized yet
     // or if the selected Feature is changed
     if (this.scale &&
-      (!this.featurePositions || selected !== this.props.selected
+      (!this.featurePositions || selectedAxis !== this.props.selectedAxis
         || this.refreshedScale || rotation !== this.currentRotation
         || d !== this.currentDiameterInner || maxD !== this.currentDiameterOuter)) {
       this.refreshedScale = false
@@ -76,13 +77,25 @@ class ParallelCoordinates extends React.PureComponent {
       const rInner = Math.floor(d * 0.5)
       const rOuter = Math.floor(maxD * 0.5)
 
-      const filteredFeatures = data[selected].features.filter((feature) => {
+      const filteredFeatures = []
+      if (selectedFeature !== '') {
+        const feature = data[selectedAxis].features[selectedFeature]
         const center = feature[0] + Math.floor(((feature[1] - feature[0]) * 0.5))
-        if (center < alignment.start || center > alignment.end) {
-          return false
+        if (center >= alignment.start && center <= alignment.end) {
+          filteredFeatures.push(feature)
         }
-        return true
-      })
+        // filteredFeatures.push(data[selectedAxis].features[selectedFeature])
+      } else {
+        const keys = Object.keys(data[selectedAxis].features)
+        keys.forEach((key) => {
+          const feature = data[selectedAxis].features[key]
+          const center = feature[0] + Math.floor(((feature[1] - feature[0]) * 0.5))
+          if (center >= alignment.start && center <= alignment.end) {
+            filteredFeatures.push(feature)
+          }
+        })
+      }
+
       const featurePositions = filteredFeatures.map((feature) => {
         const centerResidue = feature[0] + Math.floor(((feature[1] - feature[0]) * 0.5))
         const center = this.scale(feature[0] +
@@ -109,7 +122,7 @@ class ParallelCoordinates extends React.PureComponent {
   refresh() {
     const newView = this.viewer._cam._camModelView
 
-    if (this.props.selected && this.featurePositions
+    if (this.props.selectedAxis && this.featurePositions
         && (newView.toString() !== this.oldView || this.refreshedPositions)) {
       // Rects get only cleared if something was selected before
       if (!this.wasSelected) {
@@ -158,7 +171,7 @@ class ParallelCoordinates extends React.PureComponent {
       this.refreshedPositions = false
     }
 
-    if (!this.props.selected && this.wasSelected) {
+    if (!this.props.selectedAxis && this.wasSelected) {
       // // Rects get only cleared if something was selected before
       const ctxInner = this.canvasInner.getContext('2d')
       ctxInner.clearRect(0, 0, this.canvasInner.width, this.canvasInner.height)
@@ -205,7 +218,7 @@ ParallelCoordinates.propTypes = {
   d: PropTypes.number.isRequired,
   data: PropTypes.object.isRequired,
   geneLength: PropTypes.number.isRequired,
-  selected: PropTypes.string.isRequired, // rename to selectedFeature
+  selectedAxis: PropTypes.string.isRequired, // rename to selectedFeature
   ui: PropTypes.object.isRequired,
   visState: PropTypes.object.isRequired,
   rotation: PropTypes.number.isRequired,

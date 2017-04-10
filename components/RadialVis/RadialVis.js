@@ -10,7 +10,7 @@ import ParallelCoordinates from '../ParallelCoordinates'
 
 import { SVGMARGIN, MAXNUMAXIS, FEATUREFILLCOLORS,
         OPACITYNOTSELECTED, STRUCTURESIZE, FEATURESIZE } from '../Defaults'
-import { selectAxis, deselectAxis } from '../../actions/radialVis'
+import { selectAxis, deselectAxisFeature, deselectFeature } from '../../actions/radialVis'
 
 /**
  * Main Component for the D3 Visualization
@@ -20,10 +20,10 @@ import { selectAxis, deselectAxis } from '../../actions/radialVis'
 class RadialVis extends React.PureComponent {
 
   static getOpacity(feature, visState) {
-    if (visState.selected.length < 1) {
+    if (visState.selectedAxis.length < 1) {
       return 1
     }
-    if (feature === visState.selected) {
+    if (feature === visState.selectedAxis) {
       return 1
     }
     return OPACITYNOTSELECTED
@@ -53,12 +53,17 @@ class RadialVis extends React.PureComponent {
     })
   }
 
-  handleClick(e, feature) {
-    if (!this.wasDragged) {
-      if (feature === this.props.visState.selected) {
-        this.props.dispatch(deselectAxis(feature))
+  handleClick(e, featureAxis) {
+    if (!this.wasDragged && e.nativeEvent.target.className.baseVal !== 'feature') {
+      if (featureAxis === this.props.visState.selectedAxis) {
+        if (this.props.visState.selectedFeature === '') {
+          this.props.dispatch(deselectAxisFeature())
+        } else {
+          this.props.dispatch(deselectFeature())
+        }
       } else {
-        this.props.dispatch(selectAxis(feature))
+        this.props.dispatch(deselectAxisFeature())
+        this.props.dispatch(selectAxis(featureAxis))
       }
     }
     this.wasDragged = false
@@ -205,6 +210,8 @@ class RadialVis extends React.PureComponent {
                     id={feature}
                     name={uniprot.data[feature].name}
                     fillColor={FEATUREFILLCOLORS[i % FEATUREFILLCOLORS.length]}
+                    dispatch={dispatch}
+                    visState={visState}
                   />
                 </g>
               )
@@ -229,7 +236,8 @@ class RadialVis extends React.PureComponent {
             maxD={this.calculateRadius(MAXNUMAXIS - 1) - STRUCTURESIZE}
             data={uniprot.data}
             geneLength={uniprot.chainLength}
-            selected={visState.selected}
+            selectedAxis={visState.selectedAxis}
+            selectedFeature={visState.selectedFeature}
             ui={ui}
             visState={visState}
             rotation={this.oldAngle}

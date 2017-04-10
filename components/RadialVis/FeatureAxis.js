@@ -116,20 +116,31 @@ class FeatureAxis extends React.Component {
   }
 
   render() {
-    const { d, geneLength, features, fillColor } = this.props
+    const { d, geneLength, features, fillColor, dispatch, id, visState } = this.props
+
+    let keys = []
+    if (features) {
+      keys = Object.keys(features)
+    }
+
+
     return (
       <g className={style.groups}>
         <g ref={(c) => { this.clickArea = c }} />
         <g ref={(c) => { this.group = c }} />
-        {features.map((x, i) => (
+        {keys.length > 0 && keys.map(key => (
           <Feature
-            key={i}
+            key={key}
+            id={key}
+            axisID={id}
             d={d}
-            start={x[0]}
-            stop={x[1]}
+            start={features[key][0]}
+            stop={features[key][1]}
             axisGap={AXISGAP}
             geneLength={geneLength}
             fillColor={fillColor}
+            dispatch={dispatch}
+            visState={visState}
           />
           ))
         }
@@ -152,13 +163,15 @@ FeatureAxis.propTypes = {
   geneLength: PropTypes.number.isRequired,
   id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  features: PropTypes.array.isRequired,
+  features: PropTypes.object.isRequired,
   numLabels: PropTypes.number,
   axisColor: PropTypes.string,
   axisSize: PropTypes.number,
   fontColor: PropTypes.string,
   fontSize: PropTypes.number,
   fillColor: PropTypes.string,
+  dispatch: PropTypes.func.isRequired,
+  visState: PropTypes.object.isRequired,
 }
 
 export default FeatureAxis
