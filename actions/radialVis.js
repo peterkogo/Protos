@@ -6,6 +6,8 @@ export const SELECT_AXIS_FEATURE = 'SELECT_AXIS_FEATURE'
 export const DESELECT_AXIS_FEATURE = 'DESELECT_AXIS_FEATURE'
 export const INIT_PROTEIN_VIEWER = 'INIT_PROTEIN_VIEWER'
 export const INIT_PROTEIN_STRUCTURE = 'INIT_PROTEIN_STRUCTURE'
+export const CHANGE_AXIS_POS_TO = 'CHANGE_AXIS_POS_TO'
+export const CREATE_AXIS_ORDER = 'CREATE_AXIS_ORDER'
 
 export function selectAxis(axis) {
   return {
@@ -58,5 +60,20 @@ export function initProteinStructure(structure) {
   return {
     type: INIT_PROTEIN_STRUCTURE,
     structure,
+  }
+}
+
+export function changeAxisPosFromTo(from, to) {
+  return {
+    type: CHANGE_AXIS_POS_TO,
+    from,
+    to,
+  }
+}
+
+export function createAxisOrder(uniprotData) {
+  return {
+    type: CREATE_AXIS_ORDER,
+    uniprotData,
   }
 }
