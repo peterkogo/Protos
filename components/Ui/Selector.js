@@ -28,12 +28,12 @@ class Selector extends React.Component {
   handleSubmit(e) {
     e.preventDefault()
     const nextSequence = `${this.state.inputProtein}#${this.state.inputMapping}`
-    console.log(nextSequence)
     this.props.dispatch(selectSequence(nextSequence))
   }
 
   render() {
-    const { value, options } = this.props
+    const { selectedSequence } = this.props
+    const selSeq = selectedSequence.split('#')
 
     return (
       <form onSubmit={e => this.handleSubmit(e)}>
@@ -47,6 +47,8 @@ class Selector extends React.Component {
             className={style.input}
             id="inputProtein"
             name="inputProtein"
+            type="text"
+            placeholder={selSeq[0]}
             value={this.state.inputProtein}
             onChange={e => this.handleChange(e)}
           />
@@ -62,6 +64,8 @@ class Selector extends React.Component {
             className={style.input}
             id="inputMapping"
             name="inputMapping"
+            type="text"
+            placeholder={selSeq[1]}
             value={this.state.inputMapping}
             onChange={e => this.handleChange(e)}
           />
@@ -76,10 +80,7 @@ class Selector extends React.Component {
 }
 
 Selector.propTypes = {
-  options: PropTypes.arrayOf(
-    PropTypes.string.isRequired,
-  ).isRequired,
-  value: PropTypes.string.isRequired,
+  selectedSequence: PropTypes.string.isRequired,
   dispatch: PropTypes.func.isRequired,
 }
 

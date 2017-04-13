@@ -10,13 +10,15 @@ class SortAxis extends React.Component {
 
     return (
       <div className={style.parent}>
-        {order.map((elem, i) => {
+        {order.map((elem, i, arr) => {
           return (
             <SortAxisElem
               name={uniprot.data[elem].name}
+              active={(elem === visState.selectedAxis)}
               key={elem}
               id={elem}
               pos={i}
+              lastPos={arr.length - 1}
               dispatch={dispatch}
             />
           )

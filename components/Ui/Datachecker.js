@@ -36,41 +36,45 @@ class DataChecker extends React.Component {
     return (
       <div className={style.dataChecker}>
         <p>
-          {isFetchingAquaria && <span> Aquaria: Loading </span>}
+          {isFetchingAquaria && <span> <b>Aquaria:</b> Loading </span>}
           {!isFetchingAquaria && lastUpdatedAquaria &&
-            <span>Aquaria: Received at {new Date(lastUpdatedAquaria).toLocaleTimeString()} </span>
+            <span><b>Aquaria:</b> Received at {
+              new Date(lastUpdatedAquaria).toLocaleTimeString()
+            } </span>
           }
           {isFailedAquaria &&
-            <span>Aquaria: Failed </span>
+            <span><b>Aquaria:</b> Failed </span>
           }
         </p>
         <p>
-          {isFetchingPDB && <span> PDB: Loading </span>}
+          {isFetchingPDB && <span> <b>PDB:</b> Loading </span>}
           {!isFetchingPDB && lastUpdatedPDB &&
-            <span>PDB: Received at {new Date(lastUpdatedPDB).toLocaleTimeString()} </span>
+            <span><b>PDB:</b> Received at {new Date(lastUpdatedPDB).toLocaleTimeString()} </span>
           }
           {isFailedPDB &&
-            <span>PDB: Failed </span>
+            <span><b>PDB:</b> Failed </span>
           }
         </p>
         <p>
-          {isFetchingUniprot && <span> Uniprot: Loading </span>}
+          {isFetchingUniprot && <span> <b>Uniprot:</b> Loading </span>}
           {!isFetchingUniprot && lastUpdatedUniprot &&
-            <span>Uniprot: Received at {new Date(lastUpdatedUniprot).toLocaleTimeString()} </span>
+            <span><b>Uniprot:</b> Received at {
+              new Date(lastUpdatedUniprot).toLocaleTimeString()
+            } </span>
           }
           {isFailedUniprot &&
-            <span>Uniprot: Failed </span>
+            <span><b>Uniprot:</b> Failed </span>
           }
         </p>
         <p>
-        {!isFetchingAquaria && !isFetchingPDB && !isFetchingUniprot &&
-          <a
-            href="#"
-            onClick={this.handleRefreshClick}
-          >
-            Refresh
-          </a>
-        }
+          {!isFetchingAquaria && !isFetchingPDB && !isFetchingUniprot &&
+            <a
+              href="#"
+              onClick={this.handleRefreshClick}
+            >
+              Refresh
+            </a>
+          }
         </p>
       </div>
     )

@@ -20,8 +20,7 @@ const Ui = (props) => {
     <div className={style.container}>
       <Header sequence={selectedSequence} />
       <Selector
-        value={selectedSequence}
-        options={['4qo1', '4hhb']}
+        selectedSequence={selectedSequence}
         dispatch={dispatch}
       />
       <DataChecker
