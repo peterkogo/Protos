@@ -10,11 +10,10 @@ import ParallelCoordinates from '../ParallelCoordinates'
 
 import { SVGMARGIN, MAXNUMAXIS, FEATUREFILLCOLORS,
         OPACITYNOTSELECTED, STRUCTURESIZE, FEATURESIZE } from '../Defaults'
-import { selectAxis, deselectAxisFeature, deselectFeature } from '../../actions/radialVis'
+import { selectAxis, deselectAxisFeature, deselectFeature, createAxisOrder } from '../../actions/radialVis'
 
 /**
  * Main Component for the D3 Visualization
- * TODO Inner Cirlce with something else, On Click => Lines, Protein Viewer
  * TODO GeneLength => Problems with arrays
  */
 class RadialVis extends React.PureComponent {
@@ -45,12 +44,21 @@ class RadialVis extends React.PureComponent {
     this.rotating = 0
     this.wasDragged = false
     this.scrollAllowed = true
+    this.createdAxisOrder = false
   }
 
   componentWillMount() {
     this.setState({
       mainAxisKey: uID('mainAxis'),
     })
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (!this.createdAxisOrder && nextProps.currentSequenceData.uniprot.data) {
+      this.createdAxisOrder = true
+      console.log(nextProps.currentSequenceData.uniprot.data)
+      this.props.dispatch(createAxisOrder(nextProps.currentSequenceData.uniprot.data))
+    }
   }
 
   handleClick(e, featureAxis) {
@@ -139,6 +147,7 @@ class RadialVis extends React.PureComponent {
   render() {
     const { ui, selectedSequence, currentSequenceData, visState, dispatch } = this.props
     const { pdb, aquaria, uniprot } = currentSequenceData
+    const { order } = visState
 
     const size = this.calculateRadius(MAXNUMAXIS - 1) + SVGMARGIN
     const pvDiameter = Math.floor(this.calculateRadius(this.proteinViewerZoom))
@@ -146,11 +155,6 @@ class RadialVis extends React.PureComponent {
     const centerOrigin = `translate( ${this.calculateRadius(0) + (SVGMARGIN * 0.5)},
                                       ${this.calculateRadius(0) + (SVGMARGIN * 0.5)} )`
     const center = Math.floor(size * 0.5)
-
-    let keys = []
-    if (uniprot.data) {
-      keys = Object.keys(uniprot.data)
-    }
 
     return (
       <div className={style.parent} >
@@ -191,31 +195,32 @@ class RadialVis extends React.PureComponent {
             </mask>
           </defs>
           <g transform={centerOrigin} mask="url(#radialVisMask)">
-            {uniprot.data && keys.length > 0 && keys.slice(0, MAXNUMAXIS - 1).map((feature, i) => {
-              const diameter = this.calculateRadius(i)
-              return (
-                <g
-                  className={style.hovered}
-                  key={feature}
-                  style={{
-                    opacity: RadialVis.getOpacity(feature, visState),
-                  }}
-                  onClick={e => this.handleClick(e, feature)}
-                >
-                  <FeatureAxis
-                    ref={(c) => { this[feature.id] = c }}
-                    d={diameter}
-                    features={uniprot.data[feature].features}
-                    geneLength={uniprot.chainLength}
-                    id={feature}
-                    name={uniprot.data[feature].name}
-                    fillColor={FEATUREFILLCOLORS[i % FEATUREFILLCOLORS.length]}
-                    dispatch={dispatch}
-                    visState={visState}
-                  />
-                </g>
-              )
-            })
+            {uniprot.data && visState.order &&
+              order.slice(order.length - (MAXNUMAXIS - 1), order.length).map((feature, i) => {
+                const diameter = this.calculateRadius(i)
+                return (
+                  <g
+                    className={style.hovered}
+                    key={feature}
+                    style={{
+                      opacity: RadialVis.getOpacity(feature, visState),
+                    }}
+                    onClick={e => this.handleClick(e, feature)}
+                  >
+                    <FeatureAxis
+                      ref={(c) => { this[feature.id] = c }}
+                      d={diameter}
+                      features={uniprot.data[feature].features}
+                      geneLength={uniprot.chainLength}
+                      id={feature}
+                      name={uniprot.data[feature].name}
+                      fillColor={FEATUREFILLCOLORS[i % FEATUREFILLCOLORS.length]}
+                      dispatch={dispatch}
+                      visState={visState}
+                    />
+                  </g>
+                )
+              })
             }
             {uniprot.data && aquaria.alignment &&
               <MainAxis
