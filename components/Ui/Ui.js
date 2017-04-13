@@ -5,6 +5,7 @@ import style from './UI.css'
 import Header from './Header'
 import Selector from './Selector'
 import DataChecker from './Datachecker'
+import SortAxis from './SortAxis'
 
 
 /**
@@ -13,7 +14,7 @@ import DataChecker from './Datachecker'
  * @return {StatelessComponent} General UI without Visualization
  */
 const Ui = (props) => {
-  const { selectedSequence, dispatch, currentSequenceData } = props
+  const { selectedSequence, dispatch, currentSequenceData, visState } = props
 
   return (
     <div className={style.container}>
@@ -36,6 +37,13 @@ const Ui = (props) => {
         dispatch={dispatch}
         selectedSequence={selectedSequence}
       />
+      {currentSequenceData.uniprot.data && visState.order &&
+        <SortAxis
+          visState={visState}
+          uniprot={currentSequenceData.uniprot}
+          dispatch={dispatch}
+        />
+      }
     </div>
   )
 }
@@ -44,5 +52,6 @@ Ui.propTypes = {
   currentSequenceData: PropTypes.object.isRequired,
   selectedSequence: PropTypes.string.isRequired,
   dispatch: PropTypes.func.isRequired,
+  visState: PropTypes.object.isRequired,
 }
 export default Ui

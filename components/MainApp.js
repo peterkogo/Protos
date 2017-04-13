@@ -46,6 +46,7 @@ class MainApp extends React.Component {
           selectedSequence={selectedSequence}
           currentSequenceData={currentSequenceData}
           dispatch={dispatch}
+          visState={visState}
         />
         <DataViewer
           uniprot={currentSequenceData.uniprot}

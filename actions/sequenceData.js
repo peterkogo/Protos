@@ -1,5 +1,7 @@
 import fetch from 'isomorphic-fetch'
 
+import { createAxisOrder } from './radialVis'
+
 export const SELECT_SEQUENCE = 'SELECT_SEQUENCE'
 export const INVALIDATE_SEQUENCE_DATA = 'INVALIDATE_SEQUENCE_DATA'
 export const REQUEST_AQUARIA = 'REQUEST_AQUARIA'

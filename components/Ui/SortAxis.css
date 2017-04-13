@@ -1,0 +1,9 @@
+.parent {
+  width: 200px;
+  margin-top: 30px;
+}
+
+.elem {
+  margin: 0;
+  padding: 0;
+}
