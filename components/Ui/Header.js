@@ -5,10 +5,16 @@ import style from './Header.css'
  * @param {props} props React props
  * @return {StatelessComponent} Title with selected sequence
  */
-const Header = (props) =>
-  <div className={style.title}>
-    <h1>{props.sequence}</h1>
-  </div>
+const Header = (props) => {
+  const seq = props.sequence.split('#')
+  return (
+    <div className={style.title}>
+      <h1>{seq[0]}</h1>
+      <hr />
+      <h2>{seq[1]}</h2>
+    </div>
+  )
+}
 
 Header.propTypes = {
   sequence: PropTypes.string.isRequired,

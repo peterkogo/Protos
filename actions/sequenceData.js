@@ -1,7 +1,5 @@
 import fetch from 'isomorphic-fetch'
 
-import { createAxisOrder } from './radialVis'
-
 export const SELECT_SEQUENCE = 'SELECT_SEQUENCE'
 export const INVALIDATE_SEQUENCE_DATA = 'INVALIDATE_SEQUENCE_DATA'
 export const REQUEST_AQUARIA = 'REQUEST_AQUARIA'
@@ -77,7 +75,7 @@ function uniprotFailed(sequence) {
 }
 
 function requestSequenceData(sequence) {
-  return dispatch => {
+  return (dispatch) => {
     dispatch({
       type: REQUEST_AQUARIA,
       sequence,
@@ -94,12 +92,13 @@ function requestSequenceData(sequence) {
 }
 
 function fetchSequenceData(sequence) {
-  return dispatch => {
+  const proteinMapping = sequence.split('#')
+  return (dispatch) => {
     dispatch(requestSequenceData(sequence))
 
     // Fetching PDB
-    fetch(`https://files.rcsb.org/download/${sequence}.pdb`, { timeout: 5000 })
-      .then(response => {
+    fetch(`https://files.rcsb.org/download/${proteinMapping[1]}.pdb`, { timeout: 5000 })
+      .then((response) => {
         if (response.status >= 400) {
           throw response.status
         } else {
@@ -110,8 +109,8 @@ function fetchSequenceData(sequence) {
       // .catch(dispatch(pdbFailed(sequence))) TODO Catch always triggered
 
     // Fetching Aquria
-    fetch(`http://aquaria.ws/P04637/${sequence}/B.json`, { timeout: 5000 })
-      .then(response => {
+    fetch(`http://aquaria.ws/${proteinMapping[0]}/${proteinMapping[1]}/B.json`, { timeout: 5000 })
+      .then((response) => {
         if (response.status >= 400) {
           throw response.status
         } else {
@@ -121,8 +120,8 @@ function fetchSequenceData(sequence) {
       .then(json => dispatch(receiveAquaria(sequence, json)))
       // .catch(dispatch(aquariaFailed(sequence)))
 
-    fetch('http://www.uniprot.org/uniprot/P04637.xml', { timeout: 5000 })
-      .then(response => {
+    fetch(`http://www.uniprot.org/uniprot/${proteinMapping[0]}.xml`, { timeout: 5000 })
+      .then((response) => {
         if (response.status >= 400) {
           throw response.status
         } else {

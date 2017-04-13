@@ -89,16 +89,16 @@ function sequenceData(state = {
 
 export function dataBySequence(state = {}, action) {
   switch (action.type) {
+    case FAIL_AQUARIA:
+    case FAIL_PDB:
+    case FAIL_UNIPROT:
     case INVALIDATE_SEQUENCE_DATA:
     case RECEIVE_AQUARIA:
-    case REQUEST_AQUARIA:
-    case FAIL_AQUARIA:
     case RECEIVE_PDB:
-    case REQUEST_PDB:
-    case FAIL_PDB:
     case RECEIVE_UNIPROT:
+    case REQUEST_AQUARIA:
+    case REQUEST_PDB:
     case REQUEST_UNIPROT:
-    case FAIL_UNIPROT:
       return Object.assign({}, state, {
         [action.sequence]: sequenceData(state[action.sequence], action),
       })
@@ -106,7 +106,7 @@ export function dataBySequence(state = {}, action) {
       return state
   }
 }
-export function selectedSequence(state = '4qo1', action) {
+export function selectedSequence(state = 'P04637#4qo1', action) {
   switch (action.type) {
     case SELECT_SEQUENCE:
       return action.sequence
