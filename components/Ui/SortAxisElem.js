@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 
 import { changeAxisPosFromTo, selectAxis, deselectAxis } from '../../actions/radialVis'
 import style from './SortAxis.css'

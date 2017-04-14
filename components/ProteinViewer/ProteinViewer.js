@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import ReactDOM from 'react-dom'
 import style from './ProteinViewer.css'
 import { initProteinViewer, initProteinStructure } from '../../actions/radialVis'

@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import ReactDOM from 'react-dom'
 import uID from 'lodash.uniqueid'
 
@@ -79,7 +80,7 @@ class RadialVis extends React.PureComponent {
   handleDrag(e) {
     e.preventDefault()
     if (this.drag) {
-      const center = Math.floor(this.calculateRadius(MAXNUMAXIS - 1) * 0.5)
+      const center = this.calculateRadius(MAXNUMAXIS - 1) * 0.5
       const v1 = [e.nativeEvent.offsetX - center, e.nativeEvent.offsetY - center]
       const v2 = [this.handle[0] - center, this.handle[1] - center]
 
@@ -149,7 +150,7 @@ class RadialVis extends React.PureComponent {
     const { order } = visState
 
     const size = this.calculateRadius(MAXNUMAXIS - 1) + SVGMARGIN
-    const pvDiameter = Math.floor(this.calculateRadius(this.proteinViewerZoom))
+    const pvDiameter = this.calculateRadius(this.proteinViewerZoom)
 
     const centerOrigin = `translate( ${this.calculateRadius(0) + (SVGMARGIN * 0.5)},
                                       ${this.calculateRadius(0) + (SVGMARGIN * 0.5)} )`
@@ -188,7 +189,7 @@ class RadialVis extends React.PureComponent {
               <circle
                 cx="0"
                 cy="0"
-                r={`${Math.floor(this.calculateRadius(this.proteinViewerZoom) * 0.5) + Math.ceil((FEATURESIZE + 1) * 0.5)}`}
+                r={`${(this.calculateRadius(this.proteinViewerZoom) * 0.5) + Math.ceil((FEATURESIZE + 1) * 0.5)}`}
                 className={this.mask}
               />
             </mask>
