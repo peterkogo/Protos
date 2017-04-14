@@ -36,6 +36,10 @@
   pointer-events: none;
 }
 
+.pointerEventsPainted {
+  pointer-events: none;
+}
+
 .paco {
   transition: 150ms;
   transition-timing-function: ease;

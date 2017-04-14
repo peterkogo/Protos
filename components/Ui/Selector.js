@@ -13,8 +13,8 @@ class Selector extends React.Component {
     this.handleChange = this.handleChange.bind(this)
 
     this.state = {
-      inputMapping: '',
-      inputProtein: '',
+      matchingStructInput: '',
+      proteinInput: '',
     }
   }
 
@@ -27,7 +27,7 @@ class Selector extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault()
-    const nextSequence = `${this.state.inputProtein}#${this.state.inputMapping}`
+    const nextSequence = `${this.state.proteinInput}#${this.state.matchingStructInput}`
     this.props.dispatch(selectSequence(nextSequence))
   }
 
@@ -38,35 +38,35 @@ class Selector extends React.Component {
     return (
       <form onSubmit={e => this.handleSubmit(e)}>
         <label
-          htmlFor="inputProtein"
+          htmlFor="proteinInput"
           className={style.label}
         >
           Protein
           <br />
           <input
             className={style.input}
-            id="inputProtein"
-            name="inputProtein"
+            id="proteinInput"
+            name="proteinInput"
             type="text"
             placeholder={selSeq[0]}
-            value={this.state.inputProtein}
+            value={this.state.proteinInput}
             onChange={e => this.handleChange(e)}
           />
         </label>
         <br />
         <label
           className={style.label}
-          htmlFor="inputMapping"
+          htmlFor="matchingStruct"
         >
-          Mapping
+          Matching Structure
           <br />
           <input
             className={style.input}
-            id="inputMapping"
-            name="inputMapping"
+            id="matchingStructInput"
+            name="matchingStructInput"
             type="text"
             placeholder={selSeq[1]}
-            value={this.state.inputMapping}
+            value={this.state.matchingStructInput}
             onChange={e => this.handleChange(e)}
           />
         </label>

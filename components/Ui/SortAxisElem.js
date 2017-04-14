@@ -25,6 +25,7 @@ class SortAxisElem extends React.Component {
     if (this.props.active) {
       this.props.dispatch(deselectAxis())
     } else {
+      this.props.dispatch(deselectAxis())
       this.props.dispatch(selectAxis(this.props.id))
     }
   }

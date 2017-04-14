@@ -10,7 +10,6 @@ const Header = (props) => {
   return (
     <div className={style.title}>
       <h1>{seq[0]}</h1>
-      <hr />
       <h2>{seq[1]}</h2>
     </div>
   )

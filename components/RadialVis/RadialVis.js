@@ -56,7 +56,6 @@ class RadialVis extends React.PureComponent {
   componentWillReceiveProps(nextProps) {
     if (!this.createdAxisOrder && nextProps.currentSequenceData.uniprot.data) {
       this.createdAxisOrder = true
-      console.log(nextProps.currentSequenceData.uniprot.data)
       this.props.dispatch(createAxisOrder(nextProps.currentSequenceData.uniprot.data))
     }
   }

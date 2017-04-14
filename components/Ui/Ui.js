@@ -5,6 +5,7 @@ import style from './UI.css'
 import Header from './Header'
 import Selector from './Selector'
 import DataChecker from './Datachecker'
+import DataViewer from './DataViewer'
 import SortAxis from './SortAxis'
 
 
@@ -18,30 +19,43 @@ const Ui = (props) => {
 
   return (
     <div className={style.container}>
-      <Header sequence={selectedSequence} />
-      <Selector
-        selectedSequence={selectedSequence}
-        dispatch={dispatch}
-      />
-      <DataChecker
-        isFetchingPDB={currentSequenceData.isFetchingPDB}
-        isFailedPDB={currentSequenceData.isFailedPDB}
-        lastUpdatedPDB={currentSequenceData.lastUpdatedPDB}
-        isFetchingAquaria={currentSequenceData.isFetchingAquaria}
-        isFailedAquaria={currentSequenceData.isFailedAquaria}
-        lastUpdatedAquaria={currentSequenceData.lastUpdatedAquaria}
-        isFetchingUniprot={currentSequenceData.isFetchingUniprot}
-        isFailedUniprot={currentSequenceData.isFailedUniprot}
-        lastUpdatedUniprot={currentSequenceData.lastUpdatedUniprot}
-        dispatch={dispatch}
-        selectedSequence={selectedSequence}
-      />
-      {currentSequenceData.uniprot.data && visState.order &&
-        <SortAxis
-          visState={visState}
-          uniprot={currentSequenceData.uniprot}
+      <div className={style.left}>
+        <Header sequence={selectedSequence} />
+        <Selector
+          selectedSequence={selectedSequence}
           dispatch={dispatch}
         />
+        <div className={style.bottom}>
+          <DataChecker
+            isFetchingPDB={currentSequenceData.isFetchingPDB}
+            isFailedPDB={currentSequenceData.isFailedPDB}
+            lastUpdatedPDB={currentSequenceData.lastUpdatedPDB}
+            isFetchingAquaria={currentSequenceData.isFetchingAquaria}
+            isFailedAquaria={currentSequenceData.isFailedAquaria}
+            lastUpdatedAquaria={currentSequenceData.lastUpdatedAquaria}
+            isFetchingUniprot={currentSequenceData.isFetchingUniprot}
+            isFailedUniprot={currentSequenceData.isFailedUniprot}
+            lastUpdatedUniprot={currentSequenceData.lastUpdatedUniprot}
+            dispatch={dispatch}
+            selectedSequence={selectedSequence}
+          />
+        </div>
+      </div>
+      {currentSequenceData.uniprot.data && visState.order &&
+        <div className={style.right}>
+          <SortAxis
+            visState={visState}
+            uniprot={currentSequenceData.uniprot}
+            dispatch={dispatch}
+          />
+          <DataViewer
+            uniprot={currentSequenceData.uniprot}
+            aquaria={currentSequenceData.aquaria}
+            pdb={currentSequenceData.pdb}
+            visState={visState}
+            dispatch={dispatch}
+          />
+        </div>
       }
     </div>
   )

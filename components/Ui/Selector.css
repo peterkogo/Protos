@@ -3,11 +3,11 @@
 }
 
 .button {
-  width: 100px;
-  margin-left: 25px;
-  margin-bottom: 20px;
+  width: 50%;
+  margin-left: 15%;
+  margin-top: 10px;
 }
 
 .input {
-  width: 150px;
+  width: 80%;
 }

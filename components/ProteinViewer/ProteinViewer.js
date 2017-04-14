@@ -73,29 +73,30 @@ class ProteinViewer extends React.PureComponent {
                   )
 
     viewer.centerOn(structure)
-    viewer.autoZoom()
+    // viewer.autoZoom()
+    viewer.setZoom(200)
 
     this.props.dispatch(initProteinStructure(structure))
   }
 
   render() {
     const { d, ui } = this.props
-    const size = (ui.windowWidth > ui.windowHeight)
-                  ? ui.windowHeight : ui.windowWidth
+    const size = ((ui.windowWidth > ui.windowHeight)
+                  ? ui.windowHeight : ui.windowWidth) + 5
     const center = Math.floor(size * 0.5)
 
     return (
       <div>
         <div ref={(c) => { this.pv = c }} className={`${style.center} ${style.middlelay}`} />
         <div className={`${style.center} ${style.noPointerEvents} ${style.overlay}`}>
-          <svg width={`${size}px`} height={`${size}px`} className={`${style.noPointerEvents}`} >
+          <svg width={`${size}px`} height={`${size}px`} >
             <defs>
               <mask id="mask" x="0" y="0" width={`${size}px`} height={`${size}px`}>
                 <rect x="0" y="0" width={`${size}px`} height={`${size}px`} fill="#ffffff" />
                 <circle cx={center} cy={center} r={`${Math.floor(d * 0.5)}`} />
               </mask>
             </defs>
-            <rect x="0" y="0" width={`${size}px`} height={`${size}px`} mask="url(#mask)" fill="#ffffff" />
+            <rect x="0" y="0" width={`${size}px`} height={`${size}px`} mask="url(#mask)" fill="#ffffff" className={`${style.pointerEventsPainted}`}/>
           </svg>
         </div>
       </div>

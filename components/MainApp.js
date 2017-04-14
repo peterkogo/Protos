@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 
 import { fetchSequenceIfNeeded } from '../actions/sequenceData'
 
-import DataViewer from '../components/Ui/DataViewer'
 import RadialVis from '../components/RadialVis'
 import Ui from '../components/Ui'
 
@@ -46,12 +45,6 @@ class MainApp extends React.Component {
           selectedSequence={selectedSequence}
           currentSequenceData={currentSequenceData}
           dispatch={dispatch}
-          visState={visState}
-        />
-        <DataViewer
-          uniprot={currentSequenceData.uniprot}
-          aquaria={currentSequenceData.aquaria}
-          pdb={currentSequenceData.pdb}
           visState={visState}
         />
       </div>

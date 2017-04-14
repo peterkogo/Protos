@@ -36,6 +36,16 @@ class DataChecker extends React.Component {
     return (
       <div className={style.dataChecker}>
         <p>
+          {!isFetchingAquaria && !isFetchingPDB && !isFetchingUniprot &&
+            <a
+              href="#"
+              onClick={this.handleRefreshClick}
+            >
+              Refresh
+            </a>
+          }
+        </p>
+        <p>
           {isFetchingAquaria && <span> <b>Aquaria:</b> Loading </span>}
           {!isFetchingAquaria && lastUpdatedAquaria &&
             <span><b>Aquaria:</b> Received at {
@@ -64,16 +74,6 @@ class DataChecker extends React.Component {
           }
           {isFailedUniprot &&
             <span><b>Uniprot:</b> Failed </span>
-          }
-        </p>
-        <p>
-          {!isFetchingAquaria && !isFetchingPDB && !isFetchingUniprot &&
-            <a
-              href="#"
-              onClick={this.handleRefreshClick}
-            >
-              Refresh
-            </a>
           }
         </p>
       </div>

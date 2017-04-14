@@ -84,6 +84,8 @@ function deepParse(xml) {
 
 export default function (xml) {
   const parsed = deepParse(xml)
+  const fullData = {}
+  Object.assign(fullData, parsed)
   const members = Object.getOwnPropertyNames(parsed)
   const chainLength = parseInt(parsed.Chain.Features[0].Residues[1], 10)
   const selectedAxis = ''
@@ -105,17 +107,8 @@ export default function (xml) {
     data[id] = {
       name: member,
       features,
-      // features: parsed[member].Features.map((feature) => {
-      //   if (typeof feature.Residue !== 'undefined') {
-      //     return [parseInt(feature.Residue[0], 10), parseInt(feature.Residue[0], 10)]
-      //   }
-      //   if (typeof feature.Residues !== 'undefined') {
-      //     return [parseInt(feature.Residues[0], 10), parseInt(feature.Residues[1], 10)]
-      //   }
-      //   return ['error']
-      // }),
     }
   })
 
-  return { chainLength, data, selectedAxis }
+  return { chainLength, data, selectedAxis, fullData }
 }
