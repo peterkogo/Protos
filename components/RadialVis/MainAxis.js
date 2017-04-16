@@ -96,10 +96,10 @@ class MainAxis extends React.Component {
     return (
       <g className={style.groups}>
         <g ref={(c) => { this.group = c }} />
-        {this.props.alignment &&
+        {this.props.chains.B &&
           <AlignmentFeature
             d={d}
-            alignment={this.props.alignment}
+            alignment={this.props.chains.B}
             axisGap={axisGap}
             geneLength={geneLength}
           />
@@ -119,7 +119,7 @@ MainAxis.defaultProps = {
 }
 
 MainAxis.propTypes = {
-  alignment: PropTypes.string.isRequired,
+  chains: PropTypes.object.isRequired,
   axisColor: PropTypes.string,
   axisGap: PropTypes.number,
   axisSize: PropTypes.number,

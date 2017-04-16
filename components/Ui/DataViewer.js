@@ -4,12 +4,13 @@ import style from './DataViewer.css'
 
 class DataViewer extends React.Component {
   render() {
+    const { visState, proteinData } = this.props
     return (
       <div className={style.dataViewerWrapper}>
         <p className={style.header}>Currently Selected:</p>
-        {this.props.visState.selectedAxis && this.props.uniprot.data &&
+        {visState.selectedAxis && proteinData.features &&
           <p>
-            {this.props.uniprot.data[this.props.visState.selectedAxis].name}
+            {proteinData.features[visState.selectedAxis].name}
           </p>
         }
       </div>
@@ -18,10 +19,8 @@ class DataViewer extends React.Component {
 }
 
 DataViewer.propTypes = {
-  aquaria: PropTypes.object.isRequired,
-  pdb: PropTypes.string.isRequired,
-  uniprot: PropTypes.object.isRequired,
   visState: PropTypes.object.isRequired,
+  proteinData: PropTypes.object.isRequired,
 }
 
 export default DataViewer

@@ -4,6 +4,8 @@ import PropTypes from 'prop-types'
 import style from './DataChecker.css'
 import { fetchSequenceIfNeeded, invalidateSequenceData } from '../../actions/sequenceData'
 
+import DataCheckerItem from './DataCheckerItem'
+
 
 /**
  * DataChecker shows the status of fetched data
@@ -24,74 +26,46 @@ class DataChecker extends React.Component {
   }
 
   render() {
-    const { isFetchingAquaria,
-            isFailedAquaria,
-            lastUpdatedAquaria,
-            isFetchingPDB,
-            isFailedPDB,
-            lastUpdatedPDB,
-            isFetchingUniprot,
-            isFailedUniprot,
-            lastUpdatedUniprot,
-             } = this.props
+    const { dataHealth } = this.props
+    const { aquaria, uniprot, pdb } = dataHealth
+    const failed = (aquaria.didFail || uniprot.didFail || pdb.didFail)
+    const ready = ((!aquaria.isFetching && !aquaria.didFail && !aquaria.didInvalidate)
+                    || (!uniprot.isFetching && !uniprot.didFail && !uniprot.didInvalidate)
+                    || (!pdb.isFetching && !pdb.didFail && !pdb.didInvalidate))
     return (
       <div className={style.dataChecker}>
-        <p>
-          {!isFetchingAquaria && !isFetchingPDB && !isFetchingUniprot &&
-            <a
-              href="#"
-              onClick={this.handleRefreshClick}
-            >
-              Refresh
-            </a>
-          }
-        </p>
-        <p>
-          {isFetchingAquaria && <span> <b>Aquaria:</b> Loading </span>}
-          {!isFetchingAquaria && lastUpdatedAquaria &&
-            <span><b>Aquaria:</b> Received at {
-              new Date(lastUpdatedAquaria).toLocaleTimeString()
-            } </span>
-          }
-          {isFailedAquaria &&
-            <span><b>Aquaria:</b> Failed </span>
-          }
-        </p>
-        <p>
-          {isFetchingPDB && <span> <b>PDB:</b> Loading </span>}
-          {!isFetchingPDB && lastUpdatedPDB &&
-            <span><b>PDB:</b> Received at {new Date(lastUpdatedPDB).toLocaleTimeString()} </span>
-          }
-          {isFailedPDB &&
-            <span><b>PDB:</b> Failed </span>
-          }
-        </p>
-        <p>
-          {isFetchingUniprot && <span> <b>Uniprot:</b> Loading </span>}
-          {!isFetchingUniprot && lastUpdatedUniprot &&
-            <span><b>Uniprot:</b> Received at {
-              new Date(lastUpdatedUniprot).toLocaleTimeString()
-            } </span>
-          }
-          {isFailedUniprot &&
-            <span><b>Uniprot:</b> Failed </span>
-          }
-        </p>
+        {(failed || ready) &&
+          <a
+            href="#"
+            className={style.refresh}
+            onClick={e => this.handleRefreshClick(e)}
+          ><i className="material-icons">refresh</i></a>
+        }
+        <DataCheckerItem
+          name="Aquaria"
+          didFail={dataHealth.aquaria.didFail}
+          isFetching={dataHealth.aquaria.isFetching}
+          didInvalidate={dataHealth.aquaria.didInvalidate}
+        />
+        <DataCheckerItem
+          name="PDB"
+          didFail={dataHealth.pdb.didFail}
+          isFetching={dataHealth.pdb.isFetching}
+          didInvalidate={dataHealth.pdb.didInvalidate}
+        />
+        <DataCheckerItem
+          name="Uniprot"
+          didFail={dataHealth.uniprot.didFail}
+          isFetching={dataHealth.uniprot.isFetching}
+          didInvalidate={dataHealth.uniprot.didInvalidate}
+        />
       </div>
     )
   }
 }
 
 DataChecker.propTypes = {
-  isFetchingPDB: PropTypes.bool.isRequired,
-  isFailedPDB: PropTypes.bool,
-  lastUpdatedPDB: PropTypes.number,
-  isFetchingAquaria: PropTypes.bool,
-  isFailedAquaria: PropTypes.bool,
-  lastUpdatedAquaria: PropTypes.number,
-  isFetchingUniprot: PropTypes.bool.isRequired,
-  isFailedUniprot: PropTypes.bool,
-  lastUpdatedUniprot: PropTypes.number,
+  dataHealth: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
   selectedSequence: PropTypes.string.isRequired,
 }

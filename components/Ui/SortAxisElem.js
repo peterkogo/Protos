@@ -12,22 +12,25 @@ class SortAxisElem extends React.Component {
   }
 
   handleUpDown(e, up) {
+    const { selectedSequence } = this.props
     if (up) {
       if (this.props) {
-        this.props.dispatch(changeAxisPosFromTo(this.props.pos, this.props.pos - 1))
+        this.props.dispatch(
+          changeAxisPosFromTo(selectedSequence, this.props.pos, this.props.pos - 1))
       }
     } else {
-      this.props.dispatch(changeAxisPosFromTo(this.props.pos, this.props.pos + 1))
+      this.props.dispatch(changeAxisPosFromTo(selectedSequence, this.props.pos, this.props.pos + 1))
     }
   }
 
   handleClick(e) {
+    const { selectedSequence } = this.props
     e.preventDefault()
     if (this.props.active) {
-      this.props.dispatch(deselectAxis())
+      this.props.dispatch(deselectAxis(selectedSequence))
     } else {
-      this.props.dispatch(deselectAxis())
-      this.props.dispatch(selectAxis(this.props.id))
+      this.props.dispatch(deselectAxis(selectedSequence))
+      this.props.dispatch(selectAxis(selectedSequence, this.props.id))
     }
   }
 
@@ -53,7 +56,7 @@ class SortAxisElem extends React.Component {
         >
           <i className={style.icons}>keyboard_arrow_down</i>
         </button>
-        <a style={bold} onClick={(e => this.handleClick(e))}>
+        <a style={bold} className={style.text} onClick={(e => this.handleClick(e))}>
           {name}
         </a>
       </div>
@@ -68,6 +71,7 @@ SortAxisElem.propTypes = {
   dispatch: PropTypes.func.isRequired,
   active: PropTypes.bool.isRequired,
   id: PropTypes.string.isRequired,
+  selectedSequence: PropTypes.string.isRequired,
 }
 
 export default SortAxisElem

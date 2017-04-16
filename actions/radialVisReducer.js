@@ -6,12 +6,12 @@ import { SELECT_AXIS, DESELECT_AXIS,
 import { INITIAL_ORDER } from './ActionDefaults'
 
 
-function createAxisOrder(uniprotData) {
-  const keys = Object.keys(uniprotData)
+function createAxisOrder(features) {
+  const keys = Object.keys(features)
   const ordered = []
   INITIAL_ORDER.forEach((elem) => {
     keys.some((key) => {
-      if (elem === uniprotData[key].name) {
+      if (elem === features[key].name) {
         ordered.push(key)
         return true
       }
@@ -19,7 +19,7 @@ function createAxisOrder(uniprotData) {
     })
   })
   keys.forEach((key) => {
-    if (INITIAL_ORDER.indexOf(uniprotData[key].name) === -1) {
+    if (INITIAL_ORDER.indexOf(features[key].name) === -1) {
       ordered.push(key)
     }
   })

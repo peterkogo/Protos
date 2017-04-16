@@ -27,27 +27,33 @@ class MainApp extends React.Component {
   }
 
   render() {
-    const { selectedSequence, ui,
-            currentSequenceData, dispatch, visState } = this.props
+    const { selectedSequence, ui, currentSequenceData, dispatch } = this.props
     return (
       <div className={style.maxHeight}>
-        {typeof currentSequenceData.aquaria !== 'undefined' &&
-        <div className={style.visWrapper}>
-          <RadialVis
-            ui={ui}
+        {typeof currentSequenceData.proteinData !== 'undefined' &&
+          typeof currentSequenceData.proteinData.features !== 'undefined' &&
+          typeof currentSequenceData.visState !== 'undefined' &&
+          <div className={style.visWrapper}>
+            <RadialVis
+              ui={ui}
+              selectedSequence={selectedSequence}
+              dispatch={dispatch}
+              visState={currentSequenceData.visState}
+              proteinData={currentSequenceData.proteinData}
+            />
+          </div>
+        }
+        { typeof currentSequenceData.proteinData !== 'undefined' &&
+        typeof currentSequenceData.proteinData.features !== 'undefined' &&
+          typeof currentSequenceData.visState !== 'undefined' &&
+          typeof currentSequenceData.visState.order !== 'undefined' &&
+          <Ui
             selectedSequence={selectedSequence}
             currentSequenceData={currentSequenceData}
             dispatch={dispatch}
-            visState={visState}
+            visState={currentSequenceData.visState}
           />
-        </div>
         }
-        <Ui
-          selectedSequence={selectedSequence}
-          currentSequenceData={currentSequenceData}
-          dispatch={dispatch}
-          visState={visState}
-        />
       </div>
     )
   }

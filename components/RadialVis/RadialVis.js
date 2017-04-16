@@ -55,23 +55,26 @@ class RadialVis extends React.PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!this.createdAxisOrder && nextProps.currentSequenceData.uniprot.data) {
+    const proteinData = nextProps.proteinData
+    if (!this.createdAxisOrder && proteinData.features) {
       this.createdAxisOrder = true
-      this.props.dispatch(createAxisOrder(nextProps.currentSequenceData.uniprot.data))
+      this.props.dispatch(
+        createAxisOrder(nextProps.selectedSequence, proteinData.features))
     }
   }
 
   handleClick(e, featureAxis) {
+    const { selectedSequence, visState, dispatch } = this.props
     if (!this.wasDragged && e.nativeEvent.target.className.baseVal !== 'feature') {
-      if (featureAxis === this.props.visState.selectedAxis) {
-        if (this.props.visState.selectedFeature === '') {
-          this.props.dispatch(deselectAxisFeature())
+      if (featureAxis === visState.selectedAxis) {
+        if (visState.selectedFeature === '') {
+          dispatch(deselectAxisFeature(selectedSequence))
         } else {
-          this.props.dispatch(deselectFeature())
+          dispatch(deselectFeature(selectedSequence))
         }
       } else {
-        this.props.dispatch(deselectAxisFeature())
-        this.props.dispatch(selectAxis(featureAxis))
+        dispatch(deselectAxisFeature(selectedSequence))
+        dispatch(selectAxis(selectedSequence, featureAxis))
       }
     }
     this.wasDragged = false
@@ -145,8 +148,7 @@ class RadialVis extends React.PureComponent {
   }
 
   render() {
-    const { ui, selectedSequence, currentSequenceData, visState, dispatch } = this.props
-    const { pdb, aquaria, uniprot } = currentSequenceData
+    const { ui, selectedSequence, visState, dispatch, proteinData } = this.props
     const { order } = visState
 
     const size = this.calculateRadius(MAXNUMAXIS - 1) + SVGMARGIN
@@ -158,12 +160,12 @@ class RadialVis extends React.PureComponent {
 
     return (
       <div className={style.parent} >
-        {uniprot.data &&
+        {proteinData.features &&
         <ProteinViewer
           d={pvDiameter}
           selectedSequence={selectedSequence}
           ui={ui}
-          pdb={pdb}
+          pdb={proteinData.pdb}
           dispatch={dispatch}
         />
         }
@@ -195,7 +197,7 @@ class RadialVis extends React.PureComponent {
             </mask>
           </defs>
           <g transform={centerOrigin} mask="url(#radialVisMask)">
-            {uniprot.data && visState.order &&
+            {proteinData.features && visState.order &&
               order.slice(order.length - (MAXNUMAXIS - 1), order.length).map((feature, i) => {
                 const diameter = this.calculateRadius(i)
                 return (
@@ -208,46 +210,42 @@ class RadialVis extends React.PureComponent {
                     onClick={e => this.handleClick(e, feature)}
                   >
                     <FeatureAxis
-                      ref={(c) => { this[feature.id] = c }}
                       d={diameter}
-                      features={uniprot.data[feature].features}
-                      geneLength={uniprot.chainLength}
+                      features={proteinData.features[feature].features}
+                      geneLength={proteinData.length}
                       id={feature}
-                      name={uniprot.data[feature].name}
+                      name={proteinData.features[feature].name}
                       fillColor={FEATUREFILLCOLORS[i % FEATUREFILLCOLORS.length]}
                       dispatch={dispatch}
                       visState={visState}
+                      selectedSequence={selectedSequence}
                     />
                   </g>
                 )
               })
             }
-            {uniprot.data && aquaria.alignment &&
+            {proteinData.features && proteinData.chains &&
               <MainAxis
                 ref={(c) => { this.mainAxis = c }}
                 onClick={e => this.handleClick(e)}
-                alignment={aquaria.alignment}
+                chains={proteinData.chains}
                 d={this.calculateRadius(MAXNUMAXIS - 1)}
-                geneLength={uniprot.chainLength}
+                geneLength={proteinData.length}
                 id={this.state.mainAxisKey}
               />
             }
           </g>
         </svg>
         {
-          uniprot.data && aquaria.alignment &&
+          proteinData.features &&
           <ParallelCoordinates
             d={pvDiameter}
             maxD={this.calculateRadius(MAXNUMAXIS - 1) - STRUCTURESIZE}
-            data={uniprot.data}
-            geneLength={uniprot.chainLength}
-            selectedAxis={visState.selectedAxis}
-            selectedFeature={visState.selectedFeature}
+            proteinData={proteinData}
+            rotating={this.beingDragged}
+            rotation={this.oldAngle}
             ui={ui}
             visState={visState}
-            rotation={this.oldAngle}
-            rotating={this.beingDragged}
-            alignment={aquaria.alignment}
           />
         }
       </div>
@@ -256,14 +254,7 @@ class RadialVis extends React.PureComponent {
 }
 
 RadialVis.propTypes = {
-  currentSequenceData: PropTypes.shape({
-    aquaria: PropTypes.object.isRequired,
-    isFetchingAquaria: PropTypes.bool.isRequired,
-    isFetchingPDB: PropTypes.bool.isRequired,
-    isFetchingUniprot: PropTypes.bool.isRequired,
-    pdb: PropTypes.string.isRequired,
-    uniprot: PropTypes.object.isRequired,
-  }).isRequired,
+  proteinData: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
   selectedSequence: PropTypes.string.isRequired,
   ui: PropTypes.object.isRequired,

@@ -5,7 +5,7 @@ import style from './UI.css'
 
 import Header from './Header'
 import Selector from './Selector'
-import DataChecker from './Datachecker'
+import DataChecker from './DataChecker'
 import DataViewer from './DataViewer'
 import SortAxis from './SortAxis'
 
@@ -28,15 +28,7 @@ const Ui = (props) => {
         />
         <div className={style.bottom}>
           <DataChecker
-            isFetchingPDB={currentSequenceData.isFetchingPDB}
-            isFailedPDB={currentSequenceData.isFailedPDB}
-            lastUpdatedPDB={currentSequenceData.lastUpdatedPDB}
-            isFetchingAquaria={currentSequenceData.isFetchingAquaria}
-            isFailedAquaria={currentSequenceData.isFailedAquaria}
-            lastUpdatedAquaria={currentSequenceData.lastUpdatedAquaria}
-            isFetchingUniprot={currentSequenceData.isFetchingUniprot}
-            isFailedUniprot={currentSequenceData.isFailedUniprot}
-            lastUpdatedUniprot={currentSequenceData.lastUpdatedUniprot}
+            dataHealth={currentSequenceData.proteinDataHealth}
             dispatch={dispatch}
             selectedSequence={selectedSequence}
           />
@@ -46,15 +38,13 @@ const Ui = (props) => {
         <div className={style.right}>
           <SortAxis
             visState={visState}
-            uniprot={currentSequenceData.uniprot}
+            features={currentSequenceData.proteinData.features}
             dispatch={dispatch}
+            selectedSequence={selectedSequence}
           />
           <DataViewer
-            uniprot={currentSequenceData.uniprot}
-            aquaria={currentSequenceData.aquaria}
-            pdb={currentSequenceData.pdb}
-            visState={visState}
-            dispatch={dispatch}
+            visState={currentSequenceData.visState}
+            proteinData={currentSequenceData.proteinData}
           />
         </div>
       }

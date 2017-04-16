@@ -112,3 +112,31 @@ export default function (xml) {
 
   return { chainLength, data, selectedAxis, fullData }
 }
+
+export function parseUniprot2(xml) {
+  const parsed = deepParse(xml)
+  const members = Object.getOwnPropertyNames(parsed)
+  const chainLength = parseInt(parsed.Chain.Features[0].Residues[1], 10)
+
+  const data = {}
+  members.forEach((member) => {
+    const id = uID('featureData')
+    const features = {}
+    parsed[member].Features.forEach((feature) => {
+      const featureID = uID('feature')
+      if (typeof feature.Residue !== 'undefined') {
+        features[featureID] = [parseInt(feature.Residue[0], 10), parseInt(feature.Residue[0], 10)]
+      } else if (typeof feature.Residues !== 'undefined') {
+        features[featureID] = [parseInt(feature.Residues[0], 10), parseInt(feature.Residues[1], 10)]
+      } else {
+        features[featureID] = ['error', 'error']
+      }
+    })
+    data[id] = {
+      name: member,
+      features,
+    }
+  })
+
+  return { chainLength, data }
+}

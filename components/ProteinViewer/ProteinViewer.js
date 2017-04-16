@@ -56,7 +56,7 @@ class ProteinViewer extends React.PureComponent {
       quality: 'high',
     })
     this.viewer = viewer
-    this.props.dispatch(initProteinViewer(viewer))
+    this.props.dispatch(initProteinViewer(this.props.selectedSequence, viewer))
   }
 
   initStructure(selectedSequence, pdb, optionalViewer) {
@@ -77,7 +77,7 @@ class ProteinViewer extends React.PureComponent {
     // viewer.autoZoom()
     viewer.setZoom(200)
 
-    this.props.dispatch(initProteinStructure(structure))
+    this.props.dispatch(initProteinStructure(this.props.selectedSequence, structure))
   }
 
   render() {

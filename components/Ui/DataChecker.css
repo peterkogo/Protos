@@ -1,4 +1,6 @@
-.dataChecker p {
-  margin-bottom: -5px;
-  font-size: 0.9em;
+.refresh {
+  margin-bottom: -25px;
+  font-size: 0.3em;
+  color: rgb(0, 0, 0);
+  display: inline-block;
 }

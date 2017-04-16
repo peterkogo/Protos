@@ -3,6 +3,17 @@
   margin-top: 30px;
 }
 
+.title {
+  font-weight: 700;
+  font-size: 1.1em;
+  text-align: center;
+}
+
+.hr {
+  width: 70%;
+  margin: 3px auto 8px;
+}
+
 .elem {
   margin: 0;
   padding: 0;
@@ -40,4 +51,8 @@
   word-wrap: normal;
   white-space: nowrap;
   direction: ltr;
+}
+
+.text {
+  margin-left: 5px;
 }

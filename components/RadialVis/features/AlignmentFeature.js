@@ -10,18 +10,6 @@ import { STRUCTURESIZE, STRUCTURESTROKE,
  */
 class AlignmentFeature extends React.Component {
 
-  // TODO Make generally applicable
-  static getAngle(alignment) {
-    const first = new RegExp('(.*);.*;')
-    const second = new RegExp('.*:.*:(.*):.*:(.*):.*,.*')
-    const firstText = alignment.match(first)[1]
-    const startStop = firstText.match(second)
-    return {
-      start: startStop[1],
-      end: startStop[2],
-    }
-  }
-
   componentWillMount() {
     const ID = uID('tooltip')
     this.setState({
@@ -51,7 +39,7 @@ class AlignmentFeature extends React.Component {
 
     const r = Math.floor(d * 0.5)
 
-    const { start, end } = AlignmentFeature.getAngle(alignment)
+    const { start, end } = alignment
 
     // Scale that maps nucleotides on arc
     const scale = d3.scaleLinear()
@@ -104,7 +92,7 @@ AlignmentFeature.defaultProps = {
 }
 
 AlignmentFeature.propTypes = {
-  alignment: PropTypes.string.isRequired,
+  alignment: PropTypes.object.isRequired,
   d: PropTypes.number.isRequired,
   axisGap: PropTypes.number.isRequired,
   geneLength: PropTypes.number.isRequired,

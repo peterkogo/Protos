@@ -60,6 +60,7 @@ class Selector extends React.Component {
           htmlFor="matchingStruct"
         >
           Matching Structure
+                  </label>
           <br />
           <input
             className={style.input}
@@ -70,7 +71,6 @@ class Selector extends React.Component {
             value={this.state.matchingStructInput}
             onChange={e => this.handleChange(e)}
           />
-        </label>
         <br />
         <button type="submit" className={style.button} >
           Show Protein

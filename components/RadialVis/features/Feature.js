@@ -37,6 +37,7 @@ class Feature extends React.Component {
     .style('padding', '1px 3px 1px 3px')
     .style('border-radius', '2px')
     .style('transition', 'opacity 0.2s ease')
+    .style('pointer-events', 'none')
     .text('')
   }
 
@@ -89,11 +90,12 @@ class Feature extends React.Component {
   }
 
   handleClick(e, id) {
+    const { selectedSequence } = this.props
     if (this.props.visState.selectedAxis === this.props.axisID
         && this.props.visState.selectedFeature === id) {
-      this.props.dispatch(deselectAxisFeature())
+      this.props.dispatch(deselectAxisFeature(selectedSequence))
     } else {
-      this.props.dispatch(selectAxisFeature(this.props.axisID, id))
+      this.props.dispatch(selectAxisFeature(selectedSequence, this.props.axisID, id))
     }
   }
 
@@ -126,6 +128,7 @@ Feature.propTypes = {
   axisID: PropTypes.string.isRequired,
   dispatch: PropTypes.func.isRequired,
   visState: PropTypes.object.isRequired,
+  selectedSequence: PropTypes.string.isRequired,
 }
 
 export default Feature
