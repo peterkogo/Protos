@@ -13,17 +13,16 @@ import parseUniprot2 from './parsers/parseUniprot'
 import parseAquaria from './parsers/parseAquaria'
 
 function sequenceData(state = {
-  didInvalidate: false,
-  isFetchingAquaria: true,
-  isFetchingPDB: true,
-  isFetchingUniprot: true,
-  aquaria: {},
-  pdb: '',
-  uniprot: {},
   proteinDataHealth: {
-    aquaria: {},
-    pdb: {},
-    uniprot: {},
+    aquaria: {
+      lastUpdated: '',
+    },
+    pdb: {
+      lastUpdated: '',
+    },
+    uniprot: {
+      lastUpdated: '',
+    },
   },
   proteinData: {
     pdb: '',
@@ -39,7 +38,17 @@ function sequenceData(state = {
   switch (action.type) {
     case INVALIDATE_SEQUENCE_DATA:
       return Object.assign({}, state, {
-        didInvalidate: true,
+        proteinDataHealth: Object.assign({}, state.proteinDataHealth, {
+          aquaria: Object.assign({}, state.proteinDataHealth.aquaria, {
+            didInvalidate: true,
+          }),
+          uniprot: Object.assign({}, state.proteinDataHealth.uniprot, {
+            didInvalidate: true,
+          }),
+          pdb: Object.assign({}, state.proteinDataHealth.pdb, {
+            didInvalidate: true,
+          }),
+        }),
       })
     // AQUARIA
     case REQUEST_AQUARIA:
@@ -51,9 +60,6 @@ function sequenceData(state = {
             didInvalidate: false,
           }),
         }),
-        isFetchingAquaria: true,
-        isFailedAquaria: false,
-        didInvalidate: false,
       })
     case RECEIVE_AQUARIA:
       return Object.assign({}, state, {
@@ -62,15 +68,11 @@ function sequenceData(state = {
             isFetching: false,
             didFail: false,
             didInvalidate: false,
+            lastUpdated: action.receivedAt,
           }),
         }),
-        isFetchingAquaria: false,
-        isFailedAquaria: false,
-        didInvalidate: false,
-        aquaria: action.aquaria,
         proteinData: Object.assign({}, state.proteinData,
             parseAquaria(action.aquaria)),
-        lastUpdatedAquaria: action.receivedAt,
       })
     case FAIL_AQUARIA:
       return Object.assign({}, state, {
@@ -80,8 +82,6 @@ function sequenceData(state = {
             didFail: true,
           }),
         }),
-        isFetchingAquaria: false,
-        isFailedAquaria: true,
       })
     // PDB
     case REQUEST_PDB:
@@ -93,9 +93,6 @@ function sequenceData(state = {
             didInvalidate: false,
           }),
         }),
-        isFetchingPDB: true,
-        isFailedPDB: false,
-        didInvalidate: false,
       })
     case RECEIVE_PDB:
       return Object.assign({}, state, {
@@ -104,13 +101,9 @@ function sequenceData(state = {
             isFetching: false,
             didFail: false,
             didInvalidate: false,
+            lastUpdated: action.receivedAt,
           }),
         }),
-        isFetchingPDB: false,
-        isFailedPDB: false,
-        didInvalidate: false,
-        pdb: `${action.pdb}`,
-        lastUpdatedPDB: action.receivedAt,
         proteinData: Object.assign({}, state.proteinData, {
           pdb: action.pdb }),
       })
@@ -122,8 +115,6 @@ function sequenceData(state = {
             didFail: true,
           }),
         }),
-        isFetchingPDB: false,
-        isFailedPDB: true,
       })
     // UNIPROT
     case REQUEST_UNIPROT:
@@ -135,9 +126,6 @@ function sequenceData(state = {
             didInvalidate: false,
           }),
         }),
-        isFetchingUniprot: true,
-        isFailedUniprot: false,
-        didInvalidate: false,
       })
     case RECEIVE_UNIPROT: {
       const uniprot = parseUniprot2(action.uniprot)
@@ -147,13 +135,9 @@ function sequenceData(state = {
             isFetching: false,
             didFail: false,
             didInvalidate: false,
+            lastUpdated: action.receivedAt,
           }),
         }),
-        isFetchingUniprot: false,
-        isFailedUniprot: false,
-        didInvalidate: false,
-        uniprot: parseUniprot(action.uniprot),
-        lastUpdatedUniprot: action.receivedAt,
         proteinData: Object.assign({}, state.proteinData, {
           features: uniprot.data,
           length: uniprot.chainLength,
@@ -168,8 +152,6 @@ function sequenceData(state = {
             didFail: true,
           }),
         }),
-        isFetchingUniprot: false,
-        isFailedUniprot: true,
       })
     default:
       return state

@@ -15,7 +15,7 @@ class SortAxis extends React.Component {
           Lane Order
         </div>
         <hr className={style.hr} />
-        {order.map((elem, i, arr) => {
+        {features[order[1]] && order.map((elem, i, arr) => {
           return (
             <SortAxisElem
               name={features[elem].name}

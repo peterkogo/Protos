@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { changeAxisPosFromTo, selectAxis, deselectAxis } from '../../actions/radialVis'
+import { changeAxisPosFromTo, selectAxis, deselectAxisFeature } from '../../actions/radialVis'
 import style from './SortAxis.css'
 
 class SortAxisElem extends React.Component {
@@ -27,9 +27,9 @@ class SortAxisElem extends React.Component {
     const { selectedSequence } = this.props
     e.preventDefault()
     if (this.props.active) {
-      this.props.dispatch(deselectAxis(selectedSequence))
+      this.props.dispatch(deselectAxisFeature(selectedSequence))
     } else {
-      this.props.dispatch(deselectAxis(selectedSequence))
+      this.props.dispatch(deselectAxisFeature(selectedSequence))
       this.props.dispatch(selectAxis(selectedSequence, this.props.id))
     }
   }

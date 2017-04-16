@@ -34,7 +34,7 @@ const Ui = (props) => {
           />
         </div>
       </div>
-      {currentSequenceData.uniprot.data && visState.order &&
+      {currentSequenceData.proteinData.features && visState.order &&
         <div className={style.right}>
           <SortAxis
             visState={visState}

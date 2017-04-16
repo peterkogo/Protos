@@ -40,6 +40,7 @@ class MainApp extends React.Component {
               dispatch={dispatch}
               visState={currentSequenceData.visState}
               proteinData={currentSequenceData.proteinData}
+              proteinDataHealth={currentSequenceData.proteinDataHealth}
             />
           </div>
         }
@@ -60,42 +61,23 @@ class MainApp extends React.Component {
 }
 
 MainApp.propTypes = {
-  currentSequenceData: PropTypes.shape({
-    aquaria: PropTypes.object.isRequired,
-    didInvalidate: PropTypes.bool.isRequired,
-    isFetchingAquaria: PropTypes.bool.isRequired,
-    isFetchingPDB: PropTypes.bool.isRequired,
-    isFetchingUniprot: PropTypes.bool.isRequired,
-    pdb: PropTypes.string.isRequired,
-    uniprot: PropTypes.object.isRequired,
-  }),
+  currentSequenceData: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
   selectedSequence: PropTypes.string.isRequired,
   ui: PropTypes.object.isRequired,
-  visState: PropTypes.object.isRequired,
 }
 
 MainApp.defaultProps = {
-  currentSequenceData: {
-    aquaria: {},
-    pdb: '',
-    uniprot: {},
-    isFetchingAquaria: true,
-    isFetchingPDB: true,
-    isFetchingUniprot: true,
-    didInvalidate: false,
-  },
+  currentSequenceData: {},
 }
 
 function mapStateToProps(state) {
-  const { selectedSequence, dataBySequence, dataVisibility, ui, visState } = state
+  const { selectedSequence, dataBySequence, ui } = state
   const currentSequenceData = dataBySequence[selectedSequence]
   return {
     selectedSequence,
     currentSequenceData,
-    dataVisibility,
     ui,
-    visState,
   }
 }
 

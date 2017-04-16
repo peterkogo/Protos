@@ -16,6 +16,7 @@ class ProteinViewer extends React.PureComponent {
     super(props)
     this.initStructure = this.initStructure.bind(this)
     this.initViewer = this.initViewer.bind(this)
+    this.receivedAt = 0
   }
 
   componentDidMount() {
@@ -43,7 +44,9 @@ class ProteinViewer extends React.PureComponent {
     }
 
     // Change Structure if needed
-    if (nextProps.pdb && nextProps.pdb.length > 0 && nextProps.pdb !== this.props.pdb) {
+    if (nextProps.pdb && nextProps.pdb.length > 0
+      && nextProps.pdbHealth.receivedAt !== this.receivedAt) {
+      this.receivedAt = nextProps.pdbHealth.receivedAt
       this.initStructure(nextProps.selectedSequence, nextProps.pdb, this.viewer)
     }
   }
@@ -109,6 +112,7 @@ ProteinViewer.propTypes = {
   d: PropTypes.number.isRequired,
   dispatch: PropTypes.func.isRequired,
   pdb: PropTypes.string.isRequired,
+  pdbHealth: PropTypes.object.isRequired,
   selectedSequence: PropTypes.string.isRequired,
   ui: PropTypes.object.isRequired,
 }

@@ -28,7 +28,20 @@ class Selector extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault()
-    const nextSequence = `${this.state.proteinInput}#${this.state.matchingStructInput}`
+    const { selectedSequence } = this.props
+    const selSeq = selectedSequence.split('#')
+    let protein = this.state.proteinInput.trim()
+    let structure = this.state.matchingStructInput.trim()
+
+    if (protein === '') {
+      protein = selSeq[0]
+    }
+
+    if (structure === '') {
+      structure = selSeq[1]
+    }
+
+    const nextSequence = `${protein}#${structure}`
     this.props.dispatch(selectSequence(nextSequence))
   }
 

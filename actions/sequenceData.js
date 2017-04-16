@@ -153,12 +153,20 @@ function fetchSequenceData(sequence) {
 
 function shouldFetchSequence(state, sequence) {
   const sequences = state.dataBySequence[sequence]
+
   if (!sequences) {
     return true
-  } else if (sequences.aquaria.isFetching || sequences.pdb.isFetching) {
+  }
+
+  const health = sequences.proteinDataHealth
+  const { aquaria, uniprot, pdb } = health
+
+  if (!aquaria.receivedAt || !uniprot.receivedAt || !pdb.receivedAt) {
+    return true
+  } else if (aquaria.isFetching || uniprot.isFetching || pdb.isFetching) {
     return false
   }
-  return sequences.didInvalidate
+  return (aquaria.didInvalidate || uniprot.didInvalidate || pdb.didInvalidate)
 }
 
 export function fetchSequenceIfNeeded(sequence) {
