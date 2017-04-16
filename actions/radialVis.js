@@ -9,71 +9,93 @@ export const INIT_PROTEIN_STRUCTURE = 'INIT_PROTEIN_STRUCTURE'
 export const CHANGE_AXIS_POS_TO = 'CHANGE_AXIS_POS_TO'
 export const CREATE_AXIS_ORDER = 'CREATE_AXIS_ORDER'
 
-export function selectAxis(axis) {
+export const VIS_ACTION_GROUP = 'VIS_ACTION_GROUP'
+
+export function selectAxis(sequence, axis) {
   return {
     type: SELECT_AXIS,
+    group: VIS_ACTION_GROUP,
     axis,
+    sequence,
   }
 }
 
-export function deselectAxis() {
+export function deselectAxis(sequence) {
   return {
     type: DESELECT_AXIS,
+    group: VIS_ACTION_GROUP,
+    sequence,
   }
 }
 
-export function selectFeature(feature) {
+export function selectFeature(sequence, feature) {
   return {
     type: SELECT_FEATURE,
+    group: VIS_ACTION_GROUP,
     feature,
+    sequence,
   }
 }
 
-export function deselectFeature() {
+export function deselectFeature(sequence) {
   return {
     type: DESELECT_FEATURE,
+    group: VIS_ACTION_GROUP,
+    sequence,
   }
 }
 
-export function selectAxisFeature(axis, feature) {
+export function selectAxisFeature(sequence, axis, feature) {
   return {
     type: SELECT_AXIS_FEATURE,
+    group: VIS_ACTION_GROUP,
     axis,
     feature,
+    sequence,
   }
 }
 
-export function deselectAxisFeature() {
+export function deselectAxisFeature(sequence) {
   return {
     type: DESELECT_AXIS_FEATURE,
+    group: VIS_ACTION_GROUP,
+    sequence,
   }
 }
 
-export function initProteinViewer(viewer) {
+export function initProteinViewer(sequence, viewer) {
   return {
     type: INIT_PROTEIN_VIEWER,
+    group: VIS_ACTION_GROUP,
     viewer,
+    sequence,
   }
 }
 
-export function initProteinStructure(structure) {
+export function initProteinStructure(sequence, structure) {
   return {
     type: INIT_PROTEIN_STRUCTURE,
+    group: VIS_ACTION_GROUP,
     structure,
+    sequence,
   }
 }
 
-export function changeAxisPosFromTo(from, to) {
+export function changeAxisPosFromTo(sequence, from, to) {
   return {
     type: CHANGE_AXIS_POS_TO,
+    group: VIS_ACTION_GROUP,
     from,
     to,
+    sequence,
   }
 }
 
-export function createAxisOrder(uniprotData) {
+export function createAxisOrder(sequence, uniprotData) {
   return {
     type: CREATE_AXIS_ORDER,
+    group: VIS_ACTION_GROUP,
     uniprotData,
+    sequence,
   }
 }

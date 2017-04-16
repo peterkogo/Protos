@@ -1,0 +1,23 @@
+.name {
+  font-weight: 700;
+  font-size: 0.8em;
+  width: 3.5em;
+  display: inline-block;
+}
+
+.elem {
+  margin-left: 1em;
+  font-size: 0.8em;
+}
+
+.error {
+  color: red;
+}
+
+.success {
+  color: green;
+}
+
+.loading {
+  color: grey;
+}

@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import * as d3 from 'd3'
 import { AXISGAP, AXISCOLOR, AXISSIZE,
         FONTCOLOR, FONTSIZE, FONTOFFSET,
@@ -116,7 +117,8 @@ class FeatureAxis extends React.Component {
   }
 
   render() {
-    const { d, geneLength, features, fillColor, dispatch, id, visState } = this.props
+    const { d, geneLength, features, fillColor, dispatch,
+      id, visState, selectedSequence } = this.props
 
     let keys = []
     if (features) {
@@ -141,6 +143,7 @@ class FeatureAxis extends React.Component {
             fillColor={fillColor}
             dispatch={dispatch}
             visState={visState}
+            selectedSequence={selectedSequence}
           />
           ))
         }
@@ -172,6 +175,7 @@ FeatureAxis.propTypes = {
   fillColor: PropTypes.string,
   dispatch: PropTypes.func.isRequired,
   visState: PropTypes.object.isRequired,
+  selectedSequence: PropTypes.string.isRequired,
 }
 
 export default FeatureAxis

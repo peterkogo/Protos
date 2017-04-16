@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import * as d3 from 'd3'
 import uID from 'lodash.uniqueid'
 import { FEATURESIZE, FEATURESTROKE,
@@ -30,10 +31,13 @@ class Feature extends React.Component {
     .style('top', '0')
     .style('left', '0')
     .style('z-index', '10')
-    .style('visibility', 'hidden')
-    .style('background-color', 'white')
+    .style('font-size', '1em')
+    .style('opacity', '0')
+    .style('background-color', 'rgba(250, 250, 250, 0.9)')
     .style('padding', '1px 3px 1px 3px')
-    .style('border-style', 'solid')
+    .style('border-radius', '2px')
+    .style('transition', 'opacity 0.2s ease')
+    .style('pointer-events', 'none')
     .text('')
   }
 
@@ -79,18 +83,19 @@ class Feature extends React.Component {
     .text(`'${start} - '${stop} `)
 
     group.selectAll('path')
-    .on('mouseover', () => tooltip.style('visibility', 'visible'))
+    .on('mouseover', () => tooltip.style('opacity', '1'))
     .on('mousemove', () =>
           tooltip.style('top', `${event.pageY - 10}px`).style('left', `${event.pageX + 10}px`))
-    .on('mouseout', () => tooltip.style('visibility', 'hidden'))
+    .on('mouseout', () => tooltip.style('opacity', '0'))
   }
 
   handleClick(e, id) {
+    const { selectedSequence } = this.props
     if (this.props.visState.selectedAxis === this.props.axisID
         && this.props.visState.selectedFeature === id) {
-      this.props.dispatch(deselectAxisFeature())
+      this.props.dispatch(deselectAxisFeature(selectedSequence))
     } else {
-      this.props.dispatch(selectAxisFeature(this.props.axisID, id))
+      this.props.dispatch(selectAxisFeature(selectedSequence, this.props.axisID, id))
     }
   }
 
@@ -123,6 +128,7 @@ Feature.propTypes = {
   axisID: PropTypes.string.isRequired,
   dispatch: PropTypes.func.isRequired,
   visState: PropTypes.object.isRequired,
+  selectedSequence: PropTypes.string.isRequired,
 }
 
 export default Feature

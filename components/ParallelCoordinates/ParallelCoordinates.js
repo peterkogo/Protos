@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import { vec4 } from 'gl-matrix'
 import * as d3 from 'd3'
 import style from '../ProteinViewer/ProteinViewer.css'
@@ -6,18 +7,6 @@ import { AXISGAP } from '../Defaults'
 
 /* eslint no-underscore-dangle: 0 */
 class ParallelCoordinates extends React.PureComponent {
-
-  // TODO Move to reducer
-  static getAngle(alignment) {
-    const first = new RegExp('(.*);.*;')
-    const second = new RegExp('.*:.*:(.*):.*:(.*):.*,.*')
-    const firstText = alignment.match(first)[1]
-    const startStop = firstText.match(second)
-    return {
-      start: startStop[1],
-      end: startStop[2],
-    }
-  }
 
   constructor(props) {
     super(props)
@@ -36,7 +25,7 @@ class ParallelCoordinates extends React.PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { visState, geneLength, data, d, rotation, maxD, alignment } = nextProps
+    const { visState, proteinData, d, rotation, maxD } = nextProps
 
     if (typeof visState.viewer !== 'undefined' &&
         typeof visState.structure !== 'undefined') {
@@ -48,9 +37,10 @@ class ParallelCoordinates extends React.PureComponent {
         this.refresh()
       }
 
-      if (data && geneLength && visState.selectedAxis) {
-        this.updateFeaturePositions(d, maxD, data, visState.selectedAxis, visState.selectedFeature,
-                                    rotation, geneLength, ParallelCoordinates.getAngle(alignment))
+      if (proteinData && visState.selectedAxis) {
+        this.updateFeaturePositions(d, maxD, proteinData.features, visState.selectedAxis,
+          visState.selectedFeature, rotation, proteinData.length,
+          proteinData.chains.B)
       }
     }
   }
@@ -69,7 +59,7 @@ class ParallelCoordinates extends React.PureComponent {
     // Update Positions if scale is initialized and no positions initialized yet
     // or if the selected Feature is changed
     if (this.scale &&
-      (!this.featurePositions || selectedAxis !== this.props.selectedAxis
+      (!this.featurePositions || selectedAxis !== this.props.visState.selectedAxis
         || this.refreshedScale || rotation !== this.currentRotation
         || d !== this.currentDiameterInner || maxD !== this.currentDiameterOuter)) {
       this.refreshedScale = false
@@ -122,7 +112,7 @@ class ParallelCoordinates extends React.PureComponent {
   refresh() {
     const newView = this.viewer._cam._camModelView
 
-    if (this.props.selectedAxis && this.featurePositions
+    if (this.props.visState.selectedAxis && this.featurePositions
         && (newView.toString() !== this.oldView || this.refreshedPositions)) {
       // Rects get only cleared if something was selected before
       if (!this.wasSelected) {
@@ -171,7 +161,7 @@ class ParallelCoordinates extends React.PureComponent {
       this.refreshedPositions = false
     }
 
-    if (!this.props.selectedAxis && this.wasSelected) {
+    if (!this.props.visState.selectedAxis && this.wasSelected) {
       // // Rects get only cleared if something was selected before
       const ctxInner = this.canvasInner.getContext('2d')
       ctxInner.clearRect(0, 0, this.canvasInner.width, this.canvasInner.height)
@@ -216,14 +206,12 @@ class ParallelCoordinates extends React.PureComponent {
 
 ParallelCoordinates.propTypes = {
   d: PropTypes.number.isRequired,
-  data: PropTypes.object.isRequired,
-  geneLength: PropTypes.number.isRequired,
-  selectedAxis: PropTypes.string.isRequired, // rename to selectedFeature
+  maxD: PropTypes.number.isRequired,
+  proteinData: PropTypes.object.isRequired,
+  rotating: PropTypes.bool.isRequired,
+  rotation: PropTypes.number.isRequired,
   ui: PropTypes.object.isRequired,
   visState: PropTypes.object.isRequired,
-  rotation: PropTypes.number.isRequired,
-  rotating: PropTypes.bool.isRequired,
-  alignment: PropTypes.string.isRequired,
 }
 
 export default ParallelCoordinates

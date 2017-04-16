@@ -1,23 +1,31 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 
 import SortAxisElem from './SortAxisElem'
 import style from './SortAxis.css'
 
 class SortAxis extends React.Component {
   render() {
-    const { visState, uniprot, dispatch } = this.props
+    const { visState, features, dispatch, selectedSequence } = this.props
     const order = visState.order.slice().reverse()
 
     return (
       <div className={style.parent}>
-        {order.map((elem, i) => {
+        <div className={style.title}>
+          Lane Order
+        </div>
+        <hr className={style.hr} />
+        {features[order[1]] && order.map((elem, i, arr) => {
           return (
             <SortAxisElem
-              name={uniprot.data[elem].name}
+              name={features[elem].name}
+              active={(elem === visState.selectedAxis)}
               key={elem}
               id={elem}
               pos={i}
+              lastPos={arr.length - 1}
               dispatch={dispatch}
+              selectedSequence={selectedSequence}
             />
           )
         })}
@@ -28,8 +36,9 @@ class SortAxis extends React.Component {
 
 SortAxis.propTypes = {
   visState: PropTypes.object.isRequired,
-  uniprot: PropTypes.object.isRequired,
+  features: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
+  selectedSequence: PropTypes.string.isRequired,
 }
 
 export default SortAxis

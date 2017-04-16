@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import * as d3 from 'd3'
 import { AXISGAP, AXISCOLOR, AXISSIZE,
         FONTCOLOR, FONTSIZE, FONTOFFSET } from '../Defaults'
@@ -95,10 +96,10 @@ class MainAxis extends React.Component {
     return (
       <g className={style.groups}>
         <g ref={(c) => { this.group = c }} />
-        {this.props.alignment &&
+        {this.props.chains.B &&
           <AlignmentFeature
             d={d}
-            alignment={this.props.alignment}
+            alignment={this.props.chains.B}
             axisGap={axisGap}
             geneLength={geneLength}
           />
@@ -118,7 +119,7 @@ MainAxis.defaultProps = {
 }
 
 MainAxis.propTypes = {
-  alignment: PropTypes.string.isRequired,
+  chains: PropTypes.object.isRequired,
   axisColor: PropTypes.string,
   axisGap: PropTypes.number,
   axisSize: PropTypes.number,
