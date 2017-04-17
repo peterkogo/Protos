@@ -140,7 +140,7 @@ class RadialVis extends React.PureComponent {
 
   calculateRadius(i) {
     const { ui } = this.props
-    const margin = 50
+    const margin = SVGMARGIN - 1
     // const marginBetween = 100
     const size = ((ui.windowWidth > ui.windowHeight) ? ui.windowHeight : ui.windowWidth) - margin
     const a = 0
@@ -152,7 +152,8 @@ class RadialVis extends React.PureComponent {
   }
 
   render() {
-    const { ui, selectedSequence, visState, dispatch, proteinData, proteinDataHealth } = this.props
+    const { ui, selectedSequence, visState, dispatch,
+      proteinData, proteinDataHealth, variants } = this.props
     const { order } = visState
 
     const size = this.calculateRadius(MAXNUMAXIS - 1) + SVGMARGIN
@@ -237,6 +238,8 @@ class RadialVis extends React.PureComponent {
                 d={this.calculateRadius(MAXNUMAXIS - 1)}
                 geneLength={proteinData.length}
                 id={this.state.mainAxisKey}
+                variants={variants}
+                dispatch={dispatch}
               />
             }
           </g>
@@ -265,6 +268,7 @@ RadialVis.propTypes = {
   ui: PropTypes.object.isRequired,
   visState: PropTypes.object.isRequired,
   proteinDataHealth: PropTypes.object.isRequired,
+  variants: PropTypes.object,
 }
 
 export default RadialVis

@@ -5,6 +5,8 @@ import { AXISGAP, AXISCOLOR, AXISSIZE,
         FONTCOLOR, FONTSIZE, FONTOFFSET } from '../Defaults'
 
 import AlignmentFeature from './features/AlignmentFeature'
+import Variant from './features/Variant'
+import VariantCluster from './features/VariantCluster'
 
 import style from './RadialVis.css'
 
@@ -92,7 +94,8 @@ class MainAxis extends React.Component {
   }
 
   render() {
-    const { d, axisGap, geneLength } = this.props
+    const { d, axisGap, geneLength, variants, dispatch } = this.props
+    const keys = Object.keys(variants)
     return (
       <g className={style.groups}>
         <g ref={(c) => { this.group = c }} />
@@ -103,6 +106,20 @@ class MainAxis extends React.Component {
             axisGap={axisGap}
             geneLength={geneLength}
           />
+        }
+        { this.props.variants &&
+          keys.map((key) => {
+            return (
+              <VariantCluster
+                key={key}
+                d={d}
+                axisGap={axisGap}
+                geneLength={geneLength}
+                cluster={variants[key]}
+                dispatch={dispatch}
+              />
+            )
+          })
         }
       </g>
     )
@@ -129,6 +146,8 @@ MainAxis.propTypes = {
   geneLength: PropTypes.number.isRequired,
   id: PropTypes.string.isRequired,
   numLabels: PropTypes.number,
+  variants: PropTypes.object,
+  dispatch: PropTypes.func.isRequired,
 }
 
 export default MainAxis

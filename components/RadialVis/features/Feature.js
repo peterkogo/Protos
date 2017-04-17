@@ -18,7 +18,7 @@ class Feature extends React.Component {
   }
 
   componentWillMount() {
-    const ID = uID('feature')
+    const ID = uID('featureTooltip')
     this.setState({
       ID,
     })

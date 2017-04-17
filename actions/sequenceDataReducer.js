@@ -34,6 +34,42 @@ function sequenceData(state = {
     selectedFeature: '',
     order: [],
   },
+  variants: {
+    cluster1: {
+      prevDist: 5,
+      nextDist: 10,
+      center: 121,
+      variants: {
+        name1: {
+          pos: 120,
+          type: 'stop',
+          known: false,
+          knownType: {},
+          refAA: 'S',
+          varAA: 'T',
+          class: 'uncharged?',
+        },
+        name2: {
+          pos: 121,
+          type: 'stop',
+          known: false,
+          knownType: {},
+          refAA: 'S',
+          varAA: 'T',
+          class: 'uncharged?',
+        },
+        name3: {
+          pos: 122,
+          type: 'stop',
+          known: false,
+          knownType: {},
+          refAA: 'S',
+          varAA: 'T',
+          class: 'uncharged?',
+        },
+      },
+    },
+  },
 }, action) {
   switch (action.type) {
     case INVALIDATE_SEQUENCE_DATA:

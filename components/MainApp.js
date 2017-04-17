@@ -41,6 +41,7 @@ class MainApp extends React.Component {
               visState={currentSequenceData.visState}
               proteinData={currentSequenceData.proteinData}
               proteinDataHealth={currentSequenceData.proteinDataHealth}
+              variants={currentSequenceData.variants}
             />
           </div>
         }
@@ -68,7 +69,19 @@ MainApp.propTypes = {
 }
 
 MainApp.defaultProps = {
-  currentSequenceData: {},
+  currentSequenceData: {
+    variants: {
+      name1: {
+        pos: 116,
+        type: 'stop',
+        known: false,
+        knownType: {},
+        refAA: 'S',
+        varAA: 'T',
+        class: 'uncharged?',
+      },
+    },
+  },
 }
 
 function mapStateToProps(state) {
