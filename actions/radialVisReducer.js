@@ -2,7 +2,8 @@ import { SELECT_AXIS, DESELECT_AXIS,
         INIT_PROTEIN_VIEWER, INIT_PROTEIN_STRUCTURE,
         SELECT_FEATURE, DESELECT_FEATURE,
         SELECT_AXIS_FEATURE, DESELECT_AXIS_FEATURE,
-        CHANGE_AXIS_POS_TO, CREATE_AXIS_ORDER } from './radialVis'
+        CHANGE_AXIS_POS_TO, CREATE_AXIS_ORDER,
+        SELECT_VARIANT, DESELECT_VARIANT } from './radialVis'
 import { INITIAL_ORDER } from './ActionDefaults'
 
 
@@ -38,12 +39,7 @@ function changeAxisPosTo(from, to, order) {
   return newOrder
 }
 
-export function visState(state = {
-  selectedAxis: '',
-  viewer: {},
-  selectedFeature: '',
-  order: [],
-}, action) {
+export function visState(state, action) {
   switch (action.type) {
     case SELECT_AXIS:
       return Object.assign({}, state, {
@@ -70,6 +66,16 @@ export function visState(state = {
       return Object.assign({}, state, {
         selectedFeature: '',
         selectedAxis: '',
+      })
+    case SELECT_VARIANT:
+      return Object.assign({}, state, {
+        selectedVariant: action.variant,
+        selectedCluster: action.cluster,
+      })
+    case DESELECT_VARIANT:
+      return Object.assign({}, state, {
+        selectedVariant: '',
+        selectedCluster: '',
       })
     case INIT_PROTEIN_VIEWER:
       return Object.assign({}, state, {

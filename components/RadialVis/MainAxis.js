@@ -94,7 +94,7 @@ class MainAxis extends React.Component {
   }
 
   render() {
-    const { d, axisGap, geneLength, variants, dispatch } = this.props
+    const { d, axisGap, geneLength, variants, dispatch, visState, selectedSequence } = this.props
     const keys = Object.keys(variants)
     return (
       <g className={style.groups}>
@@ -112,11 +112,14 @@ class MainAxis extends React.Component {
             return (
               <VariantCluster
                 key={key}
+                id={key}
                 d={d}
                 axisGap={axisGap}
                 geneLength={geneLength}
                 cluster={variants[key]}
                 dispatch={dispatch}
+                visState={visState}
+                selectedSequence={selectedSequence}
               />
             )
           })
@@ -148,6 +151,8 @@ MainAxis.propTypes = {
   numLabels: PropTypes.number,
   variants: PropTypes.object,
   dispatch: PropTypes.func.isRequired,
+  visState: PropTypes.object.isRequired,
+  selectedSequence: PropTypes.string.isRequired,
 }
 
 export default MainAxis

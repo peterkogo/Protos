@@ -2,10 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import * as d3 from 'd3'
 import uID from 'lodash.uniqueid'
-import { FEATURESIZE, FEATURESTROKE,
-        FEATUREFILLCOLOR, FEATURESTROKECOLOR,
-      FEATUREWIDTH, AXISGAP } from '../../Defaults'
-import { selectAxisFeature, deselectAxisFeature } from '../../../actions/radialVis'
+import { FEATURESIZE, VARIANTCIRCLER, VARIANTFONTSIZE, PATHSIZE, KNOWNCOLOR,
+  VARIANTDIST, VARIANTFONTCENTER, VARIANTSYMBOLSIZE, AXISGAP } from '../../Defaults'
+import { selectVariant, deselectVariant, deselectAxisFeature } from '../../../actions/radialVis'
 
 /**
  * Matching Structure Component
@@ -15,6 +14,7 @@ class Variant extends React.Component {
   constructor() {
     super()
     this.handleClick = this.handleClick.bind(this)
+    this.initiated = false
   }
 
   componentWillMount() {
@@ -49,44 +49,127 @@ class Variant extends React.Component {
 
     const r = Math.floor(d * 0.5)
 
-    const arc = d3.arc()
-                  .innerRadius(r)
-                  .outerRadius(r)
-                  .startAngle((0 + AXISGAP) * (Math.PI / 180))
-                  .endAngle((360 - AXISGAP) * (Math.PI / 180))
-
-    group.selectAll('path')
-        .attr('d', arc)
-        .attr('stroke-width', '0')
-        .attr('id', '')
-        // .attr('class', 'feature')
-        .data(Array(1))
-        .enter()
-        .append('path')
-            .attr('d', arc)
-            .attr('stroke-width', '0')
-            .attr('id', '')
-            // .attr('class', 'feature')
-        .exit()
-        .remove()
-
-    const path = group.selectAll('path').node()
-
     // Scale that maps nucleotides on arc
-    const scale = d3.scaleLinear()
+    const scale2 = d3.scaleLinear()
                       .domain([0, geneLength])
-                      .range([0, path.getTotalLength() * 0.5])
+                      .range([(-90 + AXISGAP) * (Math.PI / 180),
+                        ((270 - AXISGAP) * (Math.PI / 180))])
 
-    const position = path.getPointAtLength(scale(variant.pos))
+    const scale3 = d3.scaleLinear()
+                      .domain([0, geneLength])
+                      .range([(0 + AXISGAP),
+                        ((360 - AXISGAP))])
+    const x = ((r + FEATURESIZE * 0.5) * Math.cos(scale2(variant.pos)))
+    const y = ((r + FEATURESIZE * 0.5) * Math.sin(scale2(variant.pos)))
+    const rot = scale3(variant.pos)
+
+    // const circle2 = group.append('circle')
+    //                       .attr('cx', x)
+    //                       .attr('cy', y)
+    //                       .attr('r', 3)
+    //                       .style('fill', 'red')
+
+    const poly = [{ x: 0.0, y: 7 },
+                  { x: 5.0, y: -VARIANTDIST },
+                  { x: -5.0, y: -VARIANTDIST }]
+
+    const circle3 = group.selectAll('polygon')
+                    .data([poly])
+                    .enter().append('polygon')
+                    .attr('points', ps => ps.map(p => [p.x, p.y].join(',')).join(' '))
+                    .attr('fill', 'black')
+                    // .attr('stroke-width', 0)
+
+    const circle1 = group.append('circle')
+                          .attr('cx', 0)
+                          .attr('cy', -VARIANTDIST)
+                          .attr('r', VARIANTCIRCLER)
+                          .attr('fill', 'white')
+                          .attr('stroke', 'black')
+                          .attr('stroke-width', '1')
+    const text = group.append('text')
+                      .attr('dy', -VARIANTFONTCENTER[0] + VARIANTDIST)
+                      .attr('dx', -VARIANTFONTCENTER[1])
+                      .text(variant.varAA)
+                      .style('font-size', VARIANTFONTSIZE)
+                      .style('font-weight', '500')
+                      .style('text-align', 'center')
+
+    const circle2 = group.append('circle')
+                          .attr('cx', 0)
+                          .attr('cy', -(VARIANTCIRCLER * 2) - VARIANTDIST)
+                          .attr('r', VARIANTCIRCLER)
+                          .attr('fill', 'white')
+                          .attr('stroke', 'black')
+                          .attr('stroke-width', '1')
+
+    const text2 = group.append('text')
+                      .attr('dy', -(VARIANTCIRCLER * 2) - VARIANTFONTCENTER[0] + VARIANTDIST)
+                      .attr('dx', -VARIANTFONTCENTER[1])
+                      .text(variant.refAA)
+                      .style('font-size', VARIANTFONTSIZE)
+                      .style('font-weight', '500')
+                      .style('text-align', 'center')
+
+    let symbol = d3.symbolSquare
+
+    switch (variant.type) {
+      case 'stop':
+        symbol = d3.symbol().type(d3.symbolSquare).size(VARIANTSYMBOLSIZE)
+        break
+      case 'indel': {
+        const height = PATHSIZE * 1.5
+        const offset = height * 0.5
+        symbol = `M 0 ${offset} L -${PATHSIZE} ${-height + offset}
+                  L ${PATHSIZE} ${-height + offset} L 0 ${offset} Z`
+        break
+      }
+      case 'deletion': {
+        const offset = Math.floor(PATHSIZE * 0.3)
+        const size = 2
+        symbol = `M -${PATHSIZE} ${-offset + size} L -${PATHSIZE} ${-offset - size}
+                  L ${PATHSIZE} ${-offset - size} L ${PATHSIZE} ${-offset + size}
+                  L -${PATHSIZE} ${-offset + size} Z`
+        break
+      }
+      case 'insertion':
+        symbol = d3.symbol().type(d3.symbolCross).size(VARIANTSYMBOLSIZE)
+        break
+      case 'splice':
+        symbol = d3.symbol().type(d3.symbolStar).size(VARIANTSYMBOLSIZE)
+        break
+      case 'frameshift':
+        symbol = d3.symbol().type(d3.symbolWye).size(VARIANTSYMBOLSIZE)
+        break
+      case 'nonsynonym': {
+        const offset = Math.floor(PATHSIZE * 0.3)
+        const size = 2
+        symbol = `M ${-offset + size} -${PATHSIZE} L ${-offset - size} -${PATHSIZE}
+                  L ${-offset - size} ${PATHSIZE} L ${-offset + size} ${PATHSIZE}
+                  L ${-offset + size} -${PATHSIZE} Z`
+        break
+      }
+      default:
+        break
+    }
+
+    let color = 'black'
+    if (variant.known) {
+      color = KNOWNCOLOR
+    }
+    group.append('path')
+      .attr('d', symbol)
+      .attr('fill', color)
+      .attr('transform', `translate(0, -${(4 * VARIANTCIRCLER) + VARIANTDIST})`)
+
+    group.attr('transform', `translate(${x},${y}) rotate(${rot})`)
+
+    if (!this.initiated) {
+      this.forceUpdate()
+      this.initiated = true
+    }
 
 
-    console.log(position)
-
-    const circle = group.append('circle')
-                          .attr('cx', position.x)
-                          .attr('cy', position.y)
-                          .attr('r', 3)
-                          .style('fill', 'black')
     // const tooltip = d3.select(`#${this.state.ID}`)
     // .text(`'${start} - '${stop} `)
     //
@@ -98,36 +181,43 @@ class Variant extends React.Component {
   }
 
   handleClick(e, id) {
-    const { selectedSequence } = this.props
-    if (this.props.visState.selectedAxis === this.props.axisID
-        && this.props.visState.selectedFeature === id) {
-      this.props.dispatch(deselectAxisFeature(selectedSequence))
+    const { selectedSequence, selectedVariant, cluster, selectedCluster } = this.props
+    if (selectedVariant === id && selectedCluster === cluster) {
+      this.props.dispatch(deselectVariant(selectedSequence))
     } else {
-      this.props.dispatch(selectAxisFeature(selectedSequence, this.props.axisID, id))
+      this.props.dispatch(deselectAxisFeature(selectedSequence))
+      this.props.dispatch(selectVariant(selectedSequence, cluster, id))
     }
   }
 
   render() {
-    const { id } = this.props
+    const { id, selectedVariant, cluster, selectedCluster } = this.props
+    let opacity = {}
+    if (selectedVariant !== '' &&
+      (selectedVariant !== id || cluster !== selectedCluster)) {
+      opacity = {
+        opacity: 0.5,
+      }
+    }
     return (
       <g
         ref={(c) => { this.group = c }}
         className="variant"
         onClick={e => this.handleClick(e, id)}
+        style={opacity}
       />
     )
   }
 }
 
-Variant.defaultProps = {
-  fillColor: FEATUREFILLCOLOR,
-  strokeColor: FEATURESTROKECOLOR,
-}
-
 Variant.propTypes = {
   d: PropTypes.number.isRequired,
   geneLength: PropTypes.number.isRequired,
-  // id: PropTypes.string.isRequired,
+  selectedSequence: PropTypes.string.isRequired,
+  selectedVariant: PropTypes.string.isRequired,
+  selectedCluster: PropTypes.string.isRequired,
+  cluster: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
   // axisID: PropTypes.string.isRequired,
   dispatch: PropTypes.func.isRequired,
   // visState: PropTypes.object.isRequired,

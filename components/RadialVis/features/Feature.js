@@ -5,7 +5,7 @@ import uID from 'lodash.uniqueid'
 import { FEATURESIZE, FEATURESTROKE,
         FEATUREFILLCOLOR, FEATURESTROKECOLOR,
       FEATUREWIDTH } from '../../Defaults'
-import { selectAxisFeature, deselectAxisFeature } from '../../../actions/radialVis'
+import { selectAxisFeature, deselectAxisFeature, deselectVariant } from '../../../actions/radialVis'
 
 /**
  * Matching Structure Component
@@ -80,7 +80,12 @@ class Feature extends React.Component {
         .remove()
 
     const tooltip = d3.select(`#${this.state.ID}`)
-    .text(`'${start} - '${stop} `)
+
+    if (start === stop) {
+      tooltip.text(`'${start}`)
+    } else {
+      tooltip.text(`'${start} - '${stop} `)
+    }
 
     group.selectAll('path')
     .on('mouseover', () => tooltip.style('opacity', '1'))
@@ -95,6 +100,7 @@ class Feature extends React.Component {
         && this.props.visState.selectedFeature === id) {
       this.props.dispatch(deselectAxisFeature(selectedSequence))
     } else {
+      this.props.dispatch(deselectVariant(selectedSequence))
       this.props.dispatch(selectAxisFeature(selectedSequence, this.props.axisID, id))
     }
   }

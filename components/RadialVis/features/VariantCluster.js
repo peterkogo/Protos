@@ -55,7 +55,7 @@ class VariantCluster extends React.Component {
   }
 
   render() {
-    const { cluster, geneLength, d, dispatch, id } = this.props
+    const { cluster, geneLength, d, dispatch, id, selectedSequence, visState } = this.props
     const keys = Object.keys(cluster.variants)
     return (
       <g
@@ -67,10 +67,15 @@ class VariantCluster extends React.Component {
           return (
             <Variant
               key={key}
+              id={key}
               d={d}
               geneLength={geneLength}
               variant={cluster.variants[key]}
               dispatch={dispatch}
+              selectedSequence={selectedSequence}
+              cluster={id}
+              selectedVariant={visState.selectedVariant}
+              selectedCluster={visState.selectedCluster}
             />
           )
         })}
@@ -83,10 +88,11 @@ VariantCluster.propTypes = {
   d: PropTypes.number.isRequired,
   axisGap: PropTypes.number.isRequired,
   geneLength: PropTypes.number.isRequired,
-  // id: PropTypes.string.isRequired,
+  selectedSequence: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
   // axisID: PropTypes.string.isRequired,
   dispatch: PropTypes.func.isRequired,
-  // visState: PropTypes.object.isRequired,
+  visState: PropTypes.object.isRequired,
   // selectedSequence: PropTypes.string.isRequired,
   cluster: PropTypes.object.isRequired,
 }

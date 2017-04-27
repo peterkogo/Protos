@@ -4,6 +4,8 @@ export const SELECT_FEATURE = 'SELECT_FEATURE'
 export const DESELECT_FEATURE = 'DESELECT_FEATURE'
 export const SELECT_AXIS_FEATURE = 'SELECT_AXIS_FEATURE'
 export const DESELECT_AXIS_FEATURE = 'DESELECT_AXIS_FEATURE'
+export const SELECT_VARIANT = 'SELECT_VARIANT'
+export const DESELECT_VARIANT = 'DESELECT_VARIANT'
 export const INIT_PROTEIN_VIEWER = 'INIT_PROTEIN_VIEWER'
 export const INIT_PROTEIN_STRUCTURE = 'INIT_PROTEIN_STRUCTURE'
 export const CHANGE_AXIS_POS_TO = 'CHANGE_AXIS_POS_TO'
@@ -58,6 +60,24 @@ export function selectAxisFeature(sequence, axis, feature) {
 export function deselectAxisFeature(sequence) {
   return {
     type: DESELECT_AXIS_FEATURE,
+    group: VIS_ACTION_GROUP,
+    sequence,
+  }
+}
+
+export function selectVariant(sequence, cluster, variant) {
+  return {
+    type: SELECT_VARIANT,
+    group: VIS_ACTION_GROUP,
+    sequence,
+    cluster,
+    variant,
+  }
+}
+
+export function deselectVariant(sequence) {
+  return {
+    type: DESELECT_VARIANT,
     group: VIS_ACTION_GROUP,
     sequence,
   }

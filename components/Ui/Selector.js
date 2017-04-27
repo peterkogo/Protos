@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { selectSequence } from '../../actions/sequenceData'
+import { selectSequence, setVariants } from '../../actions/sequenceData'
 import style from './Selector.css'
 
 /**
@@ -12,10 +12,12 @@ class Selector extends React.Component {
     super(props)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleChange = this.handleChange.bind(this)
+    this.handleFileSelect = this.handleFileSelect.bind(this)
 
     this.state = {
       matchingStructInput: '',
       proteinInput: '',
+      chainInput: '',
     }
   }
 
@@ -32,6 +34,7 @@ class Selector extends React.Component {
     const selSeq = selectedSequence.split('#')
     let protein = this.state.proteinInput.trim()
     let structure = this.state.matchingStructInput.trim()
+    let chain = this.state.chainInput.trim()
 
     if (protein === '') {
       protein = selSeq[0]
@@ -41,8 +44,22 @@ class Selector extends React.Component {
       structure = selSeq[1]
     }
 
-    const nextSequence = `${protein}#${structure}`
+    if (chain === '') {
+      chain = selSeq[2]
+    }
+
+    const nextSequence = `${protein}#${structure}#${chain}`
     this.props.dispatch(selectSequence(nextSequence))
+  }
+
+  handleFileSelect(e) {
+    const { dispatch, selectedSequence } = this.props
+    const reader = new FileReader()
+    reader.onload = ((x) => {
+      const json = JSON.parse(x.currentTarget.result)
+      dispatch(setVariants(selectedSequence, json))
+    })
+    reader.readAsText(this.fileInput.files[0])
   }
 
   render() {
@@ -50,30 +67,31 @@ class Selector extends React.Component {
     const selSeq = selectedSequence.split('#')
 
     return (
-      <form onSubmit={e => this.handleSubmit(e)}>
-        <label
-          htmlFor="proteinInput"
-          className={style.label}
-        >
-          Protein
+      <div>
+        <form onSubmit={e => this.handleSubmit(e)}>
+          <label
+            htmlFor="proteinInput"
+            className={style.label}
+          >
+            Protein
+            <br />
+            <input
+              className={style.input}
+              id="proteinInput"
+              name="proteinInput"
+              type="text"
+              placeholder={selSeq[0]}
+              value={this.state.proteinInput}
+              onChange={e => this.handleChange(e)}
+            />
+          </label>
           <br />
-          <input
-            className={style.input}
-            id="proteinInput"
-            name="proteinInput"
-            type="text"
-            placeholder={selSeq[0]}
-            value={this.state.proteinInput}
-            onChange={e => this.handleChange(e)}
-          />
-        </label>
-        <br />
-        <label
-          className={style.label}
-          htmlFor="matchingStruct"
-        >
-          Matching Structure
-                  </label>
+          <label
+            className={style.label}
+            htmlFor="matchingStruct"
+          >
+            Matching Structure
+                    </label>
           <br />
           <input
             className={style.input}
@@ -84,11 +102,37 @@ class Selector extends React.Component {
             value={this.state.matchingStructInput}
             onChange={e => this.handleChange(e)}
           />
+          <br />
+          <label
+            className={style.label}
+            htmlFor="chain"
+          >
+            Chain
+                    </label>
+          <br />
+          <input
+            className={style.input}
+            id="chainInput"
+            name="chainInput"
+            type="text"
+            placeholder={selSeq[2]}
+            value={this.state.chainInput}
+            onChange={e => this.handleChange(e)}
+          />
+          <br />
+          <button type="submit" className={style.button} >
+            Show Protein
+          </button>
+        </form>
         <br />
-        <button type="submit" className={style.button} >
-          Show Protein
-        </button>
-      </form>
+        <input
+          type="file"
+          id="files"
+          name="files[]"
+          onChange={e => this.handleFileSelect(e)}
+          ref={(c) => { this.fileInput = c }}
+        />
+      </div>
     )
   }
 }

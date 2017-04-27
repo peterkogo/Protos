@@ -11,7 +11,8 @@ import ParallelCoordinates from '../ParallelCoordinates'
 
 import { SVGMARGIN, MAXNUMAXIS, FEATUREFILLCOLORS,
         OPACITYNOTSELECTED, STRUCTURESIZE, FEATURESIZE } from '../Defaults'
-import { selectAxis, deselectAxisFeature, deselectFeature, createAxisOrder } from '../../actions/radialVis'
+import { selectAxis, deselectAxisFeature, deselectFeature,
+          deselectVariant, createAxisOrder } from '../../actions/radialVis'
 
 /**
  * Main Component for the D3 Visualization
@@ -77,6 +78,7 @@ class RadialVis extends React.PureComponent {
           dispatch(deselectFeature(selectedSequence))
         }
       } else {
+        dispatch(deselectVariant(selectedSequence))
         dispatch(deselectAxisFeature(selectedSequence))
         dispatch(selectAxis(selectedSequence, featureAxis))
       }
@@ -240,6 +242,8 @@ class RadialVis extends React.PureComponent {
                 id={this.state.mainAxisKey}
                 variants={variants}
                 dispatch={dispatch}
+                visState={visState}
+                selectedSequence={selectedSequence}
               />
             }
           </g>
@@ -254,6 +258,7 @@ class RadialVis extends React.PureComponent {
             rotation={this.oldAngle}
             ui={ui}
             visState={visState}
+            variants={variants}
           />
         }
       </div>
