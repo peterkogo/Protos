@@ -125,13 +125,19 @@ class Selector extends React.Component {
           </button>
         </form>
         <br />
+        <label
+          htmlFor="proteinInput"
+          className={style.label}
+        >
+        Variants
         <input
           type="file"
-          id="files"
+          id="fileInput"
           name="files[]"
           onChange={e => this.handleFileSelect(e)}
           ref={(c) => { this.fileInput = c }}
         />
+        </label>
       </div>
     )
   }
