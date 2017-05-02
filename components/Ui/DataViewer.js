@@ -1,13 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import style from './DataViewer.css'
+import styl from './SortAxis.css'
 
 class DataViewer extends React.Component {
   render() {
     const { visState, proteinData } = this.props
     return (
-      <div className={style.dataViewerWrapper}>
-        <p className={style.header}>Currently Selected:</p>
+      <div className={styl.parent}>
+        <div className={styl.title}>Currently Selected</div>
+        <hr className={styl.hr} />
         {visState.selectedAxis && proteinData.features &&
           <p>
             {proteinData.features[visState.selectedAxis].name}
