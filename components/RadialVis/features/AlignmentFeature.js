@@ -5,6 +5,8 @@ import uID from 'lodash.uniqueid'
 import { STRUCTURESIZE, STRUCTURESTROKE,
         STRUCTUREFILLCOLOR, STRUCTURESTROKECOLOR } from '../../Defaults'
 
+import style from './Feature.css'
+
 /**
  * Matching AlignmentFeature Component
  */
@@ -16,19 +18,10 @@ class AlignmentFeature extends React.Component {
       ID,
     })
 
-    // TODO extract css
     d3.select('body')
     .append('div')
     .attr('id', ID)
-    .style('position', 'absolute')
-    .style('top', '0')
-    .style('left', '0')
-    .style('z-index', '10')
-    .style('visibility', 'hidden')
-    .style('background-color', 'white')
-    .style('padding', '1px 3px 1px 3px')
-    .style('border-style', 'solid')
-    .text('')
+    .attr('class', style.tooltip)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -54,10 +47,6 @@ class AlignmentFeature extends React.Component {
 
     group.selectAll('path')
         .attr('d', arc)
-        .attr('stroke-width', `${STRUCTURESTROKE}px`)
-        .attr('fill', fillColor)
-        .attr('stroke', strokeColor)
-        .attr('id', '')
         .data(Array(1))
         .enter()
         .append('path')
@@ -73,10 +62,10 @@ class AlignmentFeature extends React.Component {
     .text(`'${start} - '${end} `)
 
     group.selectAll('path')
-    .on('mouseover', () => tooltip.style('visibility', 'visible'))
+    .on('mouseover', () => tooltip.style('opacity', 1))
     .on('mousemove', () =>
-          tooltip.style('top', `${event.pageY - 10}px`).style('left', `${event.pageX + 10}px`))
-    .on('mouseout', () => tooltip.style('visibility', 'hidden'))
+          tooltip.style('transform', `translate(${event.pageX + 10}px, ${event.pageY - 10}px)`))
+    .on('mouseout', () => tooltip.style('opacity', 0))
   }
 
   render() {

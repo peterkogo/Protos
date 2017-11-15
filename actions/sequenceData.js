@@ -11,10 +11,46 @@ export const FAIL_PDB = 'FAIL_PDB'
 export const REQUEST_UNIPROT = 'REQUEST_UNIPROT'
 export const RECEIVE_UNIPROT = 'RECEIVE_UNIPROT'
 export const FAIL_UNIPROT = 'FAIL_UNIPROT'
+export const SET_VARIANTS = 'SET_VARIANTS'
+export const PARSE_VCF = 'PARSE_VCF'
+export const LOAD_VCF = 'LOAD_VCF'
 
 export const DATA_ACTION_GROUP = 'DATA_ACTION_GROUP'
 
 const timeout = 5000 // TODO timeout not working
+
+function parseVcf(sequence, vcf) {
+  return {
+    type: PARSE_VCF,
+    group: DATA_ACTION_GROUP,
+    sequence,
+    vcf,
+  }
+}
+
+function loadVcf(sequence) {
+  return {
+    type: LOAD_VCF,
+    group: DATA_ACTION_GROUP,
+    sequence,
+  }
+}
+
+export function readVcf(sequence, file) {
+  return (dispatch) => {
+    dispatch(loadVcf(sequence))
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => {
+        resolve(reader.result)
+      }
+      reader.onerror = (err) => {
+        reject(err)
+      }
+      reader.readAsText(file)
+    }).then(vcf => dispatch(parseVcf(sequence, vcf)))
+  }
+}
 
 export function selectSequence(sequence) {
   return {
@@ -109,12 +145,21 @@ function requestSequenceData(sequence) {
   }
 }
 
+export function setVariants(sequence, variants) {
+  return {
+    type: SET_VARIANTS,
+    group: DATA_ACTION_GROUP,
+    sequence,
+    variants,
+  }
+}
+
 function fetchSequenceData(sequence) {
-  const proteinMapping = sequence.split('#')
+  const selSeq = sequence.split('#')
   return (dispatch) => {
     dispatch(requestSequenceData(sequence))
     // Fetching PDB
-    fetch(`https://files.rcsb.org/download/${proteinMapping[1]}.pdb`, { timeout })
+    fetch(`https://files.rcsb.org/download/${selSeq[1]}.pdb`, { timeout })
       .then((response) => {
         if (!response.ok) {
           throw new Error(response.status)
@@ -127,7 +172,7 @@ function fetchSequenceData(sequence) {
       })
 
     // Fetching Aquria
-    fetch(`http://aquaria.ws/${proteinMapping[0]}/${proteinMapping[1]}/B.json`, { timeout })
+    fetch(`http://aquaria.ws/${selSeq[0]}/${selSeq[1]}/${selSeq[2]}.json`, { timeout })
       .then((response) => {
         if (!response.ok) {
           throw new Error(response.status)
@@ -138,7 +183,7 @@ function fetchSequenceData(sequence) {
       .then(json => dispatch(receiveAquaria(sequence, json)))
       .catch((e) => { dispatch(aquariaFailed(sequence, e.status)) })
 
-    fetch(`http://www.uniprot.org/uniprot/${proteinMapping[0]}.xml`, { timeout })
+    fetch(`http://www.uniprot.org/uniprot/${selSeq[0]}.xml`, { timeout })
       .then((response) => {
         if (!response.ok) {
           throw new Error(response.status)

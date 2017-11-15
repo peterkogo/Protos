@@ -28,13 +28,16 @@ class DataChecker extends React.Component {
   render() {
     const { dataHealth } = this.props
     const { aquaria, uniprot, pdb } = dataHealth
+    if (!aquaria) {
+      return (<div />)
+    }
     const failed = (aquaria.didFail || uniprot.didFail || pdb.didFail)
     const ready = ((!aquaria.isFetching && !aquaria.didFail && !aquaria.didInvalidate)
                     || (!uniprot.isFetching && !uniprot.didFail && !uniprot.didInvalidate)
                     || (!pdb.isFetching && !pdb.didFail && !pdb.didInvalidate))
     return (
       <div className={style.dataChecker}>
-        {(failed || ready) &&
+        {(failed || ready) && dataHealth.aquaria &&
           <a
             href="#"
             className={style.refresh}

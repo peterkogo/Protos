@@ -12,6 +12,8 @@ class ParallelCoordinates extends React.PureComponent {
     super(props)
     this.refresh = this.refresh.bind(this)
     this.updateFeaturePositions = this.updateFeaturePositions.bind(this)
+    this.updateVariantPosition = this.updateVariantPosition.bind(this)
+    this.updateScale = this.updateScale.bind(this)
 
     this.oldView = new Float32Array(4).fill(1)
     this.running = false
@@ -25,7 +27,11 @@ class ParallelCoordinates extends React.PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { visState, proteinData, d, rotation, maxD } = nextProps
+    const { visState, proteinData, d, rotation, maxD, variants } = nextProps
+
+    if (proteinData.length !== this.currentGeneLength || !this.scale) {
+      this.updateScale(proteinData.length)
+    }
 
     if (typeof visState.viewer !== 'undefined' &&
         typeof visState.structure !== 'undefined') {
@@ -37,11 +43,55 @@ class ParallelCoordinates extends React.PureComponent {
         this.refresh()
       }
 
-      if (proteinData && visState.selectedAxis) {
+      if (proteinData && visState.selectedAxis && visState.selectedVariant === '') {
         this.updateFeaturePositions(d, maxD, proteinData.features, visState.selectedAxis,
           visState.selectedFeature, rotation, proteinData.length,
           proteinData.chains.B)
       }
+
+      if (visState.selectedVariant !== '') {
+        this.updateVariantPosition(variants, visState.selectedCluster, visState.selectedVariant,
+          d, maxD, proteinData.chains.B, rotation)
+      }
+    }
+  }
+
+  updateVariantPosition(variants, cluster, variant, d, maxD, alignment, rotation) {
+    const pos = variants[cluster].variants[variant].pos
+    const rInner = Math.floor(d * 0.5)
+    const rOuter = Math.floor((maxD + 5) * 0.5)
+
+    if (pos >= alignment.start && pos <= alignment.end) {
+      const point = this.scale(pos) + rotation
+      const featurePositions = [{
+        start: pos,
+        end: pos,
+        centerResidue: pos - alignment.start,
+        innerXY: [
+          Math.floor((this.canvasInner.width * 0.5) + (Math.cos(point) * rInner)),
+          Math.floor((this.canvasInner.height * 0.5) + (Math.sin(point) * rInner)),
+        ],
+        outerXY: [
+          (this.canvasInner.width * 0.5) + (Math.cos(point) * rOuter),
+          (this.canvasInner.height * 0.5) + (Math.sin(point) * rOuter),
+        ],
+      }]
+      this.featurePositions = featurePositions
+      this.refreshedPositions = true
+    } else {
+      this.featurePositons = {}
+      this.featurePositions = []
+      this.refreshedPositions = true
+    }
+  }
+
+  updateScale(geneLength) {
+    if (geneLength !== this.currentGeneLength || !this.scale) {
+      // TODO for some reason calculation is shifted 90deg
+      this.scale = d3.scaleLinear()
+        .domain([0 + (geneLength * 0.25), geneLength * 1.25])
+        .range([0, ((2 * Math.PI) * ((360 - (AXISGAP * 2)) / 360))])
+      this.refreshedScale = true
     }
   }
 
@@ -112,7 +162,8 @@ class ParallelCoordinates extends React.PureComponent {
   refresh() {
     const newView = this.viewer._cam._camModelView
 
-    if (this.props.visState.selectedAxis && this.featurePositions
+    if ((this.props.visState.selectedAxis || this.props.visState.selectedVariant)
+        && this.featurePositions
         && (newView.toString() !== this.oldView || this.refreshedPositions)) {
       // Rects get only cleared if something was selected before
       if (!this.wasSelected) {
@@ -161,7 +212,8 @@ class ParallelCoordinates extends React.PureComponent {
       this.refreshedPositions = false
     }
 
-    if (!this.props.visState.selectedAxis && this.wasSelected) {
+    if (!this.props.visState.selectedAxis && !this.props.visState.selectedVariant
+        && this.wasSelected) {
       // // Rects get only cleared if something was selected before
       const ctxInner = this.canvasInner.getContext('2d')
       ctxInner.clearRect(0, 0, this.canvasInner.width, this.canvasInner.height)
@@ -212,6 +264,7 @@ ParallelCoordinates.propTypes = {
   rotation: PropTypes.number.isRequired,
   ui: PropTypes.object.isRequired,
   visState: PropTypes.object.isRequired,
+  variants: PropTypes.object,
 }
 
 export default ParallelCoordinates

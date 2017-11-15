@@ -3,14 +3,14 @@ import {
   REQUEST_AQUARIA, RECEIVE_AQUARIA,
   REQUEST_PDB, RECEIVE_PDB,
   FAIL_AQUARIA, FAIL_PDB,
-  REQUEST_UNIPROT, RECEIVE_UNIPROT,
-  FAIL_UNIPROT, DATA_ACTION_GROUP,
+  REQUEST_UNIPROT, RECEIVE_UNIPROT, LOAD_VCF, PARSE_VCF,
+  FAIL_UNIPROT, DATA_ACTION_GROUP, SET_VARIANTS,
 } from './sequenceData'
 import { VIS_ACTION_GROUP } from './radialVis'
 import { visState } from './radialVisReducer'
 import parseUniprot from './parsers/parseUniprot'
-import parseUniprot2 from './parsers/parseUniprot'
 import parseAquaria from './parsers/parseAquaria'
+import vcfParser, { parseData } from '../src/vcfParser'
 
 function sequenceData(state = {
   proteinDataHealth: {
@@ -23,6 +23,10 @@ function sequenceData(state = {
     uniprot: {
       lastUpdated: '',
     },
+    vcf: {
+      loading: false,
+      loaded: false,
+    },
   },
   proteinData: {
     pdb: '',
@@ -32,8 +36,12 @@ function sequenceData(state = {
     selectedAxis: '',
     viewer: {},
     selectedFeature: '',
+    selectedVariant: '',
+    selectedCluster: '',
     order: [],
+    showTable: false,
   },
+  variants: {},
 }, action) {
   switch (action.type) {
     case INVALIDATE_SEQUENCE_DATA:
@@ -128,7 +136,7 @@ function sequenceData(state = {
         }),
       })
     case RECEIVE_UNIPROT: {
-      const uniprot = parseUniprot2(action.uniprot)
+      const uniprot = parseUniprot(action.uniprot)
       return Object.assign({}, state, {
         proteinDataHealth: Object.assign({}, state.proteinDataHealth, {
           uniprot: Object.assign({}, state.proteinDataHealth.uniprot, {
@@ -153,6 +161,33 @@ function sequenceData(state = {
           }),
         }),
       })
+    case SET_VARIANTS:
+      return Object.assign({}, state, {
+        variants: action.variants,
+      })
+    case LOAD_VCF:
+      return Object.assign({}, state, {
+        proteinDataHealth: Object.assign({}, state.proteinDataHealth, {
+          vcf: {
+            loading: true,
+            loaded: false,
+          },
+        }),
+      })
+    case PARSE_VCF: {
+      const variants = []
+      return Object.assign({}, state, {
+        proteinDataHealth: Object.assign({}, state.proteinDataHealth, {
+          vcf: {
+            loading: false,
+            loaded: true,
+          },
+        }),
+        proteinData: Object.assign({}, state.proteinData, {
+          vcf: parseData(vcfParser(action.vcf)),
+        }),
+      })
+    }
     default:
       return state
   }
@@ -176,7 +211,6 @@ export function dataBySequence(state = {}, action) {
     case DATA_ACTION_GROUP:
     case VIS_ACTION_GROUP:
       return Object.assign({}, state, {
-        // [action.sequence]: sequenceData(state[action.sequence], action),
         [action.sequence]: subReducer(state[action.sequence], action),
       })
     default:
@@ -184,7 +218,7 @@ export function dataBySequence(state = {}, action) {
   }
 }
 
-export function selectedSequence(state = 'P04637#4qo1', action) {
+export function selectedSequence(state = 'P04637#4qo1#B', action) {
   switch (action.type) {
     case SELECT_SEQUENCE:
       return action.sequence

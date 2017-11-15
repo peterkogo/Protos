@@ -1,58 +1,85 @@
-# React Static Boilerplate &nbsp; <a href="https://travis-ci.org/kriasoft/react-static-boilerplate"><img src="http://img.shields.io/travis/kriasoft/react-static-boilerplate/master.svg?style=flat-square" height="20" /></a> <a href="https://github.com/kriasoft/react-static-boilerplate/stargazers"><img src="https://img.shields.io/github/stars/kriasoft/react-static-boilerplate.svg?style=social&label=Star&maxAge=3600" height="20"></a> <a href="https://twitter.com/ReactStatic"><img src="https://img.shields.io/twitter/follow/ReactStatic.svg?style=social&label=Follow&maxAge=3600" height="20"></a>
+# Protos
 
-[**React Static Boilerplate**](https://github.com/kriasoft/react-static-boilerplate) (RSB) is a
-boilerplate and tooling for creating modern stand-alone web applications (aka
-[SPA](https://en.wikipedia.org/wiki/Single-page_application)s) for a serverless architecture. RSB
-significantly reduces cost by eliminating the need for servers such as EC2 instances because the
-entire site can be hosted directly from CDN ([Firebase](https://www.firebase.com/), [GitHub
-Pages](https://pages.github.com/), [Amazon S3](http://docs.aws.amazon.com/AmazonS3/latest/dev/WebsiteHosting.html),
-or other similar cloud storage). Sites built with RSB can be fully functional with REST API or
-GraphQL calls to micro-services such as [Amazon Lambda](https://aws.amazon.com/lambda/),
-[Azure Functions](https://azure.microsoft.com/services/functions/), or dynamic Docker endpoints
-hosted on [DigitalOcean](https://www.digitalocean.com/?refcode=eef302dbae9f&utm_source=github&utm_medium=oss_sponsorships&utm_campaign=opencollective).
-RSB demonstrates how to use component-based UI development approach with best of breed
-technologies including [React](http://facebook.github.io/react/), [Redux](http://redux.js.org/),
-[Babel](http://babeljs.io/), [Webpack](https://webpack.github.io/), [Browsersync](https://browsersync.io/),
-[React Hot Loader](http://gaearon.github.io/react-hot-loader/) and more. **This work is being
-[sponsored](https://opencollective.com/react-static-boilerplate#support) by**:
+This is a web based application for inspecting the effects of gene variants on protein structures. The project is based on the [**React Static Boilerplate**](https://github.com/kriasoft/react-static-boilerplate) Code. <br/>
 
-<p align="center">
-  <a href="https://rollbar.com/?utm_source=reactstartkit(github)&utm_medium=link&utm_campaign=reactstartkit(github)" target="_blank">
-    <img src="https://koistya.github.io/files/rollbar-384x64.png" width="192" height="32">
-  </a>
-  <a href="https://localizejs.com/?cid=802&utm_source=rsk" target="_blank">
-    <img src="https://koistya.github.io/files/localize-353x64.png" width="176.5" height="32">
-  </a>
-  <a href="https://www.digitalocean.com/?refcode=eef302dbae9f&utm_source=github&utm_medium=oss_sponsorships&utm_campaign=opencollective" target="_blank">
-    <img src="https://koistya.github.io/files/digital-ocean-393x64.png" width="196.5" height="32">
-  </a>
-</p>
+<hr />
+
+1. [**General Information**](#general-information)
+    * [Technologies](#technologies)
+    * [Data Bases](#data-bases)
+    * [Directory Layout](#directory-layout)
+    * [Getting Started](#getting-started)
+    * [Further Information](#further-information)
+2. [**User Documentation**](#user-documentation)
+    * [What do I see?](#what-do-i-see)
+    * [Setup](#setup)
+    * [Controls](#controls)
+3. [**Developer Documentation**](#developer-documentation)
+    * [Understanding the Code](#understanding-the-code)
+    * [Notes for further Development](#notes-for-further-development)
+    * [Known Bugs](#known-bugs)
 
 
-### Features
+## **General Information**
 
-✓ Modern JavaScript syntax ([ES2015](http://babeljs.io/docs/learn-es2015/)+) via [Babel](http://babeljs.io/), modern CSS syntax via [PostCSS](https://github.com/postcss/postcss)<br>
-✓ Component-based UI architecture via [React](http://facebook.github.io/react/), [Webpack](https://webpack.github.io/) and [CSS Modules](https://github.com/css-modules/css-modules)<br>
-✓ Application state management /w time-travel debugging via [Redux](http://redux.js.org/) (see [`main.js`](src/main.js), [`store.js`](src/store.js))<br>
-✓ Routing and navigation via [`path-to-regexp`](https://github.com/pillarjs/path-to-regexp) and [`history`](https://github.com/mjackson/history) ([`main.js`](src/main.js), [`router.js`](src/router.js), [`tools/routes-loader.js`](tools/routes-loader.js))<br>
-✓ [Code-splitting](https://github.com/webpack/docs/wiki/code-splitting) and async chunk loading via [Webpack](https://webpack.github.io/) v2<br>
-✓ Hot Module Replacement ([HMR](https://webpack.github.io/docs/hot-module-replacement.html)) /w [React Hot Loader](http://gaearon.github.io/react-hot-loader/), cross-device testing with [Browsersync](https://browsersync.io/) (see [`run.js`](tools/run.js))<br>
-✓ **24/7** community support on [Gitter](https://gitter.im/kriasoft/react-static-boilerplate) + *perimum support* on [Skype](https://hatscripts.com/addskype?koistya) ([book a session](https://calendly.com/koistya))<br>
+### Technologies
 
-**View** [docs](./docs), [online demo](https://rsb.kriasoft.com) &nbsp;|&nbsp; **Follow us** on
-[Gitter](https://gitter.im/kriasoft/react-static-boilerplate), [Twitter](https://twitter.com/ReactStatic)
-or [ProductHunt](https://www.producthunt.com/tech/react-static-boilerplate) &nbsp;|&nbsp;
-**Learn** [React.js and ES6](#learn-reactjs-and-es6)
+[**React**](https://reactjs.org/) - Component based UI Framework <br/>
+[**Redux**](http://redux.js.org/) - Predictable State Container <br/>
+[**D3**](https://d3js.org/) - Data Driven Visualisation Library <br/>
 
+### Data Bases
+
+[**Aquaria**](http://aquaria.ws/) - Protein Structure Mapping <br/>
+[**UniProt**](www.uniprot.org/) - Protein Sequences and Features <br/>
+[**PDB**](https://rscb.org/) - Protein Structures <br/>
 
 ### Directory Layout
 
 ```shell
+├── actions/                    # Redux action/reducer folder
+|   ├── parsers/                # Aquaria and UniProt network response parsers
+│   ├── radialVis*              # Actions/Reducer for user interactions with the visualisation
+│   ├── rootReducer.js          # Mother of all reducers
+│   ├── sequenceData*           # Actions/Reducer for network responses and gene selection
+│   └── view*                   # Actions/Reducer for resizing window
+│
 ├── components/                 # Shared or generic UI components
 │   ├── Button/                 # Button component
 │   ├── Layout/                 # Website layout component
 │   ├── Link/                   # Link component to be used instead of <a>
-│   └── ...                     # etc.
+│   │
+│   ├── ParallelCoordinates/    # Rendering of paths on selection
+│   │   └── ParallelCoordinates.js
+│   │
+│   ├── ProteinViewer/          
+│   │   └── ProteinViewer.js    # PV Protein Viewer component
+│   │
+│   ├── RadialVis/              # Components of the Radial Visualisation
+│   │   ├── features/           # 'Feed' tab D3 components
+│   │   │   ├── AlignmentFeature.js  # Alignment Feature of MainAxis
+│   │   │   ├── Feature.js    # Feature component of Feature Axis
+│   │   │   ├── Variant.js    # Variant component displayed around MainAxis
+│   │   │   └── VariantCluster.js   # Variant container
+│   │   │
+│   │   ├── RadialVis.js        # Main component, Parent SVG component
+│   │   ├── MainAxis.js         # Outermost Axis depicting protein mapping
+│   │   └── FeatureAxis.js      # Feature Axes component
+│   │
+│   ├── UI/                     # UI components and containers
+│   │   ├── DataChecker.js      # Data Fetching information container
+│   │   ├── DataCheckerItem.js  # Component displaying data health of a single source
+│   │   ├── DataViewer.js       # Display of currently selected Axis
+│   │   ├── Header.js           # Title showing selected gene etc.
+│   │   ├── Selector.js         # Inputs for selecting gene, structure and chain
+│   │   ├── SortAxis.js         # Container for sorting Axes
+│   │   ├── SortAxisElem.js     # Component of a single Axis Sort list item
+│   │   ├── VariantTable.js     # Table for viewing .vcf content
+│   │   └── UI.js               # Main UI Container
+│   │
+│   ├── Defaults.js             # Default values
+│   └── MainApp.js              # <=== State entry point <===
+│
 ├── docs/                       # Documentation to the project
 ├── node_modules/               # 3rd-party libraries and utilities
 ├── src/                        # Application source code
@@ -77,110 +104,112 @@ or [ProductHunt](https://www.producthunt.com/tech/react-static-boilerplate) &nbs
 
 ### Getting Started
 
-**Step 1**. Make sure that you have [Node.js](https://nodejs.org/) v6 or newer and
+**Step 1** Make sure that you have [Node.js](https://nodejs.org/) v6 or newer and
 [Yarn](https://yarnpkg.com/) installed on your development machine.
 
-**Step 2**. Clone this repository (alternatively, use [Yeoman
-generator](https://github.com/kriasoft/react-static-boilerplate/tree/generator-react-static) to
-bootstrap your project):
+**Step 2** Install dependencies by running
 
 ```shell
-$ git clone -o react-static-boilerplate -b master --single-branch \
-      https://github.com/kriasoft/react-static-boilerplate.git MyApp
-$ cd MyApp
-$ yarn install                  # Install project dependencies listed in package.json
+$ yarn install                      # Compiles the app and opens it in a browser with "live reload"
 ```
 
-
-**Step 3**. Compile and launch your app by running:
+**Step 3** Compile and launch your app by running:
 
 ```shell
-$ yarn start                    # Compiles the app and opens it in a browser with "live reload"
+$ yarn start                      # Compiles the app and opens it in a browser with "live reload"
 ```
 
-You can also test your app in release (production) mode by running `yarn start -- --release` or
-with HMR and React Hot Loader disabled by running `yarn start -- --no-hmr`. The app should become
-available at [http://localhost:3000/](http://localhost:3000/).
+The app should become available at [http://localhost:3000/](http://localhost:3000/). Google Chrome browser is highly recommended.
 
-
-### How to Test
-
-The unit tests are powered by [chai](http://chaijs.com/) and [mocha](http://mochajs.org/).
+**Note** that the **Google Chrome must be started with disabled web security** for the site to fully work, because Aquaria does not support **Cross-Origin Resource Sharing**.
 
 ```shell
-$ yarn lint                     # Check JavaScript and CSS code for potential issues
-$ yarn test                     # Run unit tests. Or, `yarn run test:watch`
+# Starting Chrome with disabled Web Security (Any instance of Chrome must be closed)
+
+# Mac OS
+$ open -a /Applications/Google\ Chrome.app/ --args --disable-web-security --user-data-dir
+# Linux
+$ google-chrome --disable-web-security
+# Windows
+$ chrome.exe --disable-web-security
 ```
 
+### Further Information
 
-### How to Deploy
-
-Update `publish` script in the [`tools/publish.js`](tools/publish.js) file with your full Firebase
-project name as found in your [Firebase console](https://console.firebase.google.com/). Note that
-this may have an additional identifier suffix than the shorter name you've provided. Then run: 
-
-```shell
-$ yarn publish                  # Builds and deployes the app to Firebase
-```
-
-The first time you publish, you will be prompted to authenticate with Google and generate an
-authentication token in order for the publish script to continue.
-
-![publish](https://koistya.github.io/files/react-static-boilerplate-publish.gif)
-
-If you need to build the project without publishing it, simply run:
-
-```shell
-$ yarn build                    # Compiles the app into the /public/dist folder
-```
+For further information regarding deployment, testing and compiling as well as the general project structure, please visit the [**React Static Boilerplate Project**](https://github.com/kriasoft/react-static-boilerplate) on GitHub.
 
 
-### How to Update
+## **User Documentation**
 
-You can always fetch and merge the recent changes from this repo back into your own project:
+![imageapp](/docs/images/MainApplication.png?raw=true)*Fig. 1 - Application Overview*
+### What do I see?
 
-```shell
-$ git checkout master
-$ git fetch react-static-boilerplate
-$ git merge react-static-boilerplate/master
-$ yarn install
-```
+The Figure above shows a certain application state for the human protein called *p53*. The database UniProt lists it under the ID *P04637*, which can be found in the header. As the structure of the whole protein is unknown, Aquaria mapped it to the PDB entry of *4qo1*. Together with the information provided by the database, an additional set of seven variants is loaded.
 
+The protein is centered and surrounded by *data lanes*. These radial axes start and end at the top center, mapping onto the 392-long amino acid chain of the protein. Hence, every residue is assigned to a part of the circle’s periphery. For easier handling, the assigned values are the degrees in the center of a partition. If there were for example 10 amino acid (AA) mapped on a circle, the first AA would be positioned in the center of the circular segment 0◦- 36◦, thus with an assigned value of 18◦. The relative position of each residue in terms of such a segment center degree is the same across all axes, meaning that in any ’hypothetical’ circle the same angle refers to the same amino acid, independent of the circle’s radius.
 
-### Learn React.js and ES6
+The outermost axis represents the mapping of the tertiary structure in view. In this case, the subcomplex *4qo1* ranges from ’92 to ’290. The inner axes represent various features of the protein, by marking all residues involved in the respective functionality. These can range from more general features like chains – albeit there is only one chain in the present example – to more specific features like metal ion binding sites or splice variants. Single lines on a circle mark single amino acids (4 can be found at the metal ion binding site).
 
-:mortar_board: &nbsp; **[React.js Training Program](http://www.reactjsprogram.com/?asdf=36750_q0pu0tfa)** by Tyler McGinnis<br>
-:mortar_board: &nbsp; **[React for Beginners](https://reactforbeginners.com/friend/konstantin)** and **[ES6 Training Course](https://es6.io/friend/konstantin)** by Wes Bos<br>
-:green_book: &nbsp; **[React: Up & Running: Building Web Applications](http://amzn.to/2bBgqhl)** by Stoyan Stefanov (Aug, 2016)<br>
-:green_book: &nbsp; **[Getting Started with React](http://amzn.to/2bmwP5V)** by Doel Sengupta and Manu Singhal (Apr, 2016)<br>
-:green_book: &nbsp; **[You Don't Know JS: ES6 & Beyond](http://amzn.to/2bBfVnp)** by Kyle Simpson (Dec, 2015)<br>
+The color coding on the feature lanes does not hold any information and is solely present for better visual differentiation.
 
+Situated on the outer ring, the loaded variants stick out orthogonally. Each block consists of a vertical array of symbols representing a single variant and its properties. The symbols on the top defines the variant type. In case of a mutation that is known to be harmful, the color of the symbol turns red. The top letter stands for the reference amino acid and the bottom letter for the mutated variant amino acid.
 
-### Related Projects
+![variants](/docs/images/VariantTypes.png?raw=true)*Fig. 2 - Variant Types*
 
-* [React Starter Kit](https://github.com/kriasoft/react-starter-kit) — Isomorphic web app boilerplate (Node.js, React, GraphQL, Webpack, CSS Modules)
-* [Node.js API Starter Kit](https://github.com/kriasoft/nodejs-api-starter) — Boilerplate and tooling for building data APIs with Node.js, GraphQL and Relay
-* [ASP.NET Core Starter Kit](https://github.com/kriasoft/aspnet-starter-kit) — Cross-platform single-page application boilerplate (ASP.NET Core, React, Redux)
-* [Babel Starter Kit](https://github.com/kriasoft/babel-starter-kit) — JavaScript library boilerplate (ES2015, Babel, Rollup, Mocha, Chai, Sinon, Rewire)
-* [React App SDK](https://github.com/kriasoft/react-app) — Create React apps with just a single dev dependency and zero configuration
-* [Universal Router](https://github.com/kriasoft/universal-router) — Isomorphic router for web and single-page applications (SPA)
-* [History](https://github.com/mjackson/history) — HTML5 History API wrapper library that handle navigation in single-page apps
+### Setup
+###### Selecting Gene
 
+First, select a Protein, Matching Structure and the Chain that is to be investigated by typing the identifiers in the input fields [**(A)**](#imageapp). These information can be obtained through **Aquaria**.
+Please make sure that all of the databases listed in the bottom left corner show **Ready**. If not, try reloading with the button above and check your selection.
 
-### How to Contribute
+###### Uploading Variants
 
-Anyone and everyone is welcome to [contribute](CONTRIBUTING.md) to this project. The best way to
-start is by checking our [open issues](https://github.com/kriasoft/react-static-boilerplate/issues),
-[submit a new issues](https://github.com/kriasoft/react-static-boilerplate/issues/new?labels=bug) or
-[feature request](https://github.com/kriasoft/react-static-boilerplate/issues/new?labels=enhancement),
-participate in discussions, upvote or downvote the issues you like or dislike, send [pull
-requests](CONTRIBUTING.md#pull-requests).
+You can upload variants matching the selected gene with the upload button at the right [**(A)**](#imageapp).
+/TODO
 
+### Controls
 
-### License
+![imagearea](/docs/images/Areas.png?raw=true)*Fig. 3 - Control Areas, Scrolling Functionality*
 
-Copyright © 2015-present Kriasoft, LLC. This source code is licensed under the MIT license found in
-the [LICENSE.txt](https://github.com/kriasoft/react-static-boilerplate/blob/master/LICENSE.txt) file.
+As depicted in *Fig. 3*, there are two mouse areas that enable different controls. If the pointer is located in the **red area**, the protein structure in the center can be rotated and zoomed. With the pointer inside the **green area** the user can either rotate the visualisation by dragging or hide axes by scrolling.
 
----
-Made with ♥ by Konstantin Tarkus ([@koistya](https://twitter.com/koistya)) and [contributors](https://github.com/kriasoft/react-static-boilerplate/graphs/contributors)
+**Note** that the size of both areas does not change when the axes are hidden *(Fig. 3, right side)*.
+
+A list of available features from UniProt will appear to the right *(Fig. 1, Lane Order)*. Because there is not enough space for displaying each one as a axes inside the radial visualisation you can reorder them by clicking on the arrows left of list.
+
+Clicking on either variants [**(B)**](#imageapp), feature lanes or individual features [**(C)**](#imageapp) will cause parallel coordinates to appear that marks the specified position on feature lanes as well as on the protein itself as depicted in the figure below.
+
+![imageparcoords](/docs/images/ParallelCoords.png?raw=true)*Fig. 4 - Parallel Coordinates for different selections*
+
+## **Developer Documentation**
+
+### Understanding the Code
+
+It is crucial to understand the **React + Redux** application architecture to actually get what is going on. I suggest reading into the documentation, hence both of them are quite good. It is also helpful to look through the new **Javascript ES6** features.
+**Webpack** is used for dependency injection and bundling. An extensive understanding of the inner workings of *Webpack* is not required - I suggest going through a tutorial on how to set up a basic application.
+**D3** is used for manipulating the SVG elements of the visualisation. It is essential to understand D3s *update, enter, exit* logic to know how data driven updates work. Additionally looking at a couple of sample projects (v4) utilizing d3 scales should suffice.
+
+![components](/docs/images/Components.png?raw=true)*Fig. 5 - React Component Tree*
+
+After you are familiar with the frameworks and libraries at work in this project, I suggest understanding the **component call tree** and matching parts of the website to the corresponding components that control them. This former can be achieved by recursively going through every component, starting at `MainApp.js` and looking for child components in the render function, the latter by exploring the HTML tree with the help of the [**React Developer Tools**](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi).
+
+![state](/docs/images/State.png?raw=true)*Fig. 6 - State Object*
+
+The next step is understanding the **actions** that are dispatched and ultimately invoking changes to the state object [**(Fig. 6)**](#state) and thus the website. Because this project is based on Redux the state object acts as the single *source of truth* for the application. All actions and corresponding reducers can be found under `./actions/`. Actions are printed to the console or can be explored and debugged in depth with [**Redux Dev Tools**](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd).
+
+It is also crucial to understand what parts of the data for the visualisation come from which database. Inspect the incoming data in `./sequenceDataReducer.js/` and in the corresponding actions.
+
+### Notes for further Development
+
+Following are a couple of things that should be either investigated or enhanced to ensure the usability of the application.
+
+1. This application was only extensively tested for the Gene *P04637* and the mapped protein *4qo1*. Investigate all (especially long genes) are displayed correctly.
+2. To make it easier to use the selection fields, it is crucial to have better input checking and clear error messages.
+3. If performance should ever become a problem, the `shouldComponentUpdate` function of React components can be optimised to stop prevent unnecessary component updates. Optimising the data parsers as well as the data structures in the state is also an option.
+4. The state object already offers to save the data of multiple selections. This was originally implemented to support a platform behind the client application where it is possible to save and access projects.
+5. Reordering lanes is a little tedious. A drag and drop functionality for feature lanes would increase usability.
+6. Because this application uses Redux it is possible to revert user interactions that are reflected by the state with the 'back' button in the browser.
+
+### Known Bugs
+
+None.

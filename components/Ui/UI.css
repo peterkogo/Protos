@@ -2,11 +2,14 @@
   margin-left: 20px;
   z-index: 20;
   position: relative;
+  height: 100%;
+  pointer-events: none;
 }
 
 .right {
   margin-top: 10%;
   float: right;
+  pointer-events: all;
 }
 
 .left {
@@ -16,9 +19,11 @@
   overflow: visible;
   word-wrap: break-word;
   z-index: 100;
+  pointer-events: all;
 }
 
 .bottom {
   position: fixed;
   bottom: 20px;
+  pointer-events: all;
 }

@@ -16,7 +16,7 @@ class DataCheckerItem extends React.Component {
         }
         {didFail &&
           <span className={`${style.elem} ${style.error}`}>
-            Fetching failed. Please refresh.
+            Fetching failed. Check your query or reload.
           </span>
         }
         {!didFail && !isFetching && !didInvalidate &&

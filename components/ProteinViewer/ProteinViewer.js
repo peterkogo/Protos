@@ -41,6 +41,7 @@ class ProteinViewer extends React.PureComponent {
     if (oldSize !== newSize) {
       ReactDOM.findDOMNode(this.pv).innerHTML = ''
       this.initViewer(newSize)
+      this.initStructure(nextProps.selectedSequence, nextProps.pdb, this.viewer)
     }
 
     // Change Structure if needed
@@ -100,7 +101,7 @@ class ProteinViewer extends React.PureComponent {
                 <circle cx={center} cy={center} r={`${Math.floor(d * 0.5)}`} />
               </mask>
             </defs>
-            <rect x="0" y="0" width={`${size}px`} height={`${size}px`} mask="url(#mask)" fill="#ffffff" className={`${style.pointerEventsPainted}`}/>
+            <rect x="0" y="0" width={`${size}px`} height={`${size}px`} mask="url(#mask)" fill="#ffffff" className={`${style.pointerEventsPainted}`} />
           </svg>
         </div>
       </div>
