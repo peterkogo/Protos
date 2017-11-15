@@ -159,7 +159,7 @@ Situated on the outer ring, the loaded variants stick out orthogonally. Each blo
 ### Setup
 ###### Selecting Gene
 
-First, select a Protein, Matching Structure and the Chain that is to be investigated by typing the identifiers in the input fields [**(A)**](#imageapp). These information can be obtained through **Aquaria**.
+First, select a Protein, Matching Structure and the Chain that is to be investigated by typing the identifiers in the input fields [**Fig. 1 (A)**](#imageapp). These information can be obtained through **Aquaria**.
 Please make sure that all of the databases listed in the bottom left corner show **Ready**. If not, try reloading with the button above and check your selection.
 
 ###### Uploading Variants
@@ -177,7 +177,7 @@ As depicted in *Fig. 3*, there are two mouse areas that enable different control
 
 A list of available features from UniProt will appear to the right *(Fig. 1, Lane Order)*. Because there is not enough space for displaying each one as a axes inside the radial visualisation you can reorder them by clicking on the arrows left of list.
 
-Clicking on either variants [**(B)**](#imageapp), feature lanes or individual features [**(C)**](#imageapp) will cause parallel coordinates to appear that marks the specified position on feature lanes as well as on the protein itself as depicted in the figure below.
+Clicking on either variants [**Fig. 1 (B)**](#imageapp), feature lanes or individual features [**Fig. 1 (C)**](#imageapp) will cause parallel coordinates to appear that marks the specified position on feature lanes as well as on the protein itself as depicted in the figure below.
 
 ![#imageparcoords](/docs/images/ParallelCoords.png?raw=true)*Fig. 4 - Parallel Coordinates for different selections*
 
