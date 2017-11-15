@@ -141,7 +141,7 @@ For further information regarding deployment, testing and compiling as well as t
 
 ## **User Documentation**
 
-![imageapp](/docs/images/MainApplication.png?raw=true)*Fig. 1 - Application Overview*
+![#imageapp](/docs/images/MainApplication.png?raw=true)*Fig. 1 - Application Overview*
 ### What do I see?
 
 The Figure above shows a certain application state for the human protein called *p53*. The database UniProt lists it under the ID *P04637*, which can be found in the header. As the structure of the whole protein is unknown, Aquaria mapped it to the PDB entry of *4qo1*. Together with the information provided by the database, an additional set of seven variants is loaded.
@@ -154,7 +154,7 @@ The color coding on the feature lanes does not hold any information and is solel
 
 Situated on the outer ring, the loaded variants stick out orthogonally. Each block consists of a vertical array of symbols representing a single variant and its properties. The symbols on the top defines the variant type. In case of a mutation that is known to be harmful, the color of the symbol turns red. The top letter stands for the reference amino acid and the bottom letter for the mutated variant amino acid.
 
-![variants](/docs/images/VariantTypes.png?raw=true)*Fig. 2 - Variant Types*
+![#variants](/docs/images/VariantTypes.png?raw=true)*Fig. 2 - Variant Types*
 
 ### Setup
 ###### Selecting Gene
@@ -169,7 +169,7 @@ You can upload variants matching the selected gene with the upload button at the
 
 ### Controls
 
-![imagearea](/docs/images/Areas.png?raw=true)*Fig. 3 - Control Areas, Scrolling Functionality*
+![#imagearea](/docs/images/Areas.png?raw=true)*Fig. 3 - Control Areas, Scrolling Functionality*
 
 As depicted in *Fig. 3*, there are two mouse areas that enable different controls. If the pointer is located in the **red area**, the protein structure in the center can be rotated and zoomed. With the pointer inside the **green area** the user can either rotate the visualisation by dragging or hide axes by scrolling.
 
@@ -179,7 +179,7 @@ A list of available features from UniProt will appear to the right *(Fig. 1, Lan
 
 Clicking on either variants [**(B)**](#imageapp), feature lanes or individual features [**(C)**](#imageapp) will cause parallel coordinates to appear that marks the specified position on feature lanes as well as on the protein itself as depicted in the figure below.
 
-![imageparcoords](/docs/images/ParallelCoords.png?raw=true)*Fig. 4 - Parallel Coordinates for different selections*
+![#imageparcoords](/docs/images/ParallelCoords.png?raw=true)*Fig. 4 - Parallel Coordinates for different selections*
 
 ## **Developer Documentation**
 
@@ -189,11 +189,11 @@ It is crucial to understand the **React + Redux** application architecture to ac
 **Webpack** is used for dependency injection and bundling. An extensive understanding of the inner workings of *Webpack* is not required - I suggest going through a tutorial on how to set up a basic application.
 **D3** is used for manipulating the SVG elements of the visualisation. It is essential to understand D3s *update, enter, exit* logic to know how data driven updates work. Additionally looking at a couple of sample projects (v4) utilizing d3 scales should suffice.
 
-![components](/docs/images/Components.png?raw=true)*Fig. 5 - React Component Tree*
+![#components](/docs/images/Components.png?raw=true)*Fig. 5 - React Component Tree*
 
 After you are familiar with the frameworks and libraries at work in this project, I suggest understanding the **component call tree** and matching parts of the website to the corresponding components that control them. This former can be achieved by recursively going through every component, starting at `MainApp.js` and looking for child components in the render function, the latter by exploring the HTML tree with the help of the [**React Developer Tools**](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi).
 
-![state](/docs/images/State.png?raw=true)*Fig. 6 - State Object*
+![#state](/docs/images/State.png?raw=true)*Fig. 6 - State Object*
 
 The next step is understanding the **actions** that are dispatched and ultimately invoking changes to the state object [**(Fig. 6)**](#state) and thus the website. Because this project is based on Redux the state object acts as the single *source of truth* for the application. All actions and corresponding reducers can be found under `./actions/`. Actions are printed to the console or can be explored and debugged in depth with [**Redux Dev Tools**](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd).
 
