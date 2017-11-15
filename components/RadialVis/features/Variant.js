@@ -14,36 +14,20 @@ class Variant extends React.Component {
   constructor() {
     super()
     this.handleClick = this.handleClick.bind(this)
+    this.updateVariant = this.updateVariant.bind(this)
     this.initiated = false
   }
 
-  componentWillMount() {
-    // const ID = uID('variantTooltip')
-    // this.setState({
-    //   ID,
-    // })
-    //
-    // // TODO extract css
-    // d3.select('body')
-    // .append('div')
-    // .attr('id', ID)
-    // .style('position', 'absolute')
-    // .style('top', '0')
-    // .style('left', '0')
-    // .style('z-index', '10')
-    // .style('font-size', '1em')
-    // .style('opacity', '0')
-    // .style('background-color', 'rgba(250, 250, 250, 0.9)')
-    // .style('padding', '1px 3px 1px 3px')
-    // .style('border-radius', '2px')
-    // .style('transition', 'opacity 0.2s ease')
-    // .style('pointer-events', 'none')
-    // .text('')
+  componentDidMount() {
+    this.updateVariant()
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { d,
-            geneLength, variant } = nextProps
+  componentDidUpdate() {
+    this.updateVariant()
+  }
+
+  updateVariant() {
+    const { d, geneLength, variant } = this.props
 
     const group = d3.select(this.group)
 
@@ -62,12 +46,6 @@ class Variant extends React.Component {
     const x = ((r + (FEATURESIZE * 0.5)) * Math.cos(scale2(variant.pos)))
     const y = ((r + (FEATURESIZE * 0.5)) * Math.sin(scale2(variant.pos)))
     const rot = scale3(variant.pos)
-
-    // const circle2 = group.append('circle')
-    //                       .attr('cx', x)
-    //                       .attr('cy', y)
-    //                       .attr('r', 3)
-    //                       .style('fill', 'red')
 
     const poly = [{ x: 0.0, y: 7 },
                   { x: 5.0, y: -VARIANTDIST },
@@ -168,16 +146,6 @@ class Variant extends React.Component {
       this.forceUpdate()
       this.initiated = true
     }
-
-
-    // const tooltip = d3.select(`#${this.state.ID}`)
-    // .text(`'${start} - '${stop} `)
-    //
-    // group.selectAll('path')
-    // .on('mouseover', () => tooltip.style('opacity', '1'))
-    // .on('mousemove', () =>
-    //       tooltip.style('top', `${event.pageY - 10}px`).style('left', `${event.pageX + 10}px`))
-    // .on('mouseout', () => tooltip.style('opacity', '0'))
   }
 
   handleClick(e, id) {

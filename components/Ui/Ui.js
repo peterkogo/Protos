@@ -8,7 +8,7 @@ import Selector from './Selector'
 import DataChecker from './DataChecker'
 import DataViewer from './DataViewer'
 import SortAxis from './SortAxis'
-
+import VariantTable from './VariantTable'
 
 /**
  * Container Component for managing UI
@@ -16,8 +16,7 @@ import SortAxis from './SortAxis'
  * @return {StatelessComponent} General UI without Visualization
  */
 const Ui = (props) => {
-  const { selectedSequence, dispatch, currentSequenceData, visState } = props
-
+  const { selectedSequence, dispatch, currentSequenceData, visState, proteinData, ui } = props
   return (
     <div className={style.container}>
       <div className={style.left}>
@@ -25,6 +24,8 @@ const Ui = (props) => {
         <Selector
           selectedSequence={selectedSequence}
           dispatch={dispatch}
+          vcfDataHealth={currentSequenceData.proteinDataHealth.vcf}
+          showTable={visState.showTable}
         />
         <div className={style.bottom}>
           <DataChecker
@@ -34,7 +35,8 @@ const Ui = (props) => {
           />
         </div>
       </div>
-      {currentSequenceData.proteinData.features && visState.order &&
+      {currentSequenceData.proteinData && currentSequenceData.proteinData.features
+        && visState.order &&
         <div className={style.right}>
           <SortAxis
             visState={visState}
@@ -48,14 +50,30 @@ const Ui = (props) => {
           />
         </div>
       }
+      <VariantTable
+        showTable={visState.showTable}
+        vcf={proteinData.vcf}
+        ui={ui}
+      />
     </div>
   )
+}
+
+Ui.defaultProps = {
+  visState: {
+    showTable: false,
+  },
+  proteinData: {
+    vcf: [],
+  },
 }
 
 Ui.propTypes = {
   currentSequenceData: PropTypes.object.isRequired,
   selectedSequence: PropTypes.string.isRequired,
   dispatch: PropTypes.func.isRequired,
-  visState: PropTypes.object.isRequired,
+  visState: PropTypes.object,
+  proteinData: PropTypes.object,
+  ui: PropTypes.object.isRequired,
 }
 export default Ui

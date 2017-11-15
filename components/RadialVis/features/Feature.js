@@ -7,6 +7,8 @@ import { FEATURESIZE, FEATURESTROKE,
       FEATUREWIDTH } from '../../Defaults'
 import { selectAxisFeature, deselectAxisFeature, deselectVariant } from '../../../actions/radialVis'
 
+import style from './Feature.css'
+
 /**
  * Matching Structure Component
  */
@@ -15,6 +17,7 @@ class Feature extends React.Component {
   constructor() {
     super()
     this.handleClick = this.handleClick.bind(this)
+    this.updateFeatures = this.updateFeatures.bind(this)
   }
 
   componentWillMount() {
@@ -23,27 +26,39 @@ class Feature extends React.Component {
       ID,
     })
 
-    // TODO extract css
-    d3.select('body')
+    d3.select('#tooltips')
     .append('div')
-    .attr('id', ID)
-    .style('position', 'absolute')
-    .style('top', '0')
-    .style('left', '0')
-    .style('z-index', '10')
-    .style('font-size', '1em')
-    .style('opacity', '0')
-    .style('background-color', 'rgba(250, 250, 250, 0.9)')
-    .style('padding', '1px 3px 1px 3px')
-    .style('border-radius', '2px')
-    .style('transition', 'opacity 0.2s ease')
-    .style('pointer-events', 'none')
-    .text('')
+      .attr('id', ID)
+      .attr('class', style.tooltip)
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentDidMount() {
+    this.updateFeatures()
+  }
+
+  componentDidUpdate() {
+    this.updateFeatures()
+  }
+
+  componentWillUnmount() {
+    d3.select(`#${this.state.ID}`)
+      .remove()
+  }
+
+  handleClick(e, id) {
+    const { selectedSequence } = this.props
+    if (this.props.visState.selectedAxis === this.props.axisID
+        && this.props.visState.selectedFeature === id) {
+      this.props.dispatch(deselectAxisFeature(selectedSequence))
+    } else {
+      this.props.dispatch(deselectVariant(selectedSequence))
+      this.props.dispatch(selectAxisFeature(selectedSequence, this.props.axisID, id))
+    }
+  }
+
+  updateFeatures() {
     const { axisGap, d,
-            geneLength, fillColor, strokeColor, start, stop } = nextProps
+            geneLength, fillColor, strokeColor, start, stop } = this.props
 
     const group = d3.select(this.group)
 
@@ -62,11 +77,6 @@ class Feature extends React.Component {
 
     group.selectAll('path')
         .attr('d', arc)
-        .attr('stroke-width', `${FEATURESTROKE}px`)
-        .attr('fill', fillColor)
-        .attr('stroke', strokeColor)
-        .attr('id', '')
-        .attr('class', 'feature')
         .data(Array(1))
         .enter()
         .append('path')
@@ -92,17 +102,6 @@ class Feature extends React.Component {
     .on('mousemove', () =>
           tooltip.style('top', `${event.pageY - 10}px`).style('left', `${event.pageX + 10}px`))
     .on('mouseout', () => tooltip.style('opacity', '0'))
-  }
-
-  handleClick(e, id) {
-    const { selectedSequence } = this.props
-    if (this.props.visState.selectedAxis === this.props.axisID
-        && this.props.visState.selectedFeature === id) {
-      this.props.dispatch(deselectAxisFeature(selectedSequence))
-    } else {
-      this.props.dispatch(deselectVariant(selectedSequence))
-      this.props.dispatch(selectAxisFeature(selectedSequence, this.props.axisID, id))
-    }
   }
 
   render() {

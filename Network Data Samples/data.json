@@ -1,0 +1,107 @@
+{
+   "clusterUNIQUE1":{
+      "prevDist":5,
+      "nextDist":10,
+      "center":98,
+      "variants":{
+         "variantUNIQUE1":{
+            "pos":98,
+            "type":"splice",
+            "known":true,
+            "knownType":{
+
+            },
+            "refAA":"S",
+            "varAA":"T",
+            "class":"uncharged?"
+         }
+      }
+   },
+   "clusterUNIQUE2":{
+      "prevDist":5,
+      "nextDist":10,
+      "center":0,
+      "variants":{
+         "variantUNIQUE1":{
+            "pos":15,
+            "type":"stop",
+            "known":false,
+            "knownType":{
+
+            },
+            "refAA":"S",
+            "varAA":"A",
+            "class":"uncharged?"
+         }
+      }
+   },
+   "clusterUNIQUE3":{
+      "prevDist":5,
+      "nextDist":10,
+      "center":196,
+      "variants":{
+         "variantUNIQUE1":{
+            "pos":196,
+            "type":"deletion",
+            "known":true,
+            "knownType":{
+
+            },
+            "refAA":"T",
+            "varAA":"A",
+            "class":"uncharged?"
+         },
+         "variantUNIQUE2":{
+            "pos":225,
+            "type":"insertion",
+            "known":false,
+            "knownType":{
+
+            },
+            "refAA":"S",
+            "varAA":"T",
+            "class":"uncharged?"
+         }
+      }
+   },
+   "clusterUNIQUE4":{
+      "prevDist":5,
+      "nextDist":10,
+      "center":255,
+      "variants":{
+         "variantUNIQUE1":{
+            "pos":255,
+            "type":"frameshift",
+            "known":false,
+            "knownType":{
+
+            },
+            "refAA":"T",
+            "varAA":"S",
+            "class":"uncharged?"
+         },
+         "variantUNIQUE2":{
+            "pos":310,
+            "type":"indel",
+            "known":true,
+            "knownType":{
+
+            },
+            "refAA":"T",
+            "varAA":"V",
+            "class":"uncharged?"
+         },
+         "variantUNIQUE3":{
+            "pos":322,
+            "type":"nonsynonym",
+            "known":true,
+            "knownType":{
+
+            },
+            "refAA":"A",
+            "varAA":"T",
+            "class":"uncharged?"
+         }
+      }
+   }
+}

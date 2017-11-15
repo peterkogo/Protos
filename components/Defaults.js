@@ -17,7 +17,6 @@ export const STRUCTUREFILLCOLOR = '#ECF0F1'
 export const STRUCTURESTROKECOLOR = '#2C3E50'
 
 export const FEATUREWIDTH = 0.5
-export const CLICKAREAWIDTH = 45
 export const FEATURESIZE = 18
 export const FEATURESTROKE = 0
 export const FEATUREFILLCOLOR = '#E74C3C'
@@ -32,3 +31,21 @@ export const VARIANTFONTCENTER = [6, 3]
 export const VARIANTSYMBOLSIZE = 30
 export const PATHSIZE = 4
 export const KNOWNCOLOR = 'rgb(153, 0, 0)'
+
+export const INITIAL_ORDER = ['Chain', 'Site', 'Region of interest', 'Metal ion-binding site']
+
+export function queriesToString(queries) {
+  return `${queries.protein}#${queries.structure}#${queries.chain}`
+}
+
+// TODO Check more extencively
+export function isValidSequence(queries) {
+  if (queries.protein !== 'undefined' && queries.structure !== 'undefined'
+      && queries.chain !== 'undefined'
+      && queries.protein && queries.structure && queries.chain
+      && queries.protein.length > 0 && queries.structure.length > 0
+      && queries.chain.length > 0) {
+    return true
+  }
+  return false
+}

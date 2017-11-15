@@ -10,8 +10,26 @@ export const INIT_PROTEIN_VIEWER = 'INIT_PROTEIN_VIEWER'
 export const INIT_PROTEIN_STRUCTURE = 'INIT_PROTEIN_STRUCTURE'
 export const CHANGE_AXIS_POS_TO = 'CHANGE_AXIS_POS_TO'
 export const CREATE_AXIS_ORDER = 'CREATE_AXIS_ORDER'
+export const SHOW_VARIANT_TABLE = 'SHOW_VARIANT_TABLE'
+export const HIDE_VARIANT_TABLE = 'HIDE_VARIANT_TABLE'
 
 export const VIS_ACTION_GROUP = 'VIS_ACTION_GROUP'
+
+export function showVariantTable(sequence) {
+  return {
+    type: SHOW_VARIANT_TABLE,
+    group: VIS_ACTION_GROUP,
+    sequence,
+  }
+}
+
+export function hideVariantTable(sequence) {
+  return {
+    type: HIDE_VARIANT_TABLE,
+    group: VIS_ACTION_GROUP,
+    sequence,
+  }
+}
 
 export function selectAxis(sequence, axis) {
   return {

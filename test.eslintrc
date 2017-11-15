@@ -1,0 +1,30 @@
+{
+  "extends": "airbnb",
+  "parser": "babel-eslint",
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true,
+    "mocha": true
+  },
+  "rules": {
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+    "react/forbid-prop-types": [1, { "forbid": ['any'] }],
+    "import/no-extraneous-dependencies": [0, {"devDependencies": false, "optionalDependencies": false, "peerDependencies": false}],
+    "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
+    "valid-jsdoc": ["error", {
+      "requireReturn": false,
+      "requireReturnType": false,
+      "requireParamDescription": false,
+      "requireReturnDescription": false,
+    }],
+    "require-jsdoc": ["error", {
+        "require": {
+            "FunctionDeclaration": false,
+            "MethodDefinition": false,
+            "ClassDeclaration": false
+        }
+    }],
+    "semi" : ["error", "never"]
+  }
+}

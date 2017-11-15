@@ -3,13 +3,14 @@ import {
   REQUEST_AQUARIA, RECEIVE_AQUARIA,
   REQUEST_PDB, RECEIVE_PDB,
   FAIL_AQUARIA, FAIL_PDB,
-  REQUEST_UNIPROT, RECEIVE_UNIPROT,
+  REQUEST_UNIPROT, RECEIVE_UNIPROT, LOAD_VCF, PARSE_VCF,
   FAIL_UNIPROT, DATA_ACTION_GROUP, SET_VARIANTS,
 } from './sequenceData'
 import { VIS_ACTION_GROUP } from './radialVis'
 import { visState } from './radialVisReducer'
 import parseUniprot from './parsers/parseUniprot'
 import parseAquaria from './parsers/parseAquaria'
+import vcfParser, { parseData } from '../src/vcfParser'
 
 function sequenceData(state = {
   proteinDataHealth: {
@@ -21,6 +22,10 @@ function sequenceData(state = {
     },
     uniprot: {
       lastUpdated: '',
+    },
+    vcf: {
+      loading: false,
+      loaded: false,
     },
   },
   proteinData: {
@@ -34,100 +39,9 @@ function sequenceData(state = {
     selectedVariant: '',
     selectedCluster: '',
     order: [],
+    showTable: false,
   },
-  variants: {
-    // clusterUNIQUE1: {
-    //   prevDist: 5,
-    //   nextDist: 10,
-    //   center: 98,
-    //   variants: {
-    //     variantUNIQUE1: {
-    //       pos: 98,
-    //       type: 'splice',
-    //       known: true,
-    //       knownType: {},
-    //       refAA: 'S',
-    //       varAA: 'T',
-    //       class: 'uncharged?',
-    //     },
-    //   },
-    // },
-    // clusterUNIQUE2: {
-    //   prevDist: 5,
-    //   nextDist: 10,
-    //   center: 0,
-    //   variants: {
-    //     variantUNIQUE1: {
-    //       pos: 15,
-    //       type: 'stop',
-    //       known: false,
-    //       knownType: {},
-    //       refAA: 'S',
-    //       varAA: 'A',
-    //       class: 'uncharged?',
-    //     },
-    //   },
-    // },
-    // clusterUNIQUE3: {
-    //   prevDist: 5,
-    //   nextDist: 10,
-    //   center: 196,
-    //   variants: {
-    //     variantUNIQUE1: {
-    //       pos: 196,
-    //       type: 'deletion',
-    //       known: true,
-    //       knownType: {},
-    //       refAA: 'T',
-    //       varAA: 'A',
-    //       class: 'uncharged?',
-    //     },
-    //     variantUNIQUE2: {
-    //       pos: 225,
-    //       type: 'insertion',
-    //       known: false,
-    //       knownType: {},
-    //       refAA: 'S',
-    //       varAA: 'T',
-    //       class: 'uncharged?',
-    //     },
-    //   },
-    // },
-    // clusterUNIQUE4: {
-    //   prevDist: 5,
-    //   nextDist: 10,
-    //   center: 255,
-    //   variants: {
-    //     variantUNIQUE1: {
-    //       pos: 255,
-    //       type: 'frameshift',
-    //       known: false,
-    //       knownType: {},
-    //       refAA: 'T',
-    //       varAA: 'S',
-    //       class: 'uncharged?',
-    //     },
-    //     variantUNIQUE2: {
-    //       pos: 310,
-    //       type: 'indel',
-    //       known: true,
-    //       knownType: {},
-    //       refAA: 'T',
-    //       varAA: 'V',
-    //       class: 'uncharged?',
-    //     },
-    //     variantUNIQUE3: {
-    //       pos: 322,
-    //       type: 'nonsynonym',
-    //       known: true,
-    //       knownType: {},
-    //       refAA: 'A',
-    //       varAA: 'T',
-    //       class: 'uncharged?',
-    //     },
-    //   },
-    // },
-  },
+  variants: {},
 }, action) {
   switch (action.type) {
     case INVALIDATE_SEQUENCE_DATA:
@@ -251,6 +165,29 @@ function sequenceData(state = {
       return Object.assign({}, state, {
         variants: action.variants,
       })
+    case LOAD_VCF:
+      return Object.assign({}, state, {
+        proteinDataHealth: Object.assign({}, state.proteinDataHealth, {
+          vcf: {
+            loading: true,
+            loaded: false,
+          },
+        }),
+      })
+    case PARSE_VCF: {
+      const variants = []
+      return Object.assign({}, state, {
+        proteinDataHealth: Object.assign({}, state.proteinDataHealth, {
+          vcf: {
+            loading: false,
+            loaded: true,
+          },
+        }),
+        proteinData: Object.assign({}, state.proteinData, {
+          vcf: parseData(vcfParser(action.vcf)),
+        }),
+      })
+    }
     default:
       return state
   }
@@ -274,7 +211,6 @@ export function dataBySequence(state = {}, action) {
     case DATA_ACTION_GROUP:
     case VIS_ACTION_GROUP:
       return Object.assign({}, state, {
-        // [action.sequence]: sequenceData(state[action.sequence], action),
         [action.sequence]: subReducer(state[action.sequence], action),
       })
     default:

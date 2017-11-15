@@ -16,9 +16,8 @@ import { selectAxis, deselectAxisFeature, deselectFeature,
 
 /**
  * Main Component for the D3 Visualization
- * TODO GeneLength => Problems with arrays
  */
-class RadialVis extends React.PureComponent {
+class RadialVis extends React.Component {
 
   static getOpacity(feature, visState) {
     if (visState.selectedAxis.length < 1) {
@@ -59,7 +58,8 @@ class RadialVis extends React.PureComponent {
   componentWillReceiveProps(nextProps) {
     const proteinData = nextProps.proteinData
     const uniprot = nextProps.proteinDataHealth.uniprot
-    if ((!this.createdAxisOrder || uniprot.lastUpdated.toString() !== this.uniprotLastUpdated)
+    if ((!this.createdAxisOrder ||
+      (uniprot && (uniprot.lastUpdated.toString() !== this.uniprotLastUpdated)))
           && proteinData.features) {
       this.createdAxisOrder = true
       this.uniprotLastUpdated = uniprot.lastUpdated.toString()
@@ -143,31 +143,34 @@ class RadialVis extends React.PureComponent {
   calculateRadius(i) {
     const { ui } = this.props
     const margin = SVGMARGIN - 1
-    // const marginBetween = 100
     const size = ((ui.windowWidth > ui.windowHeight) ? ui.windowHeight : ui.windowWidth) - margin
     const a = 0
     const b = MAXNUMAXIS - 1
     const x = size * 0.5
     const y = size
-    // const min = 300
     return Math.floor((((i - a) / (b - a)) * (y - x)) + x)
   }
 
   render() {
     const { ui, selectedSequence, visState, dispatch,
       proteinData, proteinDataHealth, variants } = this.props
-    const { order } = visState
+    const { order } = visState || []
 
     const size = this.calculateRadius(MAXNUMAXIS - 1) + SVGMARGIN
     const pvDiameter = this.calculateRadius(this.proteinViewerZoom)
 
     const centerOrigin = `translate( ${this.calculateRadius(0) + (SVGMARGIN * 0.5)},
-                                      ${this.calculateRadius(0) + (SVGMARGIN * 0.5)} )`
+                                    ${this.calculateRadius(0) + (SVGMARGIN * 0.5)} )`
     const center = Math.floor(size * 0.5)
 
+    const clickAreaWidth = Math.ceil((this.calculateRadius(2) - this.calculateRadius(1)) * 0.5)
+
     return (
-      <div className={style.parent} >
-        {proteinData.pdb &&
+      <div
+        className={style.parent}
+        style={{ opacity: (visState.showTable) ? 0 : 100 }}
+      >
+        {proteinData && proteinData.pdb &&
         <ProteinViewer
           d={pvDiameter}
           selectedSequence={selectedSequence}
@@ -188,7 +191,7 @@ class RadialVis extends React.PureComponent {
           ref={(c) => { this.svg = c }}
         >
           <defs>
-            <mask id="radialVisMask" x="0" y="0" width={`${size}px`} height={`${size}px`}>
+            <mask id="radialVisMask" width={`${size}px`} height={`${size}px`}>
               <rect
                 x={`-${center}px`}
                 y={`-${center}px`}
@@ -205,7 +208,7 @@ class RadialVis extends React.PureComponent {
             </mask>
           </defs>
           <g transform={centerOrigin} mask="url(#radialVisMask)">
-            {proteinData.features[order[1]] && visState.order &&
+            {proteinData.features && proteinData.features[order[1]] && visState.order &&
               order.slice(order.length - (MAXNUMAXIS - 1), order.length).map((feature, i) => {
                 const diameter = this.calculateRadius(i)
                 return (
@@ -227,6 +230,7 @@ class RadialVis extends React.PureComponent {
                       dispatch={dispatch}
                       visState={visState}
                       selectedSequence={selectedSequence}
+                      clickAreaWidth={clickAreaWidth}
                     />
                   </g>
                 )
@@ -248,8 +252,7 @@ class RadialVis extends React.PureComponent {
             }
           </g>
         </svg>
-        {
-          proteinData.features[order[1]] &&
+        {proteinData.features && proteinData.features[order[1]] &&
           <ParallelCoordinates
             d={pvDiameter}
             maxD={this.calculateRadius(MAXNUMAXIS - 1) - STRUCTURESIZE}
@@ -266,13 +269,19 @@ class RadialVis extends React.PureComponent {
   }
 }
 
+RadialVis.defaultProps = {
+  proteinData: {},
+  visState: {},
+  proteinDataHealth: {},
+}
+
 RadialVis.propTypes = {
-  proteinData: PropTypes.object.isRequired,
+  proteinData: PropTypes.object,
   dispatch: PropTypes.func.isRequired,
   selectedSequence: PropTypes.string.isRequired,
   ui: PropTypes.object.isRequired,
-  visState: PropTypes.object.isRequired,
-  proteinDataHealth: PropTypes.object.isRequired,
+  visState: PropTypes.object,
+  proteinDataHealth: PropTypes.object,
   variants: PropTypes.object,
 }
 

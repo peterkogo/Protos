@@ -3,8 +3,9 @@ import { SELECT_AXIS, DESELECT_AXIS,
         SELECT_FEATURE, DESELECT_FEATURE,
         SELECT_AXIS_FEATURE, DESELECT_AXIS_FEATURE,
         CHANGE_AXIS_POS_TO, CREATE_AXIS_ORDER,
-        SELECT_VARIANT, DESELECT_VARIANT } from './radialVis'
-import { INITIAL_ORDER } from './ActionDefaults'
+        SELECT_VARIANT, DESELECT_VARIANT,
+        SHOW_VARIANT_TABLE, HIDE_VARIANT_TABLE } from './radialVis'
+import { INITIAL_ORDER } from '../components/Defaults'
 
 
 function createAxisOrder(features) {
@@ -96,6 +97,16 @@ export function visState(state, action) {
       const order = createAxisOrder(action.uniprotData)
       return Object.assign({}, state, {
         order,
+      })
+    }
+    case SHOW_VARIANT_TABLE: {
+      return Object.assign({}, state, {
+        showTable: true,
+      })
+    }
+    case HIDE_VARIANT_TABLE: {
+      return Object.assign({}, state, {
+        showTable: false,
       })
     }
     default:

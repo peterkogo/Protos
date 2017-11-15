@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import * as d3 from 'd3'
 import { AXISGAP, AXISCOLOR, AXISSIZE,
         FONTCOLOR, FONTSIZE, FONTOFFSET,
-        FEATUREFILLCOLOR, CLICKAREAWIDTH } from '../Defaults'
+        FEATUREFILLCOLOR } from '../Defaults'
 
 import Feature from './features/Feature'
 import style from './RadialVis.css'
@@ -13,9 +13,22 @@ import style from './RadialVis.css'
  */
 class FeatureAxis extends React.Component {
 
-  componentWillReceiveProps(nextProps) {
+  constructor(props) {
+    super(props)
+    this.updateAxes = this.updateAxes.bind(this)
+  }
+
+  componentDidMount() {
+    this.updateAxes()
+  }
+
+  componentDidUpdate() {
+    this.updateAxes()
+  }
+
+  updateAxes() {
     const { d, geneLength, id, numLabels, axisColor,
-            fontColor, axisSize, name, fontSize } = nextProps
+            fontColor, axisSize, name, fontSize, clickAreaWidth } = this.props
 
     const fontOffset = FONTOFFSET
 
@@ -38,13 +51,13 @@ class FeatureAxis extends React.Component {
           .data(Array(1))
           .attr('d', arc)
           .attr('stroke', 'white')
-          .attr('stroke-width', `${CLICKAREAWIDTH}px`)
+          .attr('stroke-width', `${clickAreaWidth}px`)
           .attr('id', `#clickArea${id}`)
           .enter()
           .append('path')
             .attr('d', arc)
             .attr('stroke', 'white')
-            .attr('stroke-width', `${CLICKAREAWIDTH}px`)
+            .attr('stroke-width', `${clickAreaWidth}px`)
             .attr('id', `#clickArea${id}`)
           .exit()
           .remove()
@@ -100,20 +113,6 @@ class FeatureAxis extends React.Component {
     // EXIT
     .exit()
     .remove()
-
-    // Early Transition Code
-    // if (d !== this.props.d) {
-    //   const arc2 = d3.arc()
-    //                 .innerRadius(r + 10)
-    //                 .outerRadius(r + 10)
-    //                 .startAngle((0 + axisGap) * (Math.PI / 180))
-    //                 .endAngle((360 - axisGap) * (Math.PI / 180))
-    //
-    //   group.selectAll('path')
-    //   .transition()
-    //   .duration(2000)
-    //   .attr('d', arc2)
-    // }
   }
 
   render() {
@@ -176,6 +175,7 @@ FeatureAxis.propTypes = {
   dispatch: PropTypes.func.isRequired,
   visState: PropTypes.object.isRequired,
   selectedSequence: PropTypes.string.isRequired,
+  clickAreaWidth: PropTypes.number.isRequired,
 }
 
 export default FeatureAxis

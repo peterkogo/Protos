@@ -7,55 +7,57 @@ import { fetchSequenceIfNeeded } from '../actions/sequenceData'
 import RadialVis from '../components/RadialVis'
 import Ui from '../components/Ui'
 
+import { queriesToString, isValidSequence } from './Defaults'
+
 import style from './MainApp.css'
 
 /**
- * Topmost React Component
+ * Main Application Entry Point
  */
 class MainApp extends React.Component {
 
   componentDidMount() {
-    const { dispatch, selectedSequence } = this.props
-    dispatch(fetchSequenceIfNeeded(selectedSequence))
+    const { dispatch, router } = this.props
+    if (isValidSequence(router.queries)) {
+      dispatch(fetchSequenceIfNeeded(queriesToString(router.queries)))
+    }
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.selectedSequence !== this.props.selectedSequence) {
-      const { dispatch, selectedSequence } = nextProps
-      dispatch(fetchSequenceIfNeeded(selectedSequence))
+    if (isValidSequence(nextProps.router.queries)) {
+      const thisSequence = queriesToString(this.props.router.queries)
+      const nextSequence = queriesToString(nextProps.router.queries)
+      if (thisSequence !== nextSequence) {
+        const { dispatch } = nextProps
+        dispatch(fetchSequenceIfNeeded(nextSequence))
+      }
     }
   }
 
   render() {
-    const { selectedSequence, ui, currentSequenceData, dispatch } = this.props
+    const { ui, currentSequenceData, dispatch, router } = this.props
+    const selectedSequence = queriesToString(router.queries)
     return (
       <div className={style.maxHeight}>
-        {typeof currentSequenceData.proteinData !== 'undefined' &&
-          typeof currentSequenceData.proteinData.features !== 'undefined' &&
-          typeof currentSequenceData.visState !== 'undefined' &&
-          <div className={style.visWrapper}>
-            <RadialVis
-              ui={ui}
-              selectedSequence={selectedSequence}
-              dispatch={dispatch}
-              visState={currentSequenceData.visState}
-              proteinData={currentSequenceData.proteinData}
-              proteinDataHealth={currentSequenceData.proteinDataHealth}
-              variants={currentSequenceData.variants}
-            />
-          </div>
-        }
-        { typeof currentSequenceData.proteinData !== 'undefined' &&
-        typeof currentSequenceData.proteinData.features !== 'undefined' &&
-          typeof currentSequenceData.visState !== 'undefined' &&
-          typeof currentSequenceData.visState.order !== 'undefined' &&
-          <Ui
+        <div className={style.visWrapper}>
+          <RadialVis
+            ui={ui}
             selectedSequence={selectedSequence}
-            currentSequenceData={currentSequenceData}
             dispatch={dispatch}
             visState={currentSequenceData.visState}
+            proteinData={currentSequenceData.proteinData}
+            proteinDataHealth={currentSequenceData.proteinDataHealth}
+            variants={currentSequenceData.variants}
           />
-        }
+        </div>
+        <Ui
+          selectedSequence={selectedSequence}
+          currentSequenceData={currentSequenceData}
+          dispatch={dispatch}
+          visState={currentSequenceData.visState}
+          proteinData={currentSequenceData.proteinData}
+          ui={ui}
+        />
       </div>
     )
   }
@@ -66,31 +68,28 @@ MainApp.propTypes = {
   dispatch: PropTypes.func.isRequired,
   selectedSequence: PropTypes.string.isRequired,
   ui: PropTypes.object.isRequired,
+  router: PropTypes.object.isRequired,
 }
 
 MainApp.defaultProps = {
   currentSequenceData: {
-    variants: {
-      name1: {
-        pos: 116,
-        type: 'stop',
-        known: false,
-        knownType: {},
-        refAA: 'S',
-        varAA: 'T',
-        class: 'uncharged?',
+    proteinDataHealth: {
+      vcf: {
+        loading: false,
+        loaded: false,
       },
     },
   },
 }
 
 function mapStateToProps(state) {
-  const { selectedSequence, dataBySequence, ui } = state
-  const currentSequenceData = dataBySequence[selectedSequence]
+  const { selectedSequence, dataBySequence, ui, router } = state
+  const currentSequenceData = dataBySequence[queriesToString(router.queries)]
   return {
     selectedSequence,
     currentSequenceData,
     ui,
+    router,
   }
 }
 

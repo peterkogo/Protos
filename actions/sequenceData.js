@@ -12,10 +12,45 @@ export const REQUEST_UNIPROT = 'REQUEST_UNIPROT'
 export const RECEIVE_UNIPROT = 'RECEIVE_UNIPROT'
 export const FAIL_UNIPROT = 'FAIL_UNIPROT'
 export const SET_VARIANTS = 'SET_VARIANTS'
+export const PARSE_VCF = 'PARSE_VCF'
+export const LOAD_VCF = 'LOAD_VCF'
 
 export const DATA_ACTION_GROUP = 'DATA_ACTION_GROUP'
 
 const timeout = 5000 // TODO timeout not working
+
+function parseVcf(sequence, vcf) {
+  return {
+    type: PARSE_VCF,
+    group: DATA_ACTION_GROUP,
+    sequence,
+    vcf,
+  }
+}
+
+function loadVcf(sequence) {
+  return {
+    type: LOAD_VCF,
+    group: DATA_ACTION_GROUP,
+    sequence,
+  }
+}
+
+export function readVcf(sequence, file) {
+  return (dispatch) => {
+    dispatch(loadVcf(sequence))
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => {
+        resolve(reader.result)
+      }
+      reader.onerror = (err) => {
+        reject(err)
+      }
+      reader.readAsText(file)
+    }).then(vcf => dispatch(parseVcf(sequence, vcf)))
+  }
+}
 
 export function selectSequence(sequence) {
   return {

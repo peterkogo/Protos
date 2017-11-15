@@ -9,6 +9,13 @@
   margin-top: 10px;
 }
 
+.showTableButton {
+  width: 50%;
+  margin-left: 15%;
+  margin-top: 20px;
+  font-weight: bold;
+}
+
 .input {
   width: 80%;
   margin-bottom: 5px;
